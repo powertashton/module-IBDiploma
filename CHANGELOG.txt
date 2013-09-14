@@ -1,0 +1,160 @@
+CHANGELOG
+=========
+v1.0.00
+-------
+Added comptability with Gibbon core v6.
+
+v0.8.04
+-------
+Updated old icon to new style
+
+v0.8.03
+-------
+Fixed minor typo in supervisor email
+
+v0.8.02
+-------
+Updated module to use new Gibbon v5 icons
+
+v0.8.01
+-------
+Updated the IB Diploma hexagon diagram
+
+v0.8.00
+-------
+Made compatible with Gibbon v4.0.00
+
+v0.7.03
+-------
+Updated module to work with new hooks in Core v3.0.00
+Fixed interface wording issue
+Added title field to reflections...and improved display
+
+v0.7.02
+-------
+Fixed issue in interview process
+
+v0.7.01
+-------
+Increased length of outcome listing fields in interview table
+
+v0.7.00
+-------
+Replace jquery-ui autocomplete with token input
+
+Adopted bredcrumb trail style from Core v2.0.00
+
+Added rich HTML editing to reflections
+
+Applied formatName from Core
+
+Added hook to show CAS Commitment listing in Student Profile
+
+Prepped module to work with Core v2.0.00 semi automaitc module updates
+
+v0.6.00
+-------
+Commitments: removed C, A, S status and outcomes from student view.
+	Edited myCommitments.php, myCommitments_edit.php, myCommitments_add.php
+
+Reflections: new action for student to record their reflections:
+	Updated table gibbonAction
+	Updated table gibbonPermission
+	Updated file manifest.php
+	Added new table ibDiplomaCASReflection
+	New files cas_reflections*.php
+	Edited files myCommitments_view.php, cas_adviseStudents_full.php
+
+Student: removed field casStatusIBO
+	Edited table ibDiplomaStudent
+	Edited various files
+
+CAS Advisor: revamped interface, using subpages
+	Edited cas_adviseStudents_details.php
+	Removed cas_adviseStudents_details_interview*.php
+	Renamed cas_adviseStudents_detailsProcess.php to cas_adviseStudents_detailsStatusProcess.php
+
+Commitment: changed commitment's "Description & Goal" to "Description"
+	Edited files myCommitments_add.php, myCommitments_edit.php
+
+Commitment: add field "goal" which is set in Interview 1, but viewable to student, advisor, and IBO
+	Edited table ibDiplomaCASCommitment
+	Edited files myCommitments_view.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
+	
+CAS Status: change to from in progress, etc to At risk, On task, Excellence
+	Edited table ibDiplomaStudent
+	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php 
+
+Make supervisor phone number and email compulsory
+	Edited files myCommitments_add*.php, myCommitments_edit*.php
+	
+Advise Students: Added filter to student list and reflection list
+	Edited file cas_adviseStudents.php, cas_adviseStudents_details.php
+
+Reflections: Added filter to reflection list
+	Edited file cas_reflections.php
+
+Student Commitments: renamed files
+	Changed file names myCommitments *.php to cas_student_myCommitments.php
+	Updates table gibbonAction
+
+Interviews: changed generic note input to specific structure and flow for each of the 3 interviews
+	Edited structure of ibDiplomaCASInterview
+	Edited page cas_adviseStudents_details.php
+	New files cas_adviseStudents_details*Process.php
+	Updated table gibbonAction
+	Updated table gibbonPermission
+	New files cas_student_interview2*.php, cas_student_interview3*.php
+
+Student Commitments: made name unique
+	Edited table ibDiplomaCASCommitment
+	Edited file user_manage_add*.php
+
+IBO Check
+	Removed file cas_iboCheck_detailsProcess.php
+	Edited files cas_iboCheck*.php
+
+Images
+	Removed img/outcome*.acorn, outcome*.png
+	
+Commitment Supervisor: Ability to complete feedback form without logging in
+	New table ibDiplomaCASSupervisorFeedback
+	New files cas_supervisor*.php
+	Updated table gibbonAction
+	Updated table gibbonPermission
+	New file cas_supervisor_invite.php
+	Edited file cas_adviseStudents_details.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
+
+Interview 3: added new statuses for final interview: complete, incomplete
+	Edited table ibDiplomaStudent
+	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
+
+	
+v0.5.02
+-------
+Updated index.php to display IB information
+
+v0.5.01
+-------
+Updated manifest to allow setting of role categories in action, as used in Core v1.6.00dev+
+
+v0.5.00
+-------
+Ability to specify CAS Coordinator and Advisors
+Ability to register students into the IB Diploma module, specifying academic year for starting and ending the programme.
+Ability to link student to a CAS advisor
+Ability for students to create CAS commitments
+    Either from scratch, or by drawing information in from their  activities record. 
+    Ability for students edit commitments, confirming list of outcomes met and reflecting 	
+    View all details in commitment
+An overall view per student showing the learning outcomes, which have been met, which are expected, which are outstanding, etc.
+Ability for advisors and coordinators to see commitment summary and details for relevant students
+Ability for advisors and coordinators to:
+ 	Approve per commitment	
+ 	Set school status for CAS as whole
+   	Record details of student interviews
+Ability for an external agent (e.g. IBO) to come in, view a summary for each student and set their status.
+Manifest + Publish
+
+	
+
