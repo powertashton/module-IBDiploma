@@ -127,9 +127,8 @@ else {
 				$row=$result->fetch() ;
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_myCommitments_editProcess.php" ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+						<tr class='break'>
 							<td colspan=2> 
 								<h3 class='top'>Basic Information</h3>
 							</td>
@@ -197,11 +196,11 @@ else {
 							<td colspan=2> 
 								<b>Description</b><br/>
 								Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i><br/>
-								<? print "<textarea name='description' id='description' rows=15 style='width:756px; margin-left: 0px'>" . $row["description"] . "</textarea>" ?>
+								<? print "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>" . $row["description"] . "</textarea>" ?>
 							</td>
 						</tr>
 				
-						<tr>
+						<tr class='break'>
 							<td colspan=2> 
 								<h3>Supervisor</h3>
 							</td>
@@ -247,15 +246,13 @@ else {
 						</tr>
 		
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="ibDiplomaCASCommitmentID" value="<? print $ibDiplomaCASCommitmentID ?>">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

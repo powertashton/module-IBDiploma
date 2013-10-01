@@ -36,7 +36,7 @@ else {
 	print "<p>" ;
 		print "Hover over any of the IB Learner Profile keywords for a quick reminder of their meaning in relation to your studies as an IB student: " ;
 	print "</p>" ;
-	print "<table style='width: 100%'>" ;
+	print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 		print "<tr>" ;
 			print "<td>" ;
 				print "<ul style='margin-left: 10px'>" ;

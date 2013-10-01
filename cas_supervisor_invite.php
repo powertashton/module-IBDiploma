@@ -83,8 +83,7 @@ else {
 			
 			?>
 			<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php" ?>">
-				<table style="width: 100%">	
-					<tr><td style="width: 30%"></td><td></td></tr>
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td>
 							<b>Invitation Type *</b><br/>
@@ -121,8 +120,7 @@ else {
 			print "</div>" ;
 			
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php&step=3'>" ;
-				print "<table style='width: 100%'>"	;
-					print "<tr><td style='width: 30%'></td><td></td></tr>" ;
+				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>"	;
 					if ($type=="Single") {
 						print "<tr>" ;
 							print "<td>" ;
@@ -193,14 +191,12 @@ else {
 						print "</tr>" ;
 					}
 					print "<tr>" ;
-						print "<td class='right' colspan=2>" ;
+						print "<td>" ;
+							print "<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
+						print "</td>" ;
+						print "<td class='right'>" ;
 							print "<input type='hidden' name='type' value='$type'>" ;
 							print "<input type='reset' value='Reset'> <input type='submit' value='Proceed'>" ;
-						print "</td>" ;
-					print "</tr>" ;
-					print "<tr>" ;
-						print "<td class='right' colspan=2>" ;
-							print "<span style='font-size: 90%'><i>* denotes a required field</i></span>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;	

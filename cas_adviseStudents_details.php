@@ -119,7 +119,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				print "<table style='width: 100%'>" ;
+				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 					print "<tr>" ;
 						print "<td style='width: 34%; vertical-align: top'>" ;
 							print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -189,7 +189,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th style='vertical-align: bottom'>" ;
 									print "Commitment" ;
@@ -341,7 +341,7 @@ else {
 						print "</div>" ;
 					}
 					else {
-						print "<table style='width: 100%'>" ;
+						print "<table cellspacing='0' style='width: 100%'>" ;
 							print "<tr class='head'>" ;
 								print "<th style='vertical-align: bottom'>" ;
 									print "Commitment" ;
@@ -448,8 +448,7 @@ else {
 					
 					?>
 					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsStatusProcess.php" ?>">
-						<table style="width: 100%">	
-							<tr><td style="width: 30%"></td><td></td></tr>
+						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
 									<b>Status *</b><br/>
@@ -467,15 +466,13 @@ else {
 								</td>
 							</tr>
 							<tr>
-								<td class="right" colspan=2>
+								<td>
+									<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								</td>
+								<td class="right">
 									<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 									<input type="reset" value="Reset"> <input type="submit" value="Submit">
-								</td>
-							</tr>
-							<tr>
-								<td class="right" colspan=2>
-									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
 							</tr>
 						</table>
@@ -504,10 +501,8 @@ else {
 						}
 				
 						print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsInterview1Process.php'>" ;
-							print "<table style='width: 100%'>" ;	
-								print "<tr><td style='width: 30%'></td><td></td></tr>" ;
-								
-								print "<tr>" ;
+							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
+								print "<tr class='break'>" ;
 									print "<td colspan=2>" ; 
 										print "<h3 class='top'>Commitment Goals</h3>" ;
 									print "</td>" ;
@@ -534,7 +529,7 @@ else {
 											print "</div>" ;
 										}
 										else {
-											print "<table style='margin-top: 0px; width: 100%'>" ;
+											print "<table cellspacing='0' style='margin-top: 0px; width: 100%'>" ;
 												print "<tr class='head'>" ;
 													print "<th style='vertical-align: bottom'>" ;
 														print "Commitment" ;
@@ -588,7 +583,7 @@ else {
 									print "</td>" ;
 								print "</tr>" ;
 								
-								print "<tr>" ;
+								print "<tr class='break'>" ;
 									print "<td colspan=2>" ; 
 										print "<h3>Notes</h3>" ;
 									print "</td>" ;
@@ -597,11 +592,11 @@ else {
 									print "<td colspan=2>" ;
 										print "Use this space to take notes on your conversation with the student. You may wish to consider:" ;
 										print "<i><ul style='margin-bottom: 0px'><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i><br/>" ;
-										print "<textarea name='notes' id='notes' rows=15 style='width:756px; margin-left: 0px'>" . $rowInterview["1_notes"] . "</textarea>" ;
+										print "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>" . $rowInterview["1_notes"] . "</textarea>" ;
 									print "</td>" ;
 								print "</tr>" ;	
 								
-								print "<tr>" ;
+								print "<tr class='break'>" ;
 									print "<td colspan=2>" ; 
 										print "<h3>General Information</h3>" ;
 									print "</td>" ;
@@ -661,16 +656,14 @@ else {
 									</td>
 								</tr>
 								<tr>
-									<td class="right" colspan=2>
+									<td>
+										<span style="font-size: 90%"><i>* denotes a required field</i></span>
+									</td>
+									<td class="right">
 										<input type="hidden" name="count" value="<? print $count ?>">
 										<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 										<input type="reset" value="Reset"> <input type="submit" value="Submit">
-									</td>
-								</tr>
-								<tr>
-									<td class="right" colspan=2>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
 									</td>
 								</tr>
 							</table>
@@ -704,10 +697,8 @@ else {
 							$rowInterview=$resultInterview->fetch() ;
 					
 							print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsInterview2Process.php'>" ;
-								print "<table style='width: 100%'>" ;	
-									print "<tr><td style='width: 30%'></td><td></td></tr>" ;
-									
-									print "<tr>" ;
+								print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
+									print "<tr class='break'>" ;
 										print "<td colspan=2>" ;
 											print "<h3 class='top'>Outcomes</h3>" ;
 										print "</td>" ;
@@ -722,8 +713,8 @@ else {
 									
 									?>
 									<style>
-										ul.token-input-list-facebook { width: 756px; height: 25px!important; }
-										div.token-input-dropdown-facebook  { width: 756px }
+										ul.token-input-list-facebook { width: 738px; height: 25px!important; }
+										div.token-input-dropdown-facebook  { width: 738px }
 									</style>
 									<?
 									//Get commitment list
@@ -818,7 +809,7 @@ else {
 										print "</tr>" ;
 									}
 									
-									print "<tr>" ;
+									print "<tr class='break'>" ;
 										print "<td colspan=2>" ;
 											print "<h3>Notes</h3>" ;
 										print "</td>" ;
@@ -827,11 +818,11 @@ else {
 										print "<td colspan=2>" ;
 											print "Use this space to take notes on your conversation with the student. You may wish to consider:" ;
 											print "<i><ul style='margin-bottom: 0px'><li>How is student progressing?</li><li>Are all outcomes begun?</li><li>Which outcomes require more thought and action?</li></ul></i><br/>" ;
-											print "<textarea name='notes' id='notes' rows=15 style='width:756px; margin-left: 0px'>" . $rowInterview["2_notes"] . "</textarea>" ;
+											print "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>" . $rowInterview["2_notes"] . "</textarea>" ;
 										print "</td>" ;
 									print "</tr>" ;	
 									
-									print "<tr>" ;
+									print "<tr class='break'>" ;
 										print "<td colspan=2>" ;
 											print "<h3>General Information</h3>" ;
 										print "</td>" ;
@@ -891,16 +882,14 @@ else {
 										</td>
 									</tr>
 									<tr>
-										<td class="right" colspan=2>
+										<td>
+											<span style="font-size: 90%"><i>* denotes a required field</i></span>
+										</td>
+										<td class="right">
 											<input type="hidden" name="count" value="<? print $count ?>">
 											<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 											<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 											<input type="reset" value="Reset"> <input type="submit" value="Submit">
-										</td>
-									</tr>
-									<tr>
-										<td class="right" colspan=2>
-											<span style="font-size: 90%"><i>* denotes a required field</i></span>
 										</td>
 									</tr>
 								</table>
@@ -942,15 +931,10 @@ else {
 							else {
 					
 								print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsInterview3Process.php'>" ;
-									print "<table style='width: 100%'>" ;	
-										print "<tr><td style='width: 30%'></td><td></td></tr>" ;
-										
-										print "<tr>" ;
-											print "<td>" ; 
+									print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
+										print "<tr class='break'>" ;
+											print "<td colspan=2>" ; 
 												print "<h3 class='top'>Outcomes</h3>" ;
-											print "</td>" ;
-											print "<td class='right'>" ;
-											
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
@@ -963,8 +947,8 @@ else {
 												
 										?>
 										<style>
-											ul.token-input-list-facebook { width: 756px; height: 25px!important; }
-											div.token-input-dropdown-facebook  { width: 756px }
+											ul.token-input-list-facebook { width: 738px; height: 25px!important; }
+											div.token-input-dropdown-facebook  { width: 738px }
 										</style>
 										<?
 										//Get commitment list
@@ -1054,33 +1038,27 @@ else {
 															print "preventDuplicates: true});" ;
 													print "});" ;
 													print "</script>" ;
-													print "<textarea name='outcome" . $i . "Notes' id='outcome" . $i . "Notes' rows=3 style='width:756px; margin: 0px 0px 10px 0px'>" . $rowInterview["3_outcome" . $i . "Notes"] . "</textarea>" ;
+													print "<textarea name='outcome" . $i . "Notes' id='outcome" . $i . "Notes' rows=3 style='width:738px; margin: 0px 0px 10px 0px'>" . $rowInterview["3_outcome" . $i . "Notes"] . "</textarea>" ;
 												print "</td>" ;
 											print "</tr>" ;
 										}
 										
-										print "<tr>" ;
-											print "<td>" ; 
+										print "<tr class='break'>" ;
+											print "<td colspan=2>" ; 
 												print "<h3>Notes</h3>" ;
-											print "</td>" ;
-											print "<td class='right'>" ;
-											
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
 											print "<td colspan=2>" ;
 												print "Use this space to take notes on your conversation with the student. You may wish to consider:" ;
 												print "<i><ul style='margin-bottom: 0px'><li>Are all outcomes satisfactorily completed?</li></ul></i><br/>" ;
-												print "<textarea name='notes' id='notes' rows=15 style='width:756px; margin-left: 0px'>" . $rowInterview["3_notes"] . "</textarea>" ;
+												print "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>" . $rowInterview["3_notes"] . "</textarea>" ;
 											print "</td>" ;
 										print "</tr>" ;	
 										
-										print "<tr>" ;
-											print "<td>" ; 
+										print "<tr class='break'>" ;
+											print "<td colspan=2>" ; 
 												print "<h3>General Information</h3>" ;
-											print "</td>" ;
-											print "<td class='right'>" ;
-											
 											print "</td>" ;
 										print "</tr>" ;
 										print "<tr>" ;
@@ -1137,7 +1115,10 @@ else {
 											</td>
 										</tr>
 										<tr>
-											<td class="right" colspan=2>
+											<td>
+												<span style="font-size: 90%"><i>* denotes a required field</i></span>
+											</td>
+											<td class="right">
 												<input type="hidden" name="count" value="<? print $count ?>">
 												<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
 												<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
@@ -1145,9 +1126,6 @@ else {
 											</td>
 										</tr>
 										<tr>
-											<td class="right" colspan=2>
-												<span style="font-size: 90%"><i>* denotes a required field</i></span>
-											</td>
 										</tr>
 									</table>
 									<?

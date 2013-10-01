@@ -101,11 +101,10 @@ else {
 			
 				?>
 				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_interview2Process.php" ?>">
-					<table style="width: 100%">	
-						<tr><td style="width: 30%"></td><td></td></tr>
+					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<style>
-							ul.token-input-list-facebook { width: 756px; height: 25px!important; }
-							div.token-input-dropdown-facebook  { width: 756px }
+							ul.token-input-list-facebook { width: 738px; height: 25px!important; }
+							div.token-input-dropdown-facebook  { width: 738px }
 						</style>
 						<?
 						//Get commitment list
@@ -125,7 +124,7 @@ else {
 						}
 						$list=substr($list,0,-1) ;
 						for ($i=1; $i<9; $i++) {
-							print "<tr>" ;
+							print "<tr class='break'>" ;
 								print "<td colspan=2> " ;
 									switch ($i) {
 										case 1:
@@ -153,12 +152,7 @@ else {
 											$title="<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
 											break;
 									}
-									if ($i==1) {
-										print "<h3 class='top'>Outcome $i</h3>" ;
-									}
-									else {
-										print "<h3>Outcome $i</h3>" ;
-									}
+									print "<h3>Outcome $i</h3>" ;
 									print "<p>$title</p>" ;
 								print "</td>" ;
 							print "</tr>" ;
@@ -208,14 +202,12 @@ else {
 						?>
 						
 						<tr>
-							<td class="right" colspan=2>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 								<input type="reset" value="Reset"> <input type="submit" value="Submit">
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 						</tr>
 					</table>

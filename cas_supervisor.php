@@ -84,7 +84,7 @@ else {
 		}
 		else {
 			//Print out student and commitment details
-			print "<table style='width: 100%'>" ;
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>" ;
@@ -113,8 +113,7 @@ else {
 				
 			//Print form
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisorProcess.php'>" ;
-				print "<table style='width: 100%'>" ;	
-					print "<tr><td style='width: 30%'></td><td></td></tr>" ;
+				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
 					?>
 					<tr>
 						<td> 
@@ -139,7 +138,7 @@ else {
 						print "<td colspan=2>" ;
 							print "<b>Evaluation *</b><br/>Please use the space below to briefly evaluate " . $rowKey["preferredName"] . "'s participation in this commitment. You may wish to consider:" ;
 							print "<i><ul style='margin-bottom: 0px'><li>Attitude</li><li>Enthusiasm</li><li>Dedication</li></ul></i><br/>" ;
-							print "<textarea name='evaluation' id='evaluation' rows=10 style='width:756px; margin-left: 0px'></textarea>" ;
+							print "<textarea name='evaluation' id='evaluation' rows=10 style='width:738px; margin-left: 0px'></textarea>" ;
 							?>
 							<script type="text/javascript">
 								var evaluation = new LiveValidation('evaluation');
@@ -150,15 +149,13 @@ else {
 					print "</tr>" ;
 					?>
 					<tr>
-						<td class="right" colspan=2>
+						<td>
+							<span style="font-size: 90%"><i>* denotes a required field</i></span>
+						</td>
+						<td class="right">
 							<input type="hidden" name="key" value="<? print $key ?>">
 							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
 							<input type="reset" value="Reset"> <input type="submit" value="Submit">
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 					</tr>
 					<?

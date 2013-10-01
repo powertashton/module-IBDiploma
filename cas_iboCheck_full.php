@@ -120,7 +120,7 @@ else {
 							
 						//Details
 						print "<div style='width:430px; float: right; font-size: 115%; padding-top: 14px'>" ;
-							print "<table style='width: 420px; float: left;'>" ;
+							print "<table class='blank' cellspacing='0' style='width: 420px; float: left;'>" ;
 								print "<tr>" ;
 									print "<td colspan=3'>" ;
 										print "<h2 style='margin-top: 0px'>" ;

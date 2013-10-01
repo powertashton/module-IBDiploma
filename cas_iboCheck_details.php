@@ -56,7 +56,7 @@ else {
 			$row=$result->fetch() ;
 			
 			print "<div class='trail'>" ;
-			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_iboCheck.php'>Advise CAS Students</a> > </div><div class='trailEnd'>Advise Student</div>" ;
+			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_iboCheck.php'>IBO CAS Check</a> > </div><div class='trailEnd'>Student Details</div>" ;
 			print "</div>" ;
 			
 			$updateReturn = $_GET["updateReturn"] ;
@@ -97,7 +97,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			print "<table style='width: 100%'>" ;
+			print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;
 				print "<tr>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
@@ -137,7 +137,7 @@ else {
 					print "</td>" ;
 				print "</tr>" ;
 				print "<tr>" ;
-					print "<td style='padding-top: 15px; width: 34%; vertical-align: top'>" ;
+					print "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>" ;
 						$casStatusSchool=$row["casStatusSchool"] ;
 						print "<span style='font-size: 115%; font-weight: bold'>CAS Status</span><br/>" ;
 						if ($row["casStatusSchool"]=="At Risk") {
@@ -180,7 +180,7 @@ else {
 				print "</div>" ;
 			}
 			else {
-				print "<table style='width: 100%'>" ;
+				print "<table cellspacing='0' style='width: 100%'>" ;
 					print "<tr class='head'>" ;
 						print "<th style='vertical-align: bottom'>" ;
 							print "Commitment" ;
@@ -321,7 +321,7 @@ else {
 					print "</div>" ;
 				}
 				else {
-					print "<table style='width: 100%'>" ;
+					print "<table cellspacing='0' style='width: 100%'>" ;
 						print "<tr class='head'>" ;
 							print "<th style='vertical-align: bottom'>" ;
 								print "Commitment" ;

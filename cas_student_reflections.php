@@ -64,7 +64,10 @@ else {
 		}
 		
 		print "<div class='linkTop'>" ;
-		print "Filter Commitment: " ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_add.php'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+		print "</div>" ;
+		print "<div class='linkTop'>" ;
+			print "Filter Commitment: " ;
 				?>
 				<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
 					<option selected value=''>All</option>
@@ -83,8 +86,7 @@ else {
 					}
 					?>
 				</select>
-			<?	
-			print " | <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_add.php'><img title='New' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.gif'/></a>" ;
+			<?
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
@@ -93,7 +95,7 @@ else {
 			print "</div>" ;
 		}
 		else {
-			print "<table style='width: 100%'>" ;
+			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th style='vertical-align: bottom'>" ;
 						print "Commitment" ;
