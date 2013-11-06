@@ -196,7 +196,7 @@ else {
 						print "</td>" ;
 						print "<td class='right'>" ;
 							print "<input type='hidden' name='type' value='$type'>" ;
-							print "<input type='reset' value='Reset'> <input type='submit' value='Proceed'>" ;
+							print "<input type='submit' value='Proceed'>" ;
 						print "</td>" ;
 					print "</tr>" ;
 				print "</table>" ;	

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.0.03
+-------
+Removed reset buttons
+
 v1.0.02
 -------
 Fixed textarea width issue

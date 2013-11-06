@@ -252,7 +252,7 @@ else {
 							<td class="right">
 								<input type="hidden" name="ibDiplomaCASCommitmentID" value="<? print $ibDiplomaCASCommitmentID ?>">
 								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-								<input type="reset" value="Reset"> <input type="submit" value="Submit">
+								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>
