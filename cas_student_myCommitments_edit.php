@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -43,7 +43,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_student_myCommitments.php'>My Commitments</a> > </div><div class='trailEnd'>Edit Commitment</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -74,7 +74,7 @@ else {
 			print "</div>" ;
 		} 
 		
-		$deleteReturn = $_GET["deleteReturn"] ;
+		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage ="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
@@ -163,7 +163,7 @@ else {
 							<td class="right">
 								<input name="dateStart" id="dateStart" maxlength=10 value='<? print dateConvertBack($row["dateStart"]) ?>' type="text" style="width: 300px">
 								<script type="text/javascript">
-									var dateStart = new LiveValidation('dateStart');
+									var dateStart=new LiveValidation('dateStart');
 									dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 									dateStart.add(Validate.Presence);
 								 </script>
@@ -182,7 +182,7 @@ else {
 							<td class="right">
 								<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
-									var dateEnd = new LiveValidation('dateEnd');
+									var dateEnd=new LiveValidation('dateEnd');
 									dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 								 </script>
 								 <script type="text/javascript">
@@ -213,7 +213,7 @@ else {
 							<td class="right">
 								<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<? print $row["supervisorName"] ?>' maxlength=100>
 								<script type="text/javascript">
-									var name = new LiveValidation('name');
+									var name=new LiveValidation('name');
 									name.add(Validate.Presence);
 								 </script>
 							</td>
@@ -226,7 +226,7 @@ else {
 							<td class="right">
 								<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<? print $row["supervisorEmail"] ?>' maxlength=255>
 								<script type="text/javascript">
-									var supervisorEmail = new LiveValidation('supervisorEmail');
+									var supervisorEmail=new LiveValidation('supervisorEmail');
 									supervisorEmail.add(Validate.Presence);
 								 </script>
 							</td>
@@ -239,7 +239,7 @@ else {
 							<td class="right">
 								<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<? print $row["supervisorPhone"] ?>' maxlength=20>
 								<script type="text/javascript">
-									var supervisorPhone = new LiveValidation('supervisorPhone');
+									var supervisorPhone=new LiveValidation('supervisorPhone');
 									supervisorPhone.add(Validate.Presence);
 								 </script>
 							</td>

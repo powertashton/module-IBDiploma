@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -40,7 +40,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_student_myCommitments.php'>My Commitments</a> > </div><div class='trailEnd'>Add Commitment</div>" ;
 		print "</div>" ;
 		
-		$addReturn = $_GET["addReturn"] ;
+		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage ="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
@@ -68,7 +68,10 @@ else {
 			print "</div>" ;
 		} 
 	
-		$step=$_GET["step"] ;
+		$step=NULL ;
+		if (isset($_GET["step"])) {
+			$step=$_GET["step"] ;
+		}
 		if ($step!=1 AND $step!=2) {
 			$step=1 ;
 		}
@@ -193,9 +196,9 @@ else {
 							<span style="font-size: 90%"><i>Must be unique.</i></span>
 						</td>
 						<td class="right">
-							<input type='text' style='width: 302px' name='name' id='name' value='<? print $rowActivity["name"] ?>' maxlength=50>
+							<input type='text' style='width: 302px' name='name' id='name' value='<? if (isset($rowActivity["name"])) { print $rowActivity["name"] ; } ?>' maxlength=50>
 							<script type="text/javascript">
-								var name = new LiveValidation('name');
+								var name=new LiveValidation('name');
 								name.add(Validate.Presence);
 							 </script>
 						</td>
@@ -218,9 +221,9 @@ else {
 							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
-							<input name="dateStart" id="dateStart" maxlength=10 <? if ($rowActivity["programStart"]!="") { print "value='" . dateConvertBack($rowActivity["programStart"]) . "'" ; } ?> type="text" style="width: 300px">
+							<input name="dateStart" id="dateStart" maxlength=10 <? if (isset($rowActivity["programStart"])) {  if ($rowActivity["programStart"]!="") { print "value='" . dateConvertBack($rowActivity["programStart"]) . "'" ; } } ?> type="text" style="width: 300px">
 							<script type="text/javascript">
-								var dateStart = new LiveValidation('dateStart');
+								var dateStart=new LiveValidation('dateStart');
 								dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 	dateStart.add(Validate.Presence);
 							 </script>
@@ -237,9 +240,9 @@ else {
 							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 						</td>
 						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($rowActivity["programEnd"]) ?>" type="text" style="width: 300px">
+							<input name="dateEnd" id="dateEnd" maxlength=10 value="<? if (isset($rowActivity["programEnd"])) { print dateConvertBack($rowActivity["programEnd"]) ; } ?>" type="text" style="width: 300px">
 							<script type="text/javascript">
-								var dateEnd = new LiveValidation('dateEnd');
+								var dateEnd=new LiveValidation('dateEnd');
 								dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 							 </script>
 							 <script type="text/javascript">
@@ -253,7 +256,13 @@ else {
 						<td colspan=2> 
 							<b>Description</b><br/>
 							Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i><br/>
-							<? print "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>" . $row["description"] . "</textarea>" ?>
+							<? 
+							print "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>" ;
+							if (isset($row["description"])) {
+								print $row["description"] ;
+							}
+							print "</textarea>" ;
+							?>
 						</td>
 					</tr>
 					
@@ -261,7 +270,7 @@ else {
 					if ($type=="From School Activity" AND $gibbonActivityID!="") {
 						try {
 							$dataCoord=array("gibbonActivityID"=>$gibbonActivityID);  
-							$sqlCoord="SELECT surname, preferredName, email, mobile1 FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'" ;
+							$sqlCoord="SELECT surname, preferredName, email, phone1 FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'" ;
 							$resultCoord=$connection2->prepare($sqlCoord);
 							$resultCoord->execute($dataCoord);  
 						}
@@ -286,9 +295,9 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<? if ($rowCoord["surname"]!="") { print formatName("", $rowCoord["preferredName"], $rowCoord["surname"], "Staff", true, true) ; } ?>' maxlength=100>
+							<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<? if (isset($rowCoord["surname"])) { if ($rowCoord["surname"]!="") { print formatName("", $rowCoord["preferredName"], $rowCoord["surname"], "Staff", true, true) ; } } ?>' maxlength=100>
 							<script type="text/javascript">
-								var supervisorName = new LiveValidation('supervisorName');
+								var supervisorName=new LiveValidation('supervisorName');
 								supervisorName.add(Validate.Presence);
 							 </script>
 						</td>
@@ -299,10 +308,11 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<? print $rowCoord["email"] ?>' maxlength=255>
+							<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<? if (isset($rowCoord["email"])) { print $rowCoord["email"] ; } ?>' maxlength=255>
 							<script type="text/javascript">
-								var supervisorEmail = new LiveValidation('supervisorEmail');
+								var supervisorEmail=new LiveValidation('supervisorEmail');
 								supervisorEmail.add(Validate.Presence);
+								supervisorEmail.add(Validate.Email);
 							 </script>
 						</td>
 					</tr>
@@ -312,9 +322,9 @@ else {
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<? print $rowCoord["mobile1"] ?>' maxlength=20>
+							<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<? if (isset($rowCoord["phone1"])) { print $rowCoord["phone1"] ; } ?>' maxlength=20>
 							<script type="text/javascript">
-								var supervisorPhone = new LiveValidation('supervisorPhone');
+								var supervisorPhone=new LiveValidation('supervisorPhone');
 								supervisorPhone.add(Validate.Presence);
 							 </script>
 						</td>

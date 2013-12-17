@@ -34,7 +34,7 @@ catch(PDOException $e) {
 }
 
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -45,21 +45,21 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 if (isActionAccessible($guid, $connection2, "/modules/IB Diploma/cas_approveCommitments.php")==FALSE) {
 
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$role=staffCASRole($guid, $_SESSION[$guid]["gibbonPersonID"], $connection2) ;
 	if ($role==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Check if school year specified
 		if ($ibDiplomaCASCommitmentID=="") {
 			//Fail1
-			$URL = $URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -77,14 +77,14 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 		
 			if ($result->rowCount()!=1) {
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -99,7 +99,7 @@ else {
 				
 				if ($job!="Approved" AND $job!="Not Approved") {
 					//Fail 3
-					$URL = $URL . "&updateReturn=fail3" ;
+					$URL=$URL . "&updateReturn=fail3" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -111,13 +111,13 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2" ;
+						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					//Success 0
-					$URL = $URL . "&updateReturn=success0" ;
+					$URL=$URL . "&updateReturn=success0" ;
 					header("Location: {$URL}");
 				}
 			}

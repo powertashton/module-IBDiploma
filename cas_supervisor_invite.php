@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -41,7 +41,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Invite CAS Supervisor Feedback</div>" ;
 		print "</div>" ;
 		
-		$addReturn = $_GET["addReturn"] ;
+		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage ="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
@@ -69,7 +69,10 @@ else {
 			print "</div>" ;
 		} 
 	
-		$step=$_GET["step"] ;
+		$step=NULL ;
+		if (isset($_GET["step"])) {
+			$step=$_GET["step"] ;
+		}
 		if ($step!=1 AND $step!=2 AND $step!=3) {
 			$step=1 ;
 		}
@@ -79,7 +82,6 @@ else {
 			print "<h3>" ;
 			print "Step 1" ;
 			print "</h3>" ;
-		
 			
 			?>
 			<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php" ?>">
@@ -113,12 +115,6 @@ else {
 			print "Step 2 - $type" ;
 			print "</h3>" ;
 			
-			print "<div class='linkTop'>" ;
-				if ($_SESSION[$guid]["returnTo"]!="") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php&step=1'>Back</a>" ;
-				}
-			print "</div>" ;
-			
 			print "<form method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php&step=3'>" ;
 				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>"	;
 					if ($type=="Single") {
@@ -148,7 +144,7 @@ else {
 									?>				
 								</select>
 								<script type="text/javascript">
-									var gibbonPersonID = new LiveValidation('gibbonPersonID');
+									var gibbonPersonID=new LiveValidation('gibbonPersonID');
 									gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
 								 <?
@@ -212,12 +208,6 @@ else {
 			print "Step 3 - $type" ;
 			print "</h3>" ;
 			
-			print "<div class='linkTop'>" ;
-				if ($_SESSION[$guid]["returnTo"]!="") {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php&step=2&type=$type'>Back</a>" ;
-				}
-			print "</div>" ;
-			
 			if ($type=="Single") {
 				//Get and check variables
 				$gibbonPersonID=$_POST["gibbonPersonID"] ;
@@ -275,8 +265,8 @@ else {
 							
 							//Check for completion
 							try {
-								$dataComplete=array("username"=>$username);  
-								$sqlComplete="SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE complete='Y' AND ibDiplomaCASCommitmentID='$ibDiplomaCASCommitmentID'" ; 
+								$dataComplete=array("ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
+								$sqlComplete="SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE complete='Y' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID" ; 
 								$resultComplete=$connection2->prepare($sqlComplete);
 								$resultComplete->execute($dataComplete);
 							}
@@ -305,7 +295,7 @@ else {
 									//Let's go! Create key, send the invite
 									$continue=FALSE ;
 									$count=0 ;
-									while ($continue==FALSE AND count<100) {
+									while ($continue==FALSE AND $count<100) {
 										$key=randomPassword(40) ;
 										try {
 											$dataUnique=array("key"=>$key);  
@@ -348,14 +338,14 @@ else {
 											}
 											catch(PDOException $e) { }			
 										
-											$to = $row["supervisorEmail"];
-											$subject = $_SESSION[$guid]["organisationNameShort"] . " CAS Supervisor Feedback Request";
-											$body = "Dear " . $row["supervisorName"] . ",<br/><br/>" ;
-											$body = $body . "We greatly appreciate your support as a CAS activity supervisor to $student (" . $_SESSION[$guid]["organisationName"] . "). In order for this activity (" . $row["name"] . ") to count towards " . $studentFirst . "'s IB Diploma, we require a small amount of feedback from you.<br/><br/>" ;
-											$body = $body . "If you are willing and able to provide us with this feedback, you may do so by <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>" ;
-											$body = $body . "Your assistance is most appreciated. Regards,<br/><br/>" ;
-											$body = $body . $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] ;
-											$headers = "From: " . $_SESSION[$guid]["email"] . "\r\n";
+											$to=$row["supervisorEmail"];
+											$subject=$_SESSION[$guid]["organisationNameShort"] . " CAS Supervisor Feedback Request";
+											$body="Dear " . $row["supervisorName"] . ",<br/><br/>" ;
+											$body=$body . "We greatly appreciate your support as a CAS activity supervisor to $student (" . $_SESSION[$guid]["organisationName"] . "). In order for this activity (" . $row["name"] . ") to count towards " . $studentFirst . "'s IB Diploma, we require a small amount of feedback from you.<br/><br/>" ;
+											$body=$body . "If you are willing and able to provide us with this feedback, you may do so by <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>" ;
+											$body=$body . "Your assistance is most appreciated. Regards,<br/><br/>" ;
+											$body=$body . $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] ;
+											$headers="From: " . $_SESSION[$guid]["email"] . "\r\n";
 											$headers .= "MIME-Version: 1.0\r\n";
 											$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n" ;
 								
@@ -497,14 +487,14 @@ else {
 											}
 											
 											if ($proceed) {
-												$to = $rowCommitment["supervisorEmail"];
-												$subject = $_SESSION[$guid]["organisationNameShort"] . " CAS Supervisor Feedback Request";
-												$body = "Dear " . $rowCommitment["supervisorName"] . ",<br/><br/>" ;
-												$body = $body . "We great appreciate your support as a CAS activity supervisor to $student (" . $_SESSION[$guid]["organisationName"] . "). In order for this activity (" . $rowCommitment["name"] . ") to count towards " . $studentFirst . "'s IB Diploma, we require a small amount of feedback from you.<br/><br/>" ;
-												$body = $body . "If you are willing and able to provide us with this feedback, you may do so by <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>" ;
-												$body = $body . "Your assistance is most appreciated. Regards,<br/><br/>" ;
-												$body = $body . $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] ;
-												$headers = "From: " . $_SESSION[$guid]["email"] . "\r\n";
+												$to=$rowCommitment["supervisorEmail"];
+												$subject=$_SESSION[$guid]["organisationNameShort"] . " CAS Supervisor Feedback Request";
+												$body="Dear " . $rowCommitment["supervisorName"] . ",<br/><br/>" ;
+												$body=$body . "We great appreciate your support as a CAS activity supervisor to $student (" . $_SESSION[$guid]["organisationName"] . "). In order for this activity (" . $rowCommitment["name"] . ") to count towards " . $studentFirst . "'s IB Diploma, we require a small amount of feedback from you.<br/><br/>" ;
+												$body=$body . "If you are willing and able to provide us with this feedback, you may do so by <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>" ;
+												$body=$body . "Your assistance is most appreciated. Regards,<br/><br/>" ;
+												$body=$body . $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"] ;
+												$headers="From: " . $_SESSION[$guid]["email"] . "\r\n";
 												$headers .= "MIME-Version: 1.0\r\n";
 												$headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n" ;
 									

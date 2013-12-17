@@ -25,7 +25,7 @@ $description="A module to facilitate schools to run the IB Diploma programme." ;
 $entryURL="index.php" ;
 $type="Additional" ;
 $category="IB" ;
-$version="1.0.03" ;
+$version="1.0.04" ;
 $author="Ross Parker" ;
 $url="http://rossparker.org" ;
 

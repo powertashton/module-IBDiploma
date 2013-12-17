@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -41,7 +41,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>Approve CAS Commitments</div>" ;
 		print "</div>" ;
 		
-		$updateReturn = $_GET["updateReturn"] ;
+		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage ="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -100,9 +100,6 @@ else {
 						print "Status" ;
 					print "</th>" ;
 					print "<th style='vertical-align: bottom'>" ;
-						print "CAS" ;
-					print "</th>" ;
-					print "<th style='vertical-align: bottom'>" ;
 						print "Actions" ;
 					print "</th>" ;
 				print "</tr>" ;
@@ -120,10 +117,6 @@ else {
 					}
 					$count++ ;
 					
-					if ($row["active"]=="N") {
-						$rowNum="error" ;
-					}
-	
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;
@@ -138,17 +131,6 @@ else {
 							}
 							else {
 								print $row["status"] ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["creativity"]=="Y") {
-								print "C" ;
-							}
-							if ($row["action"]=="Y") {
-								print "A" ;
-							}
-							if ($row["service"]=="Y") {
-								print "S" ;
 							}
 						print "</td>" ;
 						print "<td>" ;

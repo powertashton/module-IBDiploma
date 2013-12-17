@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -40,7 +40,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_student_reflections.php'>Reflections</a> > </div><div class='trailEnd'>Add Reflection</div>" ;
 		print "</div>" ;
 		
-		$addReturn = $_GET["addReturn"] ;
+		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage ="" ;
 		$class="error" ;
 		if (!($addReturn=="")) {
@@ -68,7 +68,10 @@ else {
 			print "</div>" ;
 		} 
 	
-		$step=$_GET["step"] ;
+		$step=NULL ;
+		if (isset($_GET["step"])) {
+			$step=$_GET["step"] ;
+		}
 		if ($step!=1 AND $step!=2) {
 			$step=1 ;
 		}
@@ -212,7 +215,7 @@ else {
 						<td class="right">
 							<input type='text' style='width: 302px' name='title' id='title' value='' maxlength=100>
 							<script type="text/javascript">
-								var title = new LiveValidation('title');
+								var title=new LiveValidation('title');
 								title.add(Validate.Presence);
 							 </script>
 						</td>
@@ -226,7 +229,7 @@ else {
 							?>
 							<i><ul><li>What was the nature of your experience?</li><li>What have you learned or accomplished?</li><li>What aspects were new or challenging?</li><li>How could it have been more challenging?</li><li>Did it match your expectations, if not, how?</li><li>How might you do things differently in the future?</li></ul></i><br/>
 							
-							<? print getEditor($guid,  $connection2, "reflection", $row["description"], 20,false, true ) ?>
+							<? print getEditor($guid,  $connection2, "reflection", "", 20,false, true ) ?>
 						</td>
 					</tr>
 					

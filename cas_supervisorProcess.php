@@ -45,14 +45,14 @@ try {
 }
 catch(PDOException $e) { 
 	//Fail2
-	$URL = $URL . "&updateReturn=fail2" ;
+	$URL=$URL . "&updateReturn=fail2" ;
 	header("Location: {$URL}");
 	break ;
 }
 
 if ($resultKey->rowCount()<1) {
 	//Fail2
-	$URL = $URL . "&updateReturn=fail2" ;
+	$URL=$URL . "&updateReturn=fail2" ;
 	header("Location: {$URL}");
 }
 else {
@@ -67,14 +67,14 @@ else {
 	}
 	catch(PDOException $e) { 
 		//Fail2
-		$URL = $URL . "&updateReturn=fail2" ;
+		$URL=$URL . "&updateReturn=fail2" ;
 		header("Location: {$URL}");		
 		break ;
 	}
 	
 	if ($resultComplete->rowCount()>0) {
 		//Fail2
-		$URL = $URL . "&updateReturn=fail2" ;
+		$URL=$URL . "&updateReturn=fail2" ;
 		header("Location: {$URL}");
 	}
 	else {
@@ -83,7 +83,7 @@ else {
 		$evaluation=$_POST["evaluation"] ;
 		if ($attendance=="" OR $evaluation=="") {
 			//Fail1
-			$URL = $URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -95,13 +95,13 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
 
 			//Success 0
-			$URL = $URL . "&updateReturn=success0" ;
+			$URL=$URL . "&updateReturn=success0" ;
 			header("Location: {$URL}");
 		}
 	}

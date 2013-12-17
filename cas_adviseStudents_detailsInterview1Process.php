@@ -34,7 +34,7 @@ catch(PDOException $e) {
 }
 
 
-session_start() ;
+@session_start() ;
 
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
@@ -44,21 +44,21 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 
 if (isActionAccessible($guid, $connection2, "/modules/IB Diploma/cas_adviseStudents_details.php")==FALSE) {
 	//Fail 0
-	$URL = $URL . "&updateReturn=fail0" ;
+	$URL=$URL . "&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	$role=staffCASRole($guid, $_SESSION[$guid]["gibbonPersonID"], $connection2) ;
 	if ($role==FALSE) {
 		//Fail 0
-		$URL = $URL . "&updateReturn=fail0" ;
+		$URL=$URL . "&updateReturn=fail0" ;
 		header("Location: {$URL}");
 	}
 	else {
 		//Check if school year specified
 		if ($gibbonPersonID=="") {
 			//Fail1
-			$URL = $URL . "&updateReturn=fail1" ;
+			$URL=$URL . "&updateReturn=fail1" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -76,7 +76,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				//Fail 2
-				$URL = $URL . "&updateReturn=fail2" ;
+				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
 				break ;
 			}
@@ -125,7 +125,7 @@ else {
 				$notes=$_POST["notes"] ;
 				if ($date=="") {
 					//Fail1
-					$URL = $URL . "&updateReturn=fail1" ;
+					$URL=$URL . "&updateReturn=fail1" ;
 					header("Location: {$URL}");
 				}
 				else {
@@ -139,14 +139,14 @@ else {
 					}
 					catch(PDOException $e) { 
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2" ;
+						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
 						break ;
 					}
 					
 					if ($resultInterview->rowCount()>1) {
 						//Fail 2
-						$URL = $URL . "&updateReturn=fail2" ;
+						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
 					}
 					else {
@@ -166,7 +166,7 @@ else {
 						}
 						catch(PDOException $e) { 
 							//Fail 2
-							$URL = $URL . "&updateReturn=fail2" ;
+							$URL=$URL . "&updateReturn=fail2" ;
 							header("Location: {$URL}");
 							break ;
 						}
@@ -174,12 +174,12 @@ else {
 						//Return!
 						if ($partialFail==TRUE) {
 							//Fail 4
-							$URL = $URL . "&updateReturn=fail4" ;
+							$URL=$URL . "&updateReturn=fail4" ;
 							header("Location: {$URL}");
 						}
 						else {
 							//Success 0
-							$URL = $URL . "&updateReturn=success0" ;
+							$URL=$URL . "&updateReturn=success0" ;
 							header("Location: {$URL}");
 						}	
 					}

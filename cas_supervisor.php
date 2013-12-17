@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 
-$key=$_GET["key"] ;
+$key=NULL ;
+if (isset($_GET["key"])) {
+	$key=$_GET["key"] ;
+}
 try {
 	$dataKey=array("key"=>$key);  
 	$sqlKey="SELECT ibDiplomaCASSupervisorFeedback.*, ibDiplomaCASCommitment.*, surname, preferredName FROM ibDiplomaCASSupervisorFeedback JOIN ibDiplomaCASCommitment ON (ibDiplomaCASSupervisorFeedback.ibDiplomaCASCommitmentID=ibDiplomaCASCommitment.ibDiplomaCASCommitmentID) JOIN gibbonPerson ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND ibDiplomaCASSupervisorFeedback.key=:key" ;
@@ -43,7 +46,7 @@ else {
 	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > IB Diploma > </div><div class='trailEnd'>CAS Supervisor Feedback Form</div>" ;
 	print "</div>" ;
 	
-	$updateReturn = $_GET["updateReturn"] ;
+	if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 	$updateReturnMessage ="" ;
 	$class="error" ;
 	if (!($updateReturn=="")) {
@@ -96,7 +99,7 @@ else {
 					print "</td>" ;
 					print "<td style='width: 34%; vertical-align: top'>" ;
 						print "<span style='font-size: 115%; font-weight: bold'>Timing</span><br/>" ;
-						if (substr($row["dateStart"],0,4)==substr($row["dateEnd"],0,4)) {
+						if (substr($rowKey["dateStart"],0,4)==substr($rowKey["dateEnd"],0,4)) {
 							if (substr($rowKey["dateStart"],5,2)==substr($rowKey["dateEnd"],5,2)) {
 								print date("F", mktime(0, 0, 0, substr($rowKey["dateStart"],5,2))) . " "  . substr($rowKey["dateStart"],0,4) ;
 							}
@@ -130,7 +133,7 @@ else {
 						</td>
 					</tr>
 					<script type="text/javascript">
-						var attendance = new LiveValidation('attendance');
+						var attendance=new LiveValidation('attendance');
 						attendance.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>	
 					<?
@@ -141,7 +144,7 @@ else {
 							print "<textarea name='evaluation' id='evaluation' rows=10 style='width:738px; margin-left: 0px'></textarea>" ;
 							?>
 							<script type="text/javascript">
-								var evaluation = new LiveValidation('evaluation');
+								var evaluation=new LiveValidation('evaluation');
 								evaluation.add(Validate.Presence);
 							 </script>
 							 <?

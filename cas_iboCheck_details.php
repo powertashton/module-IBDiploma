@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -59,7 +59,7 @@ else {
 			print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_iboCheck.php'>IBO CAS Check</a> > </div><div class='trailEnd'>Student Details</div>" ;
 			print "</div>" ;
 			
-			$updateReturn = $_GET["updateReturn"] ;
+			if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 			$updateReturnMessage ="" ;
 			$class="error" ;
 			if (!($updateReturn=="")) {
@@ -84,7 +84,7 @@ else {
 				print "</div>" ;
 			} 
 			
-			$deleteReturn = $_GET["deleteReturn"] ;
+			if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 			$deleteReturnMessage ="" ;
 			$class="error" ;
 			if (!($deleteReturn=="")) {
@@ -211,10 +211,6 @@ else {
 						}
 						$count++ ;
 						
-						if ($row["active"]=="N") {
-							$rowNum="error" ;
-						}
-		
 						//COLOR ROW BY STATUS!
 						print "<tr class=$rowNum>" ;
 							print "<td>" ;
@@ -375,7 +371,6 @@ else {
 										print $row["title"] ;
 									print "</td>" ;
 									print "<td>" ;
-										print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_delete.php&ibDiplomaCASReflectionID=" . $row["ibDiplomaCASReflectionID"] . "'><img title='Delete' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 										print "<script type='text/javascript'>" ;	
 											print "$(document).ready(function(){" ;
 												print "\$(\".comment-$count\").hide();" ;
@@ -389,7 +384,7 @@ else {
 									print "</td>" ;
 								print "</tr>" ;
 								print "<tr class='comment-$count' id='comment-$count'>" ;
-									print "<td style='background-color: #D4F6DC;border-bottom: 1px solid #333' colspan=4>" ;
+									print "<td style='background-color: #D4F6DC' colspan=4>" ;
 										print $row["reflection"] ;
 									print "</td>" ;
 								print "</tr>" ;

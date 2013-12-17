@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/IB Diploma/moduleFunctions.php" ;
@@ -84,10 +84,6 @@ else {
 					}
 					$count++ ;
 					
-					if ($row["active"]=="N") {
-						$rowNum="error" ;
-					}
-	
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
 						print "<td>" ;

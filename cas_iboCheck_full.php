@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -79,148 +79,142 @@ else {
 				}
 				else {
 					$row=$result->fetch() ;
-					if (($row["role"]=="Student" AND $row["viewableStudents"]=="N") AND ($highestAction=="Planner_viewMyChildrensClasses" AND $row["viewableParents"]=="N")) {
-						print "<div class='warning'>" ;
-							print "Lesson does not exist or you do not have access to it." ;
-						print "</div>" ;
-					}
-					else {
-						print "<h1>" ;
-							print $row["name"] . "<br>" ;
-						print "</h1>" ;
+					
+					print "<h1>" ;
+						print $row["name"] . "<br>" ;
+					print "</h1>" ;
+					
+					print "<div style='width:510px; float: left; font-size: 115%; margin-top: -5px'>" ;
+						try {
+							$dataReflections=array("gibbonPersonID"=>$gibbonPersonID, "ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
+							$sqlReflections="SELECT * FROM ibDiplomaCASReflection WHERE gibbonPersonID=:gibbonPersonID AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID ORDER BY timestamp" ; 
+							$resultReflections=$connection2->prepare($sqlReflections);
+							$resultReflections->execute($dataReflections);
+						}
+						catch(PDOException $e) { 
+							print "<div class='error'>" . $e->getMessage() . "</div>" ; 
+						}
 						
-						print "<div style='width:510px; float: left; font-size: 115%; margin-top: -5px'>" ;
+						if ($resultReflections->rowCount()<1) {
+							print "<div class='warning'>" ;
+							print "There are no reflections to display in this commitment" ;
+							print "</div>" ;
+						}
+						else {
+							while ($rowReflections=$resultReflections->fetch()) {
+								print "<h3>" ;
+									print $rowReflections["title"] . "<br/>" ;
+									print "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>" . dateConvertBack(substr($rowReflections["timestamp"],0,10)) . " at " . substr($rowReflections["timestamp"],11,5) . "</span>" ;
+								print "</h3>" ;
+								print "<p>" ;
+									print $rowReflections["reflection"] ;
+								print "</p>" ;
+							}
+						}
+					print "</div>" ;
+						
+					//Details
+					print "<div style='width:430px; float: right; font-size: 115%; padding-top: 14px'>" ;
+						print "<table class='blank' cellspacing='0' style='width: 420px; float: left;'>" ;
+							print "<tr>" ;
+								print "<td colspan=3'>" ;
+									print "<h2 style='margin-top: 0px'>" ;
+										print "General Information" ;
+									print "</h2>" ;
+								print "</td>" ;
+							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
+									if ($row["approval"]=="Pending" OR $row["approval"]=="Not Approved") {
+										print $row["approval"] ;
+									}
+									else {
+										print $row["status"] ;
+									}
+								print "</td>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
+									print dateConvertBack($row["dateStart"]) ;
+								print "</td>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
+									print dateConvertBack($row["dateEnd"]) ;
+								print "</td>" ;
+							print "</tr>" ;
+							if ($row["description"]!="") {
+								print "<tr>" ;
+									print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>" ;
+										print $row["description"] ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
+							if ($row["goals"]!="") {
+								print "<tr>" ;
+									print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Goals</span><br/>" ;
+										print $row["goals"] ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
+							print "<tr>" ;
+								print "<td colspan=3>" ;
+									print "<h2>" ;
+										print "Supervisor" ;
+									print "</h2>" ;
+								print "</td>" ;
+							print "</tr>" ;
+							print "<tr>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
+									print $row["supervisorName"] ;
+								print "</td>" ;
+								print "<td style='width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Phone</span><br/>" ;
+									print $row["supervisorPhone"] ;
+								print "</td>" ;
+								print "<td style='15px; width: 33%; vertical-align: top'>" ;
+									print "<span style='font-size: 115%; font-weight: bold'>Email</span><br/>" ;
+									print $row["supervisorEmail"] ;
+								print "</td>" ;
+							print "</tr>" ;
+							
+							//Print feedback if there is any
 							try {
-								$dataReflections=array("gibbonPersonID"=>$gibbonPersonID, "ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
-								$sqlReflections="SELECT * FROM ibDiplomaCASReflection WHERE gibbonPersonID=:gibbonPersonID AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID ORDER BY timestamp" ; 
-								$resultReflections=$connection2->prepare($sqlReflections);
-								$resultReflections->execute($dataReflections);
+								$dataFeedback=array("ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
+								$sqlFeedback="SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'" ; 
+								$resultFeedback=$connection2->prepare($sqlFeedback);
+								$resultFeedback->execute($dataFeedback);
 							}
 							catch(PDOException $e) { 
 								print "<div class='error'>" . $e->getMessage() . "</div>" ; 
 							}
 							
-							if ($resultReflections->rowCount()<1) {
-								print "<div class='warning'>" ;
-								print "There are no reflections to display in this commitment" ;
-								print "</div>" ;
-							}
-							else {
-								while ($rowReflections=$resultReflections->fetch()) {
-									print "<h3>" ;
-										print $rowReflections["title"] . "<br/>" ;
-										print "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>" . dateConvertBack(substr($rowReflections["timestamp"],0,10)) . " at " . substr($rowReflections["timestamp"],11,5) . "</span>" ;
-									print "</h3>" ;
-									print "<p>" ;
-										print $rowReflections["reflection"] ;
-									print "</p>" ;
-								}
-							}
-						print "</div>" ;
-							
-						//Details
-						print "<div style='width:430px; float: right; font-size: 115%; padding-top: 14px'>" ;
-							print "<table class='blank' cellspacing='0' style='width: 420px; float: left;'>" ;
-								print "<tr>" ;
-									print "<td colspan=3'>" ;
-										print "<h2 style='margin-top: 0px'>" ;
-											print "General Information" ;
-										print "</h2>" ;
-									print "</td>" ;
-								print "</tr>" ;
-								print "<tr>" ;
-									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Status</span><br/>" ;
-										if ($row["approval"]=="Pending" OR $row["approval"]=="Not Approved") {
-											print $row["approval"] ;
-										}
-										else {
-											print $row["status"] ;
-										}
-									print "</td>" ;
-									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>" ;
-										print dateConvertBack($row["dateStart"]) ;
-									print "</td>" ;
-									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>" ;
-										print dateConvertBack($row["dateEnd"]) ;
-									print "</td>" ;
-								print "</tr>" ;
-								if ($row["description"]!="") {
-									print "<tr>" ;
-										print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>" ;
-											print $row["description"] ;
-										print "</td>" ;
-									print "</tr>" ;
-								}
-								if ($row["goals"]!="") {
-									print "<tr>" ;
-										print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>Goals</span><br/>" ;
-											print $row["goals"] ;
-										print "</td>" ;
-									print "</tr>" ;
-								}
+							if ($resultFeedback->rowCount()==1) {
+								$rowFeedback=$resultFeedback->fetch() ;
 								print "<tr>" ;
 									print "<td colspan=3>" ;
 										print "<h2>" ;
-											print "Supervisor" ;
+											print "Feedback" ;
 										print "</h2>" ;
 									print "</td>" ;
 								print "</tr>" ;
 								print "<tr>" ;
-									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>" ;
-										print $row["supervisorName"] ;
-									print "</td>" ;
-									print "<td style='width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Phone</span><br/>" ;
-										print $row["supervisorPhone"] ;
-									print "</td>" ;
-									print "<td style='15px; width: 33%; vertical-align: top'>" ;
-										print "<span style='font-size: 115%; font-weight: bold'>Email</span><br/>" ;
-										print $row["supervisorEmail"] ;
+									print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Evaluation</span><br/>" ;
+										print $rowFeedback["evaluation"] ;
 									print "</td>" ;
 								print "</tr>" ;
-								
-								//Print feedback if there is any
-								try {
-									$dataFeedback=array("ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
-									$sqlFeedback="SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'" ; 
-									$resultFeedback=$connection2->prepare($sqlFeedback);
-									$resultFeedback->execute($dataFeedback);
-								}
-								catch(PDOException $e) { 
-									print "<div class='error'>" . $e->getMessage() . "</div>" ; 
-								}
-								
-								if ($resultFeedback->rowCount()==1) {
-									$rowFeedback=$resultFeedback->fetch() ;
-									print "<tr>" ;
-										print "<td colspan=3>" ;
-											print "<h2>" ;
-												print "Feedback" ;
-											print "</h2>" ;
-										print "</td>" ;
-									print "</tr>" ;
-									print "<tr>" ;
-										print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>Evaluation</span><br/>" ;
-											print $rowFeedback["evaluation"] ;
-										print "</td>" ;
-									print "</tr>" ;
-									print "<tr>" ;
-										print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
-											print "<span style='font-size: 115%; font-weight: bold'>Attendance</span><br/>" ;
-											print $rowFeedback["attendance"] ;
-										print "</td>" ;
-									print "</tr>" ;
-								}
-							print "</table>" ;
-						print "</div>" ;
-					}
+								print "<tr>" ;
+									print "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>" ;
+										print "<span style='font-size: 115%; font-weight: bold'>Attendance</span><br/>" ;
+										print $rowFeedback["attendance"] ;
+									print "</td>" ;
+								print "</tr>" ;
+							}
+						print "</table>" ;
+					print "</div>" ;
 				}
 			}
 		}

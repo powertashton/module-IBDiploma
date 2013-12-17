@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.0.04
+-------
+Fixed PHP Notice issues
+
 v1.0.03
 -------
 Removed reset buttons

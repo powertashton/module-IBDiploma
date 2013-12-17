@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -47,11 +47,11 @@ else {
 			try {
 				if ($role=="Coordinator") {
 					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "sequenceStart"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "sequenceEnd"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "gibbonPersonID"=>$gibbonPersonID);  
-					$sql="SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName" ; 
+					$sql="SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, image_240, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName" ; 
 				}
 				else {
 					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "sequenceStart"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "sequenceEnd"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "advisor"=> $_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID"=>$gibbonPersonID);  
-					$sql="SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName" ; 
+					$sql="SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, image_240, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY rollGroup, surname, preferredName" ; 
 				}
 				$result=$connection2->prepare($sql);
 				$result->execute($data); 
@@ -67,12 +67,13 @@ else {
 			}
 			else {
 				$row=$result->fetch() ;
+				$image_240=$row["image_240"] ;
 				
 				print "<div class='trail'>" ;
 				print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/cas_adviseStudents.php'>Advise CAS Students</a> > </div><div class='trailEnd'>Advise Student</div>" ;
 				print "</div>" ;
 				
-				$updateReturn = $_GET["updateReturn"] ;
+				if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 				$updateReturnMessage ="" ;
 				$class="error" ;
 				if (!($updateReturn=="")) {
@@ -106,7 +107,7 @@ else {
 					print "</div>" ;
 				} 
 				
-				$deleteReturn = $_GET["deleteReturn"] ;
+				if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 				$deleteReturnMessage ="" ;
 				$class="error" ;
 				if (!($deleteReturn=="")) {
@@ -163,7 +164,10 @@ else {
 					print "</tr>" ;
 				print "</table>" ;
 				
-				$subpage=$_GET["subpage"] ;
+				$subpage=NULL ;
+				if (isset($_GET["subpage"])) {
+					$subpage=$_GET["subpage"] ;
+				}
 				if ($subpage=="") {
 					$subpage="Overview" ;
 				}
@@ -224,10 +228,6 @@ else {
 								}
 								$count++ ;
 								
-								if ($row["active"]=="N") {
-									$rowNum="error" ;
-								}
-				
 								//COLOR ROW BY STATUS!
 								print "<tr class=$rowNum>" ;
 									print "<td>" ;
@@ -408,7 +408,7 @@ else {
 										print "</td>" ;
 									print "</tr>" ;
 									print "<tr class='comment-$count' id='comment-$count'>" ;
-										print "<td style='background-color: #D4F6DC;border-bottom: 1px solid #333' colspan=4>" ;
+										print "<td style='background-color: #D4F6DC;' colspan=4>" ;
 											print $row["reflection"] ;
 										print "</td>" ;
 									print "</tr>" ;
@@ -592,7 +592,11 @@ else {
 									print "<td colspan=2>" ;
 										print "Use this space to take notes on your conversation with the student. You may wish to consider:" ;
 										print "<i><ul style='margin-bottom: 0px'><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i><br/>" ;
-										print "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>" . $rowInterview["1_notes"] . "</textarea>" ;
+										print "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>" ;
+										if (isset($rowInterview["1_notes"])) {
+											print $rowInterview["1_notes"] ;
+										}
+										print "</textarea>" ;
 									print "</td>" ;
 								print "</tr>" ;	
 								
@@ -621,14 +625,14 @@ else {
 									print "</td>" ;
 									print "<td class='right'>" ;
 										$date="" ;
-										if ($rowInterview["1_date"]!="") {
+										if (isset($rowInterview["1_date"])) {
 											$date=dateConvertBack(substr($rowInterview["1_date"],0,10)) ;
 										}
 										?>
 										
 										<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
-											var date = new LiveValidation('date');
+											var date=new LiveValidation('date');
 											date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 											date.add(Validate.Presence);
 										 </script>
@@ -854,7 +858,7 @@ else {
 											
 											<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
-												var date = new LiveValidation('date');
+												var date=new LiveValidation('date');
 												date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 												date.add(Validate.Presence);
 											 </script>
@@ -1088,7 +1092,7 @@ else {
 												
 												<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
 												<script type="text/javascript">
-													var date = new LiveValidation('date');
+													var date=new LiveValidation('date');
 													date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
 													date.add(Validate.Presence);
 												 </script>
@@ -1137,7 +1141,7 @@ else {
 				
 				
 				//Set sidebar
-				$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $row["image_240"], 240) ;
+				$_SESSION[$guid]["sidebarExtra"]=getUserPhoto($guid, $image_240, 240) ;
 				$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "<br>" ;
 				$_SESSION[$guid]["sidebarExtra"]= $_SESSION[$guid]["sidebarExtra"] . "<ul>" ;
 				$style="" ;

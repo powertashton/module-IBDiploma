@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-session_start() ;
+@session_start() ;
 
 //Module includes
 include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
@@ -41,7 +41,7 @@ else {
 		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>Home</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>My Commitments</div>" ;
 		print "</div>" ;
 		
-		$deleteReturn = $_GET["deleteReturn"] ;
+		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage ="" ;
 		$class="error" ;
 		if (!($deleteReturn=="")) {
@@ -106,9 +106,6 @@ else {
 					}
 					$count++ ;
 					
-					if ($row["active"]=="N") {
-						$rowNum="error" ;
-					}
 	
 					//COLOR ROW BY STATUS!
 					print "<tr class=$rowNum>" ;
