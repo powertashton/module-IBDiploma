@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -317,7 +317,7 @@ else {
 						<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
 							<option selected value=''>All</option>
 							<option selected value='General'>General CAS</option>
-							<?
+							<?php
 							try {
 								$dataSelect=array("gibbonPersonID"=>$gibbonPersonID);  
 								$sqlSelect="SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp" ; 
@@ -332,7 +332,7 @@ else {
 							}
 							?>
 						</select>
-					<?	
+					<?php	
 					print "</div>" ;
 					
 					if ($result->rowCount()<1) {
@@ -438,7 +438,7 @@ else {
 								
 							});
 						</script>
-						<?
+						<?php
 					}
 				}
 				else if ($subpage=="CAS Status") {
@@ -447,7 +447,7 @@ else {
 					print "</p>" ;
 					
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsStatusProcess.php" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_adviseStudents_detailsStatusProcess.php" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<tr>
 								<td> 
@@ -456,12 +456,12 @@ else {
 								</td>
 								<td class="right">
 									<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-										<option <? if ($casStatusSchool=="") { print "selected " ; } ?>value=""></option>
-										<option <? if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
-										<option <? if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
-										<option <? if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
-										<option <? if ($casStatusSchool=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
-										<option <? if ($casStatusSchool=="Incomplete") { print "selected " ; } ?>value="Incomplete">Incomplete</option>
+										<option <?php if ($casStatusSchool=="") { print "selected " ; } ?>value=""></option>
+										<option <?php if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
+										<option <?php if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
+										<option <?php if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
+										<option <?php if ($casStatusSchool=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
+										<option <?php if ($casStatusSchool=="Incomplete") { print "selected " ; } ?>value="Incomplete">Incomplete</option>
 									</select>
 								</td>
 							</tr>
@@ -470,14 +470,14 @@ else {
 									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
 								<td class="right">
-									<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+									<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 				else if ($subpage=="Interview 1") {
 					try {
@@ -630,7 +630,7 @@ else {
 										}
 										?>
 										
-										<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
+										<input name="date" id="date" maxlength=10 value="<?php print $date ?>" type="text" style="width: 300px">
 										<script type="text/javascript">
 											var date=new LiveValidation('date');
 											date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -641,7 +641,7 @@ else {
 												$( "#date" ).datepicker();
 											});
 										</script>
-										<?
+										<?php
 									print "</td>" ;
 								print "</tr>" ;
 								
@@ -653,9 +653,9 @@ else {
 									</td>
 									<td class="right">
 										<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-											<option <? if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
-											<option <? if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
-											<option <? if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
+											<option <?php if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
+											<option <?php if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
+											<option <?php if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
 										</select>
 									</td>
 								</tr>
@@ -664,14 +664,14 @@ else {
 										<span style="font-size: 90%"><i>* denotes a required field</i></span>
 									</td>
 									<td class="right">
-										<input type="hidden" name="count" value="<? print $count ?>">
-										<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-										<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+										<input type="hidden" name="count" value="<?php print $count ?>">
+										<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+										<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 										<input type="submit" value="Submit">
 									</td>
 								</tr>
 							</table>
-							<?
+							<?php
 						print "</form>" ;
 					}
 				}
@@ -720,7 +720,7 @@ else {
 										ul.token-input-list-facebook { width: 738px; height: 25px!important; }
 										div.token-input-dropdown-facebook  { width: 738px }
 									</style>
-									<?
+									<?php
 									//Get commitment list
 									try {
 										$dataList=array("gibbonPersonID"=>$gibbonPersonID);  
@@ -856,7 +856,7 @@ else {
 											}
 											?>
 											
-											<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
+											<input name="date" id="date" maxlength=10 value="<?php print $date ?>" type="text" style="width: 300px">
 											<script type="text/javascript">
 												var date=new LiveValidation('date');
 												date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -867,7 +867,7 @@ else {
 													$( "#date" ).datepicker();
 												});
 											</script>
-											<?
+											<?php
 										print "</td>" ;
 									print "</tr>" ;
 									
@@ -879,9 +879,9 @@ else {
 										</td>
 										<td class="right">
 											<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-												<option <? if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
-												<option <? if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
-												<option <? if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
+												<option <?php if ($casStatusSchool=="At Risk") { print "selected " ; } ?>value="At Risk">At Risk</option>
+												<option <?php if ($casStatusSchool=="On Task") { print "selected " ; } ?>value="On Task">On Task</option>
+												<option <?php if ($casStatusSchool=="Excellence") { print "selected " ; } ?>value="Excellence">Excellence</option>
 											</select>
 										</td>
 									</tr>
@@ -890,14 +890,14 @@ else {
 											<span style="font-size: 90%"><i>* denotes a required field</i></span>
 										</td>
 										<td class="right">
-											<input type="hidden" name="count" value="<? print $count ?>">
-											<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-											<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+											<input type="hidden" name="count" value="<?php print $count ?>">
+											<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+											<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 											<input type="submit" value="Submit">
 										</td>
 									</tr>
 								</table>
-								<?
+								<?php
 							print "</form>" ;
 						}
 					}
@@ -954,7 +954,7 @@ else {
 											ul.token-input-list-facebook { width: 738px; height: 25px!important; }
 											div.token-input-dropdown-facebook  { width: 738px }
 										</style>
-										<?
+										<?php
 										//Get commitment list
 										try {
 											$dataList=array("gibbonPersonID"=>$gibbonPersonID);  
@@ -1090,7 +1090,7 @@ else {
 												}
 												?>
 												
-												<input name="date" id="date" maxlength=10 value="<? print $date ?>" type="text" style="width: 300px">
+												<input name="date" id="date" maxlength=10 value="<?php print $date ?>" type="text" style="width: 300px">
 												<script type="text/javascript">
 													var date=new LiveValidation('date');
 													date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -1101,7 +1101,7 @@ else {
 														$( "#date" ).datepicker();
 													});
 												</script>
-												<?
+												<?php
 											print "</td>" ;
 										print "</tr>" ;
 										
@@ -1113,8 +1113,8 @@ else {
 											</td>
 											<td class="right">
 												<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-													<option <? if ($casStatusSchool=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
-													<option <? if ($casStatusSchool=="Incomplete") { print "selected " ; } ?>value="Incomplete">Incomplete</option>
+													<option <?php if ($casStatusSchool=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
+													<option <?php if ($casStatusSchool=="Incomplete") { print "selected " ; } ?>value="Incomplete">Incomplete</option>
 												</select>
 											</td>
 										</tr>
@@ -1123,16 +1123,16 @@ else {
 												<span style="font-size: 90%"><i>* denotes a required field</i></span>
 											</td>
 											<td class="right">
-												<input type="hidden" name="count" value="<? print $count ?>">
-												<input type="hidden" name="gibbonPersonID" value="<? print $gibbonPersonID ?>">
-												<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+												<input type="hidden" name="count" value="<?php print $count ?>">
+												<input type="hidden" name="gibbonPersonID" value="<?php print $gibbonPersonID ?>">
+												<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 												<input type="submit" value="Submit">
 											</td>
 										</tr>
 										<tr>
 										</tr>
 									</table>
-									<?
+									<?php
 								print "</form>" ;
 							}
 						}

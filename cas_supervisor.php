@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -136,7 +136,7 @@ else {
 						var attendance=new LiveValidation('attendance');
 						attendance.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 					 </script>	
-					<?
+					<?php
 					print "<tr>" ;
 						print "<td colspan=2>" ;
 							print "<b>Evaluation *</b><br/>Please use the space below to briefly evaluate " . $rowKey["preferredName"] . "'s participation in this commitment. You may wish to consider:" ;
@@ -147,7 +147,7 @@ else {
 								var evaluation=new LiveValidation('evaluation');
 								evaluation.add(Validate.Presence);
 							 </script>
-							 <?
+							 <?php
 						print "</td>" ;
 					print "</tr>" ;
 					?>
@@ -156,12 +156,12 @@ else {
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="key" value="<? print $key ?>">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="key" value="<?php print $key ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Submit">
 						</td>
 					</tr>
-					<?
+					<?php
 				print "</table>" ;
 			print "</form>" ;
 		}

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -121,7 +121,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_manage_editProcess.php?ibDiplomaStudentID=$ibDiplomaStudentID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/student_manage_editProcess.php?ibDiplomaStudentID=$ibDiplomaStudentID" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
@@ -129,7 +129,7 @@ else {
 							<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 						</td>
 						<td class="right">
-							<input readonly type='text' style='width: 302px' value='<? print formatName("", $row["preferredName"], $row["surname"], "Student", true, true) ?>'>
+							<input readonly type='text' style='width: 302px' value='<?php print formatName("", $row["preferredName"], $row["surname"], "Student", true, true) ?>'>
 							<script type="text/javascript">
 								var gibbonPersonID=new LiveValidation('gibbonPersonID');
 								gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
@@ -144,7 +144,7 @@ else {
 						<td class="right">
 							<select name="gibbonSchoolYearIDStart" id="gibbonSchoolYearIDStart" style="width: 302px">
 								<option value="Please select...">Please select...</option>
-								<?
+								<?php
 								try {
 									$dataSelect=array();  
 									$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
@@ -175,7 +175,7 @@ else {
 						<td class="right">
 							<select name="gibbonSchoolYearIDEnd" id="gibbonSchoolYearIDEnd" style="width: 302px">
 								<option value="Please select...">Please select...</option>
-								<?
+								<?php
 								try {
 									$dataSelect=array();  
 									$sqlSelect="SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber" ;
@@ -204,7 +204,7 @@ else {
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="gibbonPersonIDCASAdvisor" id="gibbonPersonIDCASAdvisor">
-								<?
+								<?php
 								print "<option value=''></option>" ;
 								try {
 									$data=array();  
@@ -229,13 +229,13 @@ else {
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

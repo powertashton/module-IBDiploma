@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -25,7 +25,7 @@ $description="A module to facilitate schools to run the IB Diploma programme." ;
 $entryURL="index.php" ;
 $type="Additional" ;
 $category="IB" ;
-$version="1.0.04" ;
+$version="1.0.05" ;
 $author="Ross Parker" ;
 $url="http://rossparker.org" ;
 

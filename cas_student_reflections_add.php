@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -79,7 +79,7 @@ else {
 		//Step 1
 		if ($step==1) {
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_add.php&step=2" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_add.php&step=2" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr class='break'>
 						<td colspan=2> 
@@ -115,7 +115,7 @@ else {
 						</td>
 						<td class="right">
 							<select style="width: 302px" name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID">
-								<?
+								<?php
 								try {
 									$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);  
 									$sqlSelect="SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID ORDER BY name" ;
@@ -139,12 +139,12 @@ else {
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Go">
 						</td>
 					</tr>
 				</table>
-			<?
+			<?php
 		}
 		else {
 			$type=$_POST["type1"] ;
@@ -181,7 +181,7 @@ else {
 			}
 		
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_addProcess.php" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_addProcess.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 
@@ -189,10 +189,10 @@ else {
 							<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 						</td>
 						<td class="right">
-							<input readonly type='text' style='width: 302px' name='type' id='type' value='<? print $type ?>' maxlength=50>
+							<input readonly type='text' style='width: 302px' name='type' id='type' value='<?php print $type ?>' maxlength=50>
 						</td>
 					</tr>
-					<?
+					<?php
 					if ($type=="Commitment Reflection") {
 						?>
 						<tr>
@@ -201,11 +201,11 @@ else {
 								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 							</td>
 							<td class="right">
-								<input readonly type='text' style='width: 302px' name='name' id='name' value='<? print $rowActivity["name"] ?>' maxlength=50>
-								<input type='hidden' style='width: 302px' name='ibDiplomaCASCommitmentID' id='ibDiplomaCASCommitmentID' value='<? print $rowActivity["ibDiplomaCASCommitmentID"] ?>' maxlength=50>
+								<input readonly type='text' style='width: 302px' name='name' id='name' value='<?php print $rowActivity["name"] ?>' maxlength=50>
+								<input type='hidden' style='width: 302px' name='ibDiplomaCASCommitmentID' id='ibDiplomaCASCommitmentID' value='<?php print $rowActivity["ibDiplomaCASCommitmentID"] ?>' maxlength=50>
 							</td>
 						</tr>
-						<?
+						<?php
 					}
 					?>
 					<tr>
@@ -223,13 +223,13 @@ else {
 					<tr>
 						<td colspan=2> 
 							<b>Reflection *</b><br/>
-							<?
+							<?php
 							if ($type=="Commitment Reflection") { print "When describing your experience in this commitment you may wish to include:" ; }
 							else { print "When describing your experience of CAS in general you may wish to include:" ; } 
 							?>
 							<i><ul><li>What was the nature of your experience?</li><li>What have you learned or accomplished?</li><li>What aspects were new or challenging?</li><li>How could it have been more challenging?</li><li>Did it match your expectations, if not, how?</li><li>How might you do things differently in the future?</li></ul></i><br/>
 							
-							<? print getEditor($guid,  $connection2, "reflection", "", 20,false, true ) ?>
+							<?php print getEditor($guid,  $connection2, "reflection", "", 20,false, true ) ?>
 						</td>
 					</tr>
 					
@@ -238,13 +238,13 @@ else {
 							<span style="font-size: 90%"><i>* denotes a required field</i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<input type="submit" value="Submit">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 		}
 	}
 }

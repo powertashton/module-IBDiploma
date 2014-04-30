@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -107,13 +107,13 @@ else {
 				else {
 			
 					?>
-					<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_interview3Process.php" ?>">
+					<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_interview3Process.php" ?>">
 						<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 							<style>
 								ul.token-input-list-facebook { width: 738px; height: 25px!important; }
 								div.token-input-dropdown-facebook  { width: 738px }
 							</style>
-							<?
+							<?php
 							//Get commitment list
 							try {
 								$dataList=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);  
@@ -213,13 +213,13 @@ else {
 									<span style="font-size: 90%"><i>* denotes a required field</i></span>
 								</td>
 								<td class="right">
-									<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+									<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 									<input type="submit" value="Submit">
 								</td>
 							</tr>
 						</table>
 					</form>
-					<?
+					<?php
 				}
 			}
 		}

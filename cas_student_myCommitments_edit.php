@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -126,7 +126,7 @@ else {
 				//Let's go!
 				$row=$result->fetch() ;
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_myCommitments_editProcess.php" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_myCommitments_editProcess.php" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr class='break'>
 							<td colspan=2> 
@@ -139,7 +139,7 @@ else {
 								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
 							</td>
 							<td class="right">
-								<input readonly type='text' style='width: 302px' name='name' id='name' value='<? print $row["name"] ?>' maxlength=50>
+								<input readonly type='text' style='width: 302px' name='name' id='name' value='<?php print $row["name"] ?>' maxlength=50>
 							</td>
 						</tr>
 						<tr>
@@ -149,9 +149,9 @@ else {
 							</td>
 							<td class="right">
 								<select name="status" id="status" style="width: 302px">
-									<option <? if ($row["status"]=="Planning") { print "selected " ; } ?>value="Planning">Planning</option>
-									<option <? if ($row["status"]=="In Progress") { print "selected " ; } ?>value="In Progress">In Progress</option>
-									<option <? if ($row["status"]=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
+									<option <?php if ($row["status"]=="Planning") { print "selected " ; } ?>value="Planning">Planning</option>
+									<option <?php if ($row["status"]=="In Progress") { print "selected " ; } ?>value="In Progress">In Progress</option>
+									<option <?php if ($row["status"]=="Complete") { print "selected " ; } ?>value="Complete">Complete</option>
 								</select>
 							</td>
 						</tr>
@@ -161,7 +161,7 @@ else {
 								<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 							</td>
 							<td class="right">
-								<input name="dateStart" id="dateStart" maxlength=10 value='<? print dateConvertBack($row["dateStart"]) ?>' type="text" style="width: 300px">
+								<input name="dateStart" id="dateStart" maxlength=10 value='<?php print dateConvertBack($row["dateStart"]) ?>' type="text" style="width: 300px">
 								<script type="text/javascript">
 									var dateStart=new LiveValidation('dateStart');
 									dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -180,7 +180,7 @@ else {
 								<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
 							</td>
 							<td class="right">
-								<input name="dateEnd" id="dateEnd" maxlength=10 value="<? print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
+								<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php print dateConvertBack($row["dateEnd"]) ?>" type="text" style="width: 300px">
 								<script type="text/javascript">
 									var dateEnd=new LiveValidation('dateEnd');
 									dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } ); 
@@ -196,7 +196,7 @@ else {
 							<td colspan=2> 
 								<b>Description</b><br/>
 								Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i><br/>
-								<? print "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>" . $row["description"] . "</textarea>" ?>
+								<?php print "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>" . $row["description"] . "</textarea>" ?>
 							</td>
 						</tr>
 				
@@ -211,7 +211,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<? print $row["supervisorName"] ?>' maxlength=100>
+								<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<?php print $row["supervisorName"] ?>' maxlength=100>
 								<script type="text/javascript">
 									var name=new LiveValidation('name');
 									name.add(Validate.Presence);
@@ -224,7 +224,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<? print $row["supervisorEmail"] ?>' maxlength=255>
+								<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<?php print $row["supervisorEmail"] ?>' maxlength=255>
 								<script type="text/javascript">
 									var supervisorEmail=new LiveValidation('supervisorEmail');
 									supervisorEmail.add(Validate.Presence);
@@ -237,7 +237,7 @@ else {
 								<span style="font-size: 90%"><i></i></span>
 							</td>
 							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<? print $row["supervisorPhone"] ?>' maxlength=20>
+								<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<?php print $row["supervisorPhone"] ?>' maxlength=20>
 								<script type="text/javascript">
 									var supervisorPhone=new LiveValidation('supervisorPhone');
 									supervisorPhone.add(Validate.Presence);
@@ -250,14 +250,14 @@ else {
 								<span style="font-size: 90%"><i>* denotes a required field</i></span>
 							</td>
 							<td class="right">
-								<input type="hidden" name="ibDiplomaCASCommitmentID" value="<? print $ibDiplomaCASCommitmentID ?>">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+								<input type="hidden" name="ibDiplomaCASCommitmentID" value="<?php print $ibDiplomaCASCommitmentID ?>">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<input type="submit" value="Submit">
 							</td>
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}

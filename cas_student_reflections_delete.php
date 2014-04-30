@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -89,7 +89,7 @@ else {
 				//Let's go!
 				$row=$result->fetch() ;
 				?>
-				<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_deleteProcess.php?ibDiplomaCASReflectionID=$ibDiplomaCASReflectionID" ?>">
+				<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/cas_student_reflections_deleteProcess.php?ibDiplomaCASReflectionID=$ibDiplomaCASReflectionID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 						<tr>
 							<td> 
@@ -102,8 +102,8 @@ else {
 						</tr>
 						<tr>
 							<td> 
-								<input name="ibDiplomaCASReflectionID" id="ibDiplomaCASReflectionID" value="<? print $ibDiplomaCASReflectionID ?>" type="hidden">
-								<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
+								<input name="ibDiplomaCASReflectionID" id="ibDiplomaCASReflectionID" value="<?php print $ibDiplomaCASReflectionID ?>" type="hidden">
+								<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 								<input type="submit" value="Yes">
 							</td>
 							<td class="right">
@@ -112,7 +112,7 @@ else {
 						</tr>
 					</table>
 				</form>
-				<?
+				<?php
 			}
 		}
 	}	

@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -84,7 +84,7 @@ else {
 			print "</h3>" ;
 			
 			?>
-			<form method="get" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php" ?>">
+			<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td>
@@ -97,13 +97,13 @@ else {
 					</tr>
 					<tr>
 						<td class="right" colspan=2>
-							<input type="hidden" name="q" value="<? print "/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php" ?>">
+							<input type="hidden" name="q" value="<?php print "/modules/" . $_SESSION[$guid]["module"] . "/cas_supervisor_invite.php" ?>">
 							<input type="hidden" name="step" value="2">
 							<input type="submit" value="Proceed">
 						</td>
 					</tr>
 				</table>
-			<?
+			<?php
 		}
 		else if ($step==2) {
 			$type=$_GET["type"] ;
@@ -147,7 +147,7 @@ else {
 									var gibbonPersonID=new LiveValidation('gibbonPersonID');
 									gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
 								 </script>
-								 <?
+								 <?php
 							print "</td>" ;
 						print "</tr>" ;
 						print "<tr>" ;
@@ -157,7 +157,7 @@ else {
 							print "<td class='right'> " ;
 								?>
 								<select name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID" style="width: 302px">
-									<?
+									<?php
 									try {
 										$dataSelect2=array();  
 										$sqlSelect2="SELECT * FROM ibDiplomaCASCommitment WHERE approval='Approved' ORDER BY name" ; 
@@ -174,7 +174,7 @@ else {
 								<script type="text/javascript">
 									$("#ibDiplomaCASCommitmentID").chainedTo("#gibbonPersonID");
 								</script>
-								<?
+								<?php
 							print "</td>" ;
 						print "</tr>" ;
 					}

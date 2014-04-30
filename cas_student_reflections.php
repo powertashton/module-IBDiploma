@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -72,7 +72,7 @@ else {
 				<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
 					<option selected value=''>All</option>
 					<option selected value='General'>General CAS</option>
-					<?
+					<?php
 					try {
 						$dataSelect=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);  
 						$sqlSelect="SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp" ; 
@@ -86,7 +86,7 @@ else {
 					}
 					?>
 				</select>
-			<?
+			<?php
 		print "</div>" ;
 		
 		if ($result->rowCount()<1) {
@@ -190,7 +190,7 @@ else {
 					});
 				});
 			</script>
-			<?
+			<?php
 		}
 	}
 }
