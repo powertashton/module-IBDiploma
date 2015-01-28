@@ -84,12 +84,12 @@ else {
 			else {
 				$name=$_POST["name"] ;
 				$status=$_POST["status"] ;
-				$dateStart=dateConvert($_POST["dateStart"]) ;
+				$dateStart=dateConvert($guid, $_POST["dateStart"]) ;
 				if ($_POST["dateEnd"]=="") {
 					$dateEnd=NULL ;
 				}
 				else {
-					$dateEnd=dateConvert($_POST["dateEnd"]) ;
+					$dateEnd=dateConvert($guid, $_POST["dateEnd"]) ;
 				}
 				$supervisorName=$_POST["supervisorName"] ;
 				$supervisorEmail=$_POST["supervisorEmail"] ;

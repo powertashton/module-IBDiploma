@@ -135,7 +135,7 @@ else {
 					}
 					
 					//Get interview variables
-					$date=dateConvert($_POST["date"]) ;
+					$date=dateConvert($guid, $_POST["date"]) ;
 					$notes=$_POST["notes"] ;
 					if (is_null($rowInterview["2_gibbonPersonIDInterviewer"])) {
 						$gibbonPersonIDInterviewer=$_SESSION[$guid]["gibbonPersonID"] ;
