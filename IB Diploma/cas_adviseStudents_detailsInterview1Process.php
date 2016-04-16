@@ -78,7 +78,7 @@ else {
 				//Fail 2
 				$URL=$URL . "&updateReturn=fail2" ;
 				header("Location: {$URL}");
-				break ;
+				exit() ;
 			}
 							
 			if ($result->rowCount()==1) {	
@@ -141,7 +141,7 @@ else {
 						//Fail 2
 						$URL=$URL . "&updateReturn=fail2" ;
 						header("Location: {$URL}");
-						break ;
+						exit() ;
 					}
 					
 					if ($resultInterview->rowCount()>1) {
@@ -168,7 +168,7 @@ else {
 							//Fail 2
 							$URL=$URL . "&updateReturn=fail2" ;
 							header("Location: {$URL}");
-							break ;
+							exit() ;
 						}
 
 						//Return!
