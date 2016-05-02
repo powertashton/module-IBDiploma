@@ -1,8 +1,14 @@
 CHANGELOG
 =========
+v1.0.10
+-------
+Beautified PHP code
+Improved error handling
+Edit link added to add return
+
 v1.0.09
 -------
-Gibbon Core v12 & PHP 7 Compatibility 
+Gibbon Core v12 & PHP 7 Compatibility
 
 v1.0.08
 -------
@@ -116,14 +122,14 @@ Commitment: changed commitment's "Description & Goal" to "Description"
 Commitment: add field "goal" which is set in Interview 1, but viewable to student, advisor, and IBO
 	Edited table ibDiplomaCASCommitment
 	Edited files myCommitments_view.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
-	
+
 CAS Status: change to from in progress, etc to At risk, On task, Excellence
 	Edited table ibDiplomaStudent
-	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php 
+	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
 
 Make supervisor phone number and email compulsory
 	Edited files myCommitments_add*.php, myCommitments_edit*.php
-	
+
 Advise Students: Added filter to student list and reflection list
 	Edited file cas_adviseStudents.php, cas_adviseStudents_details.php
 
@@ -152,7 +158,7 @@ IBO Check
 
 Images
 	Removed img/outcome*.acorn, outcome*.png
-	
+
 Commitment Supervisor: Ability to complete feedback form without logging in
 	New table ibDiplomaCASSupervisorFeedback
 	New files cas_supervisor*.php
@@ -165,7 +171,7 @@ Interview 3: added new statuses for final interview: complete, incomplete
 	Edited table ibDiplomaStudent
 	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
 
-	
+
 v0.5.02
 -------
 Updated index.php to display IB information
@@ -180,17 +186,14 @@ Ability to specify CAS Coordinator and Advisors
 Ability to register students into the IB Diploma module, specifying academic year for starting and ending the programme.
 Ability to link student to a CAS advisor
 Ability for students to create CAS commitments
-    Either from scratch, or by drawing information in from their  activities record. 
-    Ability for students edit commitments, confirming list of outcomes met and reflecting 	
+    Either from scratch, or by drawing information in from their  activities record.
+    Ability for students edit commitments, confirming list of outcomes met and reflecting
     View all details in commitment
 An overall view per student showing the learning outcomes, which have been met, which are expected, which are outstanding, etc.
 Ability for advisors and coordinators to see commitment summary and details for relevant students
 Ability for advisors and coordinators to:
- 	Approve per commitment	
+ 	Approve per commitment
  	Set school status for CAS as whole
    	Record details of student interviews
 Ability for an external agent (e.g. IBO) to come in, view a summary for each student and set their status.
 Manifest + Publish
-
-	
-

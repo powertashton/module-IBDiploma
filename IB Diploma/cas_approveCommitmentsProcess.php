@@ -17,111 +17,98 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //Module includes
-include "./moduleFunctions.php" ;
+include './moduleFunctions.php';
 
 //New PDO DB connection
 try {
-    $connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
+    $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName", $databaseUsername, $databasePassword);
+    $connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
     echo $e->getMessage();
 }
 
-
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$ibDiplomaCASCommitmentID=$_GET["ibDiplomaCASCommitmentID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/cas_approveCommitments.php" ;
+$ibDiplomaCASCommitmentID = $_GET['ibDiplomaCASCommitmentID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/cas_approveCommitments.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/IB Diploma/cas_approveCommitments.php")==FALSE) {
+if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveCommitments.php') == false) {
+    //Fail 0
+    $URL = $URL.'&return=error0';
+    header("Location: {$URL}");
+} else {
+    $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
+    if ($role == false) {
+        //Fail 0
+        $URL = $URL.'&return=error0';
+        header("Location: {$URL}");
+    } else {
+        //Check if school year specified
+        if ($ibDiplomaCASCommitmentID == '') {
+            //Fail1
+            $URL = $URL.'&return=error1';
+            header("Location: {$URL}");
+        } else {
+            try {
+                if ($role == 'Coordinator') {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+                    $sql = "SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND approval='Pending' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID";
+                } else {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'advisor' => $_SESSION[$guid]['gibbonPersonID'], 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+                    $sql = "SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor AND approval='Pending' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID";
+                }
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                //Fail2
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+                exit();
+            }
 
-	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
-	header("Location: {$URL}");
+            if ($result->rowCount() != 1) {
+                //Fail 2
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+            } else {
+                //Proceed!
+                $job = $_GET['job'];
+                if ($job == 'approve') {
+                    $job = 'Approved';
+                } elseif ($job == 'reject') {
+                    $job = 'Not Approved';
+                }
+
+                if ($job != 'Approved' and $job != 'Not Approved') {
+                    //Fail 3
+                    $URL = $URL.'&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    try {
+                        $data = array('job' => $job, 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+                        $sql = 'UPDATE ibDiplomaCASCommitment SET approval=:job WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        //Fail 2
+                        $URL = $URL.'&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    //Success 0
+                    $URL = $URL.'&return=success0';
+                    header("Location: {$URL}");
+                }
+            }
+        }
+    }
 }
-else {
-	$role=staffCASRole($guid, $_SESSION[$guid]["gibbonPersonID"], $connection2) ;
-	if ($role==FALSE) {
-		//Fail 0
-		$URL=$URL . "&updateReturn=fail0" ;
-		header("Location: {$URL}");
-	}
-	else {
-		//Check if school year specified
-		if ($ibDiplomaCASCommitmentID=="") {
-			//Fail1
-			$URL=$URL . "&updateReturn=fail1" ;
-			header("Location: {$URL}");
-		}
-		else {
-			try {
-				if ($role=="Coordinator") {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "sequenceStart"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "sequenceEnd"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
-					$sql="SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND approval='Pending' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID" ; 
-				}
-				else {
-					$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "sequenceStart"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "sequenceEnd"=>$_SESSION[$guid]["gibbonSchoolYearSequenceNumber"], "advisor"=>$_SESSION[$guid]["gibbonPersonID"], "ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
-					$sql="SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor AND approval='Pending' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID" ; 
-				}
-				$result=$connection2->prepare($sql);
-				$result->execute($data);
-			}
-			catch(PDOException $e) { 
-				//Fail2
-				$URL=$URL . "&updateReturn=fail2" ;
-				header("Location: {$URL}");
-				exit() ;
-			}
-		
-			if ($result->rowCount()!=1) {
-				//Fail 2
-				$URL=$URL . "&updateReturn=fail2" ;
-				header("Location: {$URL}");
-			}
-			else {
-				//Proceed!
-				$job=$_GET["job"] ;
-				if ($job=="approve") {
-					$job="Approved" ;
-				}
-				else if ($job=="reject") {
-					$job="Not Approved" ;
-				}
-				
-				if ($job!="Approved" AND $job!="Not Approved") {
-					//Fail 3
-					$URL=$URL . "&updateReturn=fail3" ;
-					header("Location: {$URL}");
-				}
-				else {
-					try {
-						$data=array("job"=>$job, "ibDiplomaCASCommitmentID"=>$ibDiplomaCASCommitmentID);  
-						$sql="UPDATE ibDiplomaCASCommitment SET approval=:job WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID" ;
-						$result=$connection2->prepare($sql);
-						$result->execute($data);  
-					}
-					catch(PDOException $e) { 
-						//Fail 2
-						$URL=$URL . "&updateReturn=fail2" ;
-						header("Location: {$URL}");
-						exit() ;
-					}
-					
-					//Success 0
-					$URL=$URL . "&updateReturn=success0" ;
-					header("Location: {$URL}");
-				}
-			}
-		}
-	}
-}
-?>
