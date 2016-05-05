@@ -37,12 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck.ph
         $sql = "SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber=:sequenceEnd ORDER BY start.sequenceNumber DESC, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    } catch (PDOException $e) { echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
+    if ($result->rowCount() < 1) { echo "<div class='error'>";
         echo 'There are no students to display.';
         echo '</div>';
     } else {
@@ -78,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck.ph
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
             echo '</td>';

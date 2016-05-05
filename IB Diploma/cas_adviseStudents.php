@@ -104,10 +104,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['rollGroup']).'</option>';
-            }
-            ?>
+					while ($rowSelect = $resultSelect->fetch()) {
+						echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['rollGroup']).'</option>';
+					}
+					?>
 				</select>
 			<?php	
             echo '</div>';
@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
             while ($row = $result->fetch()) {
                 ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class='".$row['gibbonRollGroupID']."' id='".$row['rollGroup']."' name='".$row['rollGroup']."'>";
+				//COLOR ROW BY STATUS!
+				echo "<tr class='".$row['gibbonRollGroupID']."' id='".$row['rollGroup']."' name='".$row['rollGroup']."'>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
                 echo '</td>';

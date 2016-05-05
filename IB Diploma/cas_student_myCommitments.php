@@ -92,8 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 }
                 ++$count;
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+				//COLOR ROW BY STATUS!
+				echo "<tr class=$rowNum>";
                 echo '<td>';
                 echo $row['name'];
                 echo '</td>';

@@ -57,24 +57,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
         echo "<div class='linkTop'>";
         echo 'Filter Commitment: ';
         ?>
-				<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-					<option selected value=''>All</option>
-					<option selected value='General'>General CAS</option>
-					<?php
-                    try {
-                        $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                    }
-
-        while ($rowSelect = $resultSelect->fetch()) {
-            echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-        }
-        ?>
-				</select>
+		<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+			<option selected value=''>All</option>
+			<option selected value='General'>General CAS</option>
 			<?php
+			try {
+				$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+				$sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
+				$resultSelect = $connection2->prepare($sqlSelect);
+				$resultSelect->execute($dataSelect);
+			} catch (PDOException $e) {
+			}
+
+			while ($rowSelect = $resultSelect->fetch()) {
+				echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+			}
+			?>
+		</select>
+		<?php
         echo '</div>';
 
         if ($result->rowCount() < 1) {

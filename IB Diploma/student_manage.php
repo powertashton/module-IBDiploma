@@ -23,7 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.php') == false) {
-
     //Acess denied
     echo "<div class='error'>";
     echo 'You do not have access to this action.';
@@ -55,8 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>";
+    } catch (PDOException $e) { echo "<div class='error'>";
         echo 'Students cannot be displayed.';
         echo '</div>';
     }
@@ -65,8 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_manage_add.php'><img title='New' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
+    if ($result->rowCount() < 1) { echo "<div class='error'>";
         echo 'There are no students to display.';
         echo '</div>';
     } else {
@@ -113,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
             }
             ++$count;
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
             echo '</td>';

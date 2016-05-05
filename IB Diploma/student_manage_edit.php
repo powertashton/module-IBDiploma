@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
 
     //Check if school year specified
     $ibDiplomaStudentID = $_GET['ibDiplomaStudentID'];
-    if ($ibDiplomaStudentID == 'Y') {
-        echo "<div class='error'>";
+    if ($ibDiplomaStudentID == 'Y') { echo "<div class='error'>";
         echo 'You have not specified an activity.';
         echo '</div>';
     } else {
@@ -94,14 +93,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonSchoolYearIDStart'] == $rowSelect['gibbonSchoolYearID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value=".$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonSchoolYearIDStart'] == $rowSelect['gibbonSchoolYearID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=".$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearIDStart=new LiveValidation('gibbonSchoolYearIDStart');
@@ -125,14 +124,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
                                     $resultSelect->execute($dataSelect);
                                 } catch (PDOException $e) {
                                 }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonSchoolYearIDEnd'] == $rowSelect['gibbonSchoolYearID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value=".$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-            }
-            ?>
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonSchoolYearIDEnd'] == $rowSelect['gibbonSchoolYearID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value=".$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
+								}
+								?>
 							</select>
 							<script type="text/javascript">
 								var gibbonSchoolYearIDEnd=new LiveValidation('gibbonSchoolYearIDEnd');
@@ -148,21 +147,21 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
 							<select style="width: 302px" name="gibbonPersonIDCASAdvisor" id="gibbonPersonIDCASAdvisor">
 								<?php
                                 echo "<option value=''></option>";
-            try {
-                $data = array();
-                $sqlSelect = "SELECT * FROM gibbonPerson JOIN ibDiplomaCASStaff ON (gibbonPerson.gibbonPersonID=ibDiplomaCASStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                $resultSelect = $connection2->prepare($sqlSelect);
-                $resultSelect->execute($dataSelect);
-            } catch (PDOException $e) {
-            }
-            while ($rowSelect = $resultSelect->fetch()) {
-                $selected = '';
-                if ($row['gibbonPersonIDCASAdvisor'] == $rowSelect['gibbonPersonID']) {
-                    $selected = 'selected';
-                }
-                echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff', true, true).'</option>';
-            }
-            ?>
+								try {
+									$data = array();
+									$sqlSelect = "SELECT * FROM gibbonPerson JOIN ibDiplomaCASStaff ON (gibbonPerson.gibbonPersonID=ibDiplomaCASStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+									$resultSelect = $connection2->prepare($sqlSelect);
+									$resultSelect->execute($dataSelect);
+								} catch (PDOException $e) {
+								}
+								while ($rowSelect = $resultSelect->fetch()) {
+									$selected = '';
+									if ($row['gibbonPersonIDCASAdvisor'] == $rowSelect['gibbonPersonID']) {
+										$selected = 'selected';
+									}
+									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff', true, true).'</option>';
+								}
+								?>
 							</select>
 						</td>
 					</tr>

@@ -2,6 +2,10 @@ CHANGELOG
 =========
 v1.0.10
 -------
+Fixed indentation in beautified PHP code
+
+v1.0.10
+-------
 Beautified PHP code
 Improved error handling
 Edit link added to add return

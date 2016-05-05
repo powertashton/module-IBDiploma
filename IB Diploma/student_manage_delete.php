@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
 
     //Check if school year specified
     $ibDiplomaStudentID = $_GET['ibDiplomaStudentID'];
-    if ($ibDiplomaStudentID == '') {
-        echo "<div class='error'>";
+    if ($ibDiplomaStudentID == '') { echo "<div class='error'>";
         echo 'You have not specified a student member.';
         echo '</div>';
     } else {

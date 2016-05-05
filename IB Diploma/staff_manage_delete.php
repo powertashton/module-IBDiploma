@@ -40,8 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_de
     
     //Check if school year specified
     $ibDiplomaCASStaffID = $_GET['ibDiplomaCASStaffID'];
-    if ($ibDiplomaCASStaffID == '') {
-        echo "<div class='error'>";
+    if ($ibDiplomaCASStaffID == '') { echo "<div class='error'>";
         echo 'You have not specified a staff member.';
         echo '</div>';
     } else {

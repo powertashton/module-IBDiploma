@@ -30,8 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
     echo '</div>';
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) {
-        echo "<div class='error'>";
+    if ($role == false) { echo "<div class='error'>";
         echo 'You are not enroled in the IB Diploma programme.';
         echo '</div>';
     } else {
@@ -115,13 +114,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                     echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true, true).' ('.htmlPrep($rowSelect['rollGroup']).')</option>';
                 }
                 ?>
-								</select>
-								<script type="text/javascript">
-									var gibbonPersonID=new LiveValidation('gibbonPersonID');
-									gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
-								 </script>
-								 <?php
-                            echo '</td>';
+					</select>
+					<script type="text/javascript">
+						var gibbonPersonID=new LiveValidation('gibbonPersonID');
+						gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+					 </script>
+					 <?php
+				echo '</td>';
                 echo '</tr>';
                 echo '<tr>';
                 echo '<td>';
@@ -129,26 +128,26 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                 echo '</td> ';
                 echo "<td class='right'> ";
                 ?>
-								<select name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID" style="width: 302px">
-									<?php
-                                    try {
-                                        $dataSelect2 = array();
-                                        $sqlSelect2 = "SELECT * FROM ibDiplomaCASCommitment WHERE approval='Approved' ORDER BY name";
-                                        $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                        $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
+				<select name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID" style="width: 302px">
+					<?php
+					try {
+						$dataSelect2 = array();
+						$sqlSelect2 = "SELECT * FROM ibDiplomaCASCommitment WHERE approval='Approved' ORDER BY name";
+						$resultSelect2 = $connection2->prepare($sqlSelect2);
+						$resultSelect2->execute($dataSelect2);
+					} catch (PDOException $e) {
+					}
 
-                while ($rowSelect2 = $resultSelect2->fetch()) {
-                    echo "<option class='".$rowSelect2['gibbonPersonID']."' value='".$rowSelect2['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect2['name']).' ('.htmlPrep($rowSelect2['supervisorName']).')</option>';
-                }
-                ?>
-								</select>
-								<script type="text/javascript">
-									$("#ibDiplomaCASCommitmentID").chainedTo("#gibbonPersonID");
-								</script>
-								<?php
-                            echo '</td>';
+					while ($rowSelect2 = $resultSelect2->fetch()) {
+						echo "<option class='".$rowSelect2['gibbonPersonID']."' value='".$rowSelect2['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect2['name']).' ('.htmlPrep($rowSelect2['supervisorName']).')</option>';
+					}
+					?>
+					</select>
+					<script type="text/javascript">
+						$("#ibDiplomaCASCommitmentID").chainedTo("#gibbonPersonID");
+					</script>
+					<?php
+				echo '</td>';
                 echo '</tr>';
             } else {
                 echo '<tr>';

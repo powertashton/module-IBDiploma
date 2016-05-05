@@ -99,11 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-            echo "<option value=''>Please select...</option>";
-            while ($rowSelect = $resultSelect->fetch()) {
-                echo "<option $selected value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-            }
-            ?>
+								echo "<option value=''>Please select...</option>";
+								while ($rowSelect = $resultSelect->fetch()) {
+									echo "<option $selected value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+								}
+								?>
 							</select>
 						</td>
 					</tr>
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
 						<?php
 
                     }
-            ?>
+           			?>
 					<tr>
 						<td>
 							<b>Title *</b><br/>
@@ -198,9 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                             if ($type == 'Commitment Reflection') {
                                 echo 'When describing your experience in this commitment you may wish to include:';
                             } else {
-                                echo 'When describing your experience of CAS in general you may wish to include:';
-                            }
-            ?>
+                                echo 'When describing your experience of CAS in general you may wish to include:'; } ?>
 							<i><ul><li>What was the nature of your experience?</li><li>What have you learned or accomplished?</li><li>What aspects were new or challenging?</li><li>How could it have been more challenging?</li><li>Did it match your expectations, if not, how?</li><li>How might you do things differently in the future?</li></ul></i><br/>
 
 							<?php echo getEditor($guid,  $connection2, 'reflection', '', 20, false, true) ?>

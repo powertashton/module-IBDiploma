@@ -53,10 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true, true).'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) { echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -76,10 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDStart=new LiveValidation('gibbonSchoolYearIDStart');
@@ -103,10 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
                         }
-    while ($rowSelect = $resultSelect->fetch()) {
-        echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-    }
-    ?>
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonSchoolYearIDEnd=new LiveValidation('gibbonSchoolYearIDEnd');
@@ -122,17 +121,16 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
 					<select style="width: 302px" name="gibbonPersonIDCASAdvisor" id="gibbonPersonIDCASAdvisor">
 						<?php
                         echo "<option value=''></option>";
-    try {
-        $data = array();
-        $sql = "SELECT * FROM gibbonPerson JOIN ibDiplomaCASStaff ON (gibbonPerson.gibbonPersonID=ibDiplomaCASStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-    }
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
-    }
-    ?>
+						try {
+							$data = array();
+							$sql = "SELECT * FROM gibbonPerson JOIN ibDiplomaCASStaff ON (gibbonPerson.gibbonPersonID=ibDiplomaCASStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+							$result = $connection2->prepare($sql);
+							$result->execute($data);
+						} catch (PDOException $e) {
+						}
+						while ($row = $result->fetch()) { echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 				</td>
 			</tr>

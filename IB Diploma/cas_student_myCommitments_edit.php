@@ -91,18 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 							</td>
 							<td class="right">
 								<select name="status" id="status" style="width: 302px">
-									<option <?php if ($row['status'] == 'Planning') {
-    echo 'selected ';
-}
-                ?>value="Planning">Planning</option>
-									<option <?php if ($row['status'] == 'In Progress') {
-    echo 'selected ';
-}
-                ?>value="In Progress">In Progress</option>
-									<option <?php if ($row['status'] == 'Complete') {
-    echo 'selected ';
-}
-                ?>value="Complete">Complete</option>
+									<option <?php if ($row['status'] == 'Planning') { echo 'selected '; } ?>value="Planning">Planning</option>
+									<option <?php if ($row['status'] == 'In Progress') { echo 'selected '; } ?>value="In Progress">In Progress</option>
+									<option <?php if ($row['status'] == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
 								</select>
 							</td>
 						</tr>

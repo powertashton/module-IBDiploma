@@ -94,53 +94,52 @@ if ($resultKey->rowCount() < 1) {
 
             //Print form
             echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_supervisorProcess.php'>";
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            ?>
-					<tr>
-						<td>
-							<b>Attendance *</b><br/>
-						</td>
-						<td class="right">
-							<select name="attendance" id="attendance" style="width: 302px">
-								<option value="Please select...">Please select...</option>
-								<option value="<60%"><60%</option>
-								<option value="60-84%">60-84%</option>
-								<option value="85-99%">85-99%</option>
-								<option value="100%">100%</option>
-							</select>
-						</td>
-					</tr>
-					<script type="text/javascript">
-						var attendance=new LiveValidation('attendance');
-						attendance.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
-					 </script>
-					<?php
-                    echo '<tr>';
+            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>"; ?>
+			<tr>
+				<td>
+					<b>Attendance *</b><br/>
+				</td>
+				<td class="right">
+					<select name="attendance" id="attendance" style="width: 302px">
+						<option value="Please select...">Please select...</option>
+						<option value="<60%"><60%</option>
+						<option value="60-84%">60-84%</option>
+						<option value="85-99%">85-99%</option>
+						<option value="100%">100%</option>
+					</select>
+				</td>
+			</tr>
+			<script type="text/javascript">
+				var attendance=new LiveValidation('attendance');
+				attendance.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
+			 </script>
+			<?php
+			echo '<tr>';
             echo '<td colspan=2>';
-            echo '<b>Evaluation *</b><br/>Please use the space below to briefly evaluate '.$rowKey['preferredName']."'s participation in this commitment. You may wish to consider:";
-            echo "<i><ul style='margin-bottom: 0px'><li>Attitude</li><li>Enthusiasm</li><li>Dedication</li></ul></i><br/>";
-            echo "<textarea name='evaluation' id='evaluation' rows=10 style='width:738px; margin-left: 0px'></textarea>";
-            ?>
-							<script type="text/javascript">
-								var evaluation=new LiveValidation('evaluation');
-								evaluation.add(Validate.Presence);
-							 </script>
-							 <?php
-                        echo '</td>';
+				echo '<b>Evaluation *</b><br/>Please use the space below to briefly evaluate '.$rowKey['preferredName']."'s participation in this commitment. You may wish to consider:";
+				echo "<i><ul style='margin-bottom: 0px'><li>Attitude</li><li>Enthusiasm</li><li>Dedication</li></ul></i><br/>";
+				echo "<textarea name='evaluation' id='evaluation' rows=10 style='width:738px; margin-left: 0px'></textarea>";
+				?>
+				<script type="text/javascript">
+					var evaluation=new LiveValidation('evaluation');
+					evaluation.add(Validate.Presence);
+				 </script>
+				 <?php
+			echo '</td>';
             echo '</tr>';
             ?>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="key" value="<?php echo $key ?>">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Submit">
-						</td>
-					</tr>
-					<?php
-                echo '</table>';
+				<tr>
+					<td>
+						<span style="font-size: 90%"><i>* denotes a required field</i></span>
+					</td>
+					<td class="right">
+						<input type="hidden" name="key" value="<?php echo $key ?>">
+						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+						<input type="submit" value="Submit">
+					</td>
+				</tr>
+				<?php
+			echo '</table>';
             echo '</form>';
         }
     }

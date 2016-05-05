@@ -40,8 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
 
     //Check if school year specified
     $ibDiplomaCASStaffID = $_GET['ibDiplomaCASStaffID'];
-    if ($ibDiplomaCASStaffID == 'Y') {
-        echo "<div class='error'>";
+    if ($ibDiplomaCASStaffID == 'Y') { echo "<div class='error'>";
         echo 'You have not specified an activity.';
         echo '</div>';
     } else {
@@ -85,14 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
 						<td class="right">
 							<select name="role" id="role" style="width: 302px">
 								<option value="Please select...">Please select...</option>
-								<option <?php if ($row['role'] == 'Coordinator') {
-    echo 'selected ';
-}
-            ?>value="Coordinator">Coordinator</option>
-								<option <?php if ($row['role'] == 'Advisor') {
-    echo 'selected ';
-}
-            ?>value="Advisor">Advisor</option>
+								<option <?php if ($row['role'] == 'Coordinator') { echo 'selected '; } ?>value="Coordinator">Coordinator</option>
+								<option <?php if ($row['role'] == 'Advisor') { echo 'selected '; } ?>value="Advisor">Advisor</option>
 							</select>
 							<script type="text/javascript">
 								var role=new LiveValidation('role');

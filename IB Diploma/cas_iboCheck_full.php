@@ -23,15 +23,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_full.php') == false) {
-
     //Acess denied
     echo "<div class='error'>";
     echo 'You do not have access to this page.';
     echo '</div>';
 } else {
     $gibbonPersonID = $_GET['gibbonPersonID'];
-    if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
+    if ($gibbonPersonID == '') { echo "<div class='error'>";
         echo 'You have not specified a student.';
         echo '</div>';
     } else {
@@ -171,15 +169,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_fu
                     echo '</td>';
                     echo '</tr>';
 
-                            //Print feedback if there is any
-                            try {
-                                $dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
-                                $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
-                                $resultFeedback = $connection2->prepare($sqlFeedback);
-                                $resultFeedback->execute($dataFeedback);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+					//Print feedback if there is any
+					try {
+						$dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+						$sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
+						$resultFeedback = $connection2->prepare($sqlFeedback);
+						$resultFeedback->execute($dataFeedback);
+					} catch (PDOException $e) {
+						echo "<div class='error'>".$e->getMessage().'</div>';
+					}
 
                     if ($resultFeedback->rowCount() == 1) {
                         $rowFeedback = $resultFeedback->fetch();

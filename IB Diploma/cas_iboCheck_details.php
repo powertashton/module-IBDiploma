@@ -30,8 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
     echo '</div>';
 } else {
     $gibbonPersonID = $_GET['gibbonPersonID'];
-    if ($gibbonPersonID == '') {
-        echo "<div class='error'>";
+    if ($gibbonPersonID == '') { echo "<div class='error'>";
         echo 'You have not specified a student.';
         echo '</div>';
     } else {
@@ -201,8 +200,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                     }
                     ++$count;
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
+					//COLOR ROW BY STATUS!
+					echo "<tr class=$rowNum>";
                     echo '<td>';
                     echo $row['name'];
                     echo '</td>';
@@ -251,48 +250,47 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 }
 
                 echo "<div class='linkTop'>";
-                echo 'Filter Commitment: ';
-                ?>
-					<script type="text/javascript">
-					$(document).ready(function() {
-						$('.searchInput').val(1);
-						$('.body').find("tr:odd").addClass('odd');
-						$('.body').find("tr:even").addClass('even');
-							
-						$(".searchInput").change(function(){
-							$('.body').find("tr").hide() ;
-							if ($('.searchInput :selected').val() == "" ) {
-								$('.body').find("tr").show() ;
-							}
-							else {
-								$('.body').find('.' + $('.searchInput :selected').val()).show();
-							}
-							
-							$('.body').find("tr").removeClass('odd even');
-							$('.body').find('tr:visible:odd').addClass('odd');
-							$('.body').find('tr:visible:even').addClass('even');
-						});
+                echo 'Filter Commitment: '; ?>
+				<script type="text/javascript">
+				$(document).ready(function() {
+					$('.searchInput').val(1);
+					$('.body').find("tr:odd").addClass('odd');
+					$('.body').find("tr:even").addClass('even');
 						
+					$(".searchInput").change(function(){
+						$('.body').find("tr").hide() ;
+						if ($('.searchInput :selected').val() == "" ) {
+							$('.body').find("tr").show() ;
+						}
+						else {
+							$('.body').find('.' + $('.searchInput :selected').val()).show();
+						}
+						
+						$('.body').find("tr").removeClass('odd even');
+						$('.body').find('tr:visible:odd').addClass('odd');
+						$('.body').find('tr:visible:even').addClass('even');
 					});
-					</script>
+					
+				});
+				</script>
 
-					<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-						<option selected value=''>All</option>
-						<option selected value='General'>General CAS</option>
-						<?php
-                        try {
-                            $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
+				<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+					<option selected value=''>All</option>
+					<option selected value='General'>General CAS</option>
+					<?php
+					try {
+						$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+						$sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
+						$resultSelect = $connection2->prepare($sqlSelect);
+						$resultSelect->execute($dataSelect);
+					} catch (PDOException $e) {
+					}
 
-                while ($rowSelect = $resultSelect->fetch()) {
-                    echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                }
-                ?>
-					</select>
+					while ($rowSelect = $resultSelect->fetch()) {
+						echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+					}
+					?>
+				</select>
 				<?php	
                 echo '</div>';
 
@@ -372,8 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                         echo '</tr>';
                     }
                     echo "</tbody'>";
-                    echo '</table>';
-                    ?>
+                    echo '</table>'; ?>
 					<script type="text/javascript">
 						$(document).ready(function() {
 							$('.searchInput').val(1);

@@ -30,8 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
     echo '</div>';
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) {
-        echo "<div class='error'>";
+    if ($role == false) { echo "<div class='error'>";
         echo 'You are not enroled in the IB Diploma programme.';
         echo '</div>';
     } else {
@@ -246,25 +245,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     }
 
                     echo "<div class='linkTop'>";
-                    echo 'Filter Commitment: ';
-                    ?>
-						<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-							<option selected value=''>All</option>
-							<option selected value='General'>General CAS</option>
-							<?php
-                            try {
-                                $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                    }
-                    ?>
-						</select>
+                    echo 'Filter Commitment: '; ?>
+					<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+						<option selected value=''>All</option>
+						<option selected value='General'>General CAS</option>
+						<?php
+						try {
+							$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+							$sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
+							$resultSelect = $connection2->prepare($sqlSelect);
+							$resultSelect->execute($dataSelect);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+						while ($rowSelect = $resultSelect->fetch()) {
+							echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						}
+						?>
+					</select>
 					<?php
                     echo '</div>';
 
@@ -385,30 +383,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 								</td>
 								<td class="right">
 									<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-										<option <?php if ($casStatusSchool == '') {
-    echo 'selected ';
-}
-                    ?>value=""></option>
-										<option <?php if ($casStatusSchool == 'At Risk') {
-    echo 'selected ';
-}
-                    ?>value="At Risk">At Risk</option>
-										<option <?php if ($casStatusSchool == 'On Task') {
-    echo 'selected ';
-}
-                    ?>value="On Task">On Task</option>
-										<option <?php if ($casStatusSchool == 'Excellence') {
-    echo 'selected ';
-}
-                    ?>value="Excellence">Excellence</option>
-										<option <?php if ($casStatusSchool == 'Complete') {
-    echo 'selected ';
-}
-                    ?>value="Complete">Complete</option>
-										<option <?php if ($casStatusSchool == 'Incomplete') {
-    echo 'selected ';
-}
-                    ?>value="Incomplete">Incomplete</option>
+										<option <?php if ($casStatusSchool == '') { echo 'selected '; } ?>value=""></option>
+										<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
+										<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
+										<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
+										<option <?php if ($casStatusSchool == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
+										<option <?php if ($casStatusSchool == 'Incomplete') { echo 'selected '; } ?>value="Incomplete">Incomplete</option>
 									</select>
 								</td>
 							</tr>
@@ -495,11 +475,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 }
                                 ++$count;
 
-                                                    //COLOR ROW BY STATUS!
-                                                    echo "<tr class=$rowNum>";
-                                echo '<td>';
-                                echo $rowCommitments['name'];
-                                echo '</td>';
+								//COLOR ROW BY STATUS!
+								echo "<tr class=$rowNum>";
+								echo '<td>';
+								echo $rowCommitments['name'];
+								echo '</td>';
                                 echo '<td>';
                                 if (substr($rowCommitments['dateStart'], 0, 4) == substr($rowCommitments['dateEnd'], 0, 4)) {
                                     if (substr($rowCommitments['dateStart'], 5, 2) == substr($rowCommitments['dateEnd'], 5, 2)) {
@@ -569,57 +549,48 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         }
                         ?>
 
-										<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-										<script type="text/javascript">
-											var date=new LiveValidation('date');
-											date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-											date.add(Validate.Presence);
-										 </script>
-										<script type="text/javascript">
-											$(function() {
-												$( "#date" ).datepicker();
-											});
-										</script>
-										<?php
-                                    echo '</td>';
+							<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var date=new LiveValidation('date');
+								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
+								date.add(Validate.Presence);
+							 </script>
+							<script type="text/javascript">
+								$(function() {
+									$( "#date" ).datepicker();
+								});
+							</script>
+							<?php
+						echo '</td>';
                         echo '</tr>';
 
                         ?>
-								<tr>
-									<td>
-										<b>CAS Status *</b><br/>
-										<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-									</td>
-									<td class="right">
-										<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-											<option <?php if ($casStatusSchool == 'At Risk') {
-    echo 'selected ';
-}
-                        ?>value="At Risk">At Risk</option>
-											<option <?php if ($casStatusSchool == 'On Task') {
-    echo 'selected ';
-}
-                        ?>value="On Task">On Task</option>
-											<option <?php if ($casStatusSchool == 'Excellence') {
-    echo 'selected ';
-}
-                        ?>value="Excellence">Excellence</option>
-										</select>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span style="font-size: 90%"><i>* denotes a required field</i></span>
-									</td>
-									<td class="right">
-										<input type="hidden" name="count" value="<?php echo $count ?>">
-										<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="Submit">
-									</td>
-								</tr>
-							</table>
-							<?php
+						<tr>
+							<td>
+								<b>CAS Status *</b><br/>
+								<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
+							</td>
+							<td class="right">
+								<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
+									<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
+									<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
+									<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span style="font-size: 90%"><i>* denotes a required field</i></span>
+							</td>
+							<td class="right">
+								<input type="hidden" name="count" value="<?php echo $count ?>">
+								<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
+								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+								<input type="submit" value="Submit">
+							</td>
+						</tr>
+					</table>
+					<?php
                         echo '</form>';
                     }
                 } elseif ($subpage == 'Interview 2') {
@@ -660,20 +631,20 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo '</tr>';
 
                             ?>
-									<style>
-										tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
-										tr.outcome div.token-input-dropdown-facebook  { width: 738px }
-									</style>
-									<?php
-                                    //Get commitment list
-                                    try {
-                                        $dataList = array('gibbonPersonID' => $gibbonPersonID);
-                                        $sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
-                                        $resultList = $connection2->prepare($sqlList);
-                                        $resultList->execute($dataList);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
+							<style>
+								tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
+								tr.outcome div.token-input-dropdown-facebook  { width: 738px }
+							</style>
+							<?php
+							//Get commitment list
+							try {
+								$dataList = array('gibbonPersonID' => $gibbonPersonID);
+								$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
+								$resultList = $connection2->prepare($sqlList);
+								$resultList->execute($dataList);
+							} catch (PDOException $e) {
+								echo "<div class='error'>".$e->getMessage().'</div>';
+							}
 
                             $list = '';
                             while ($rowList = $resultList->fetch()) {
@@ -684,31 +655,31 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo '<tr>';
                                 echo '<td colspan=2> ';
                                 switch ($i) {
-                                                    case 1:
-                                                        $title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
-                                                        break;
-                                                    case 2:
-                                                        $title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
-                                                        break;
-                                                    case 3:
-                                                        $title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
-                                                        break;
-                                                    case 4:
-                                                        $title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
-                                                        break;
-                                                    case 5:
-                                                        $title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
-                                                        break;
-                                                    case 6:
-                                                        $title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
-                                                        break;
-                                                    case 7:
-                                                        $title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
-                                                        break;
-                                                    case 8:
-                                                        $title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
-                                                        break;
-                                                }
+									case 1:
+										$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
+										break;
+									case 2:
+										$title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
+										break;
+									case 3:
+										$title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
+										break;
+									case 4:
+										$title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
+										break;
+									case 5:
+										$title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
+										break;
+									case 6:
+										$title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
+										break;
+									case 7:
+										$title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
+										break;
+									case 8:
+										$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
+										break;
+								}
                                 echo "<p style='margin-bottom: 3px'><b>Outcome $i</b> - $title</p>";
                                 echo '</td>';
                                 echo '</tr>';
@@ -797,58 +768,49 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             }
                             ?>
 
-											<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-											<script type="text/javascript">
-												var date=new LiveValidation('date');
-												date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-												date.add(Validate.Presence);
-											 </script>
-											<script type="text/javascript">
-												$(function() {
-													$( "#date" ).datepicker();
-												});
-											</script>
-											<?php
-                                        echo '</td>';
+							<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
+							<script type="text/javascript">
+								var date=new LiveValidation('date');
+								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
+								date.add(Validate.Presence);
+							 </script>
+							<script type="text/javascript">
+								$(function() {
+									$( "#date" ).datepicker();
+								});
+							</script>
+							<?php
+							echo '</td>';
                             echo '</tr>';
 
-                            ?>
-									<tr>
-										<td>
-											<b>CAS Status *</b><br/>
-											<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-										</td>
-										<td class="right">
-											<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-												<option <?php if ($casStatusSchool == 'At Risk') {
-    echo 'selected ';
-}
-                            ?>value="At Risk">At Risk</option>
-												<option <?php if ($casStatusSchool == 'On Task') {
-    echo 'selected ';
-}
-                            ?>value="On Task">On Task</option>
-												<option <?php if ($casStatusSchool == 'Excellence') {
-    echo 'selected ';
-}
-                            ?>value="Excellence">Excellence</option>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<span style="font-size: 90%"><i>* denotes a required field</i></span>
-										</td>
-										<td class="right">
-											<input type="hidden" name="count" value="<?php echo $count ?>">
-											<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-											<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-											<input type="submit" value="Submit">
-										</td>
-									</tr>
-								</table>
-								<?php
-                            echo '</form>';
+							?>
+							<tr>
+								<td>
+									<b>CAS Status *</b><br/>
+									<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
+								</td>
+								<td class="right">
+									<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
+										<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
+										<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
+										<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span style="font-size: 90%"><i>* denotes a required field</i></span>
+								</td>
+								<td class="right">
+									<input type="hidden" name="count" value="<?php echo $count ?>">
+									<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
+									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+									<input type="submit" value="Submit">
+								</td>
+							</tr>
+						</table>
+						<?php
+					echo '</form>';
                         }
                     }
                 } elseif ($subpage == 'Interview 3') {
@@ -894,20 +856,20 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo '</tr>';
 
                                 ?>
-										<style>
-											tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
-											tr.outcome div.token-input-dropdown-facebook  { width: 738px }
-										</style>
-										<?php
-                                        //Get commitment list
-                                        try {
-                                            $dataList = array('gibbonPersonID' => $gibbonPersonID);
-                                            $sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
-                                            $resultList = $connection2->prepare($sqlList);
-                                            $resultList->execute($dataList);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
+								<style>
+									tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
+									tr.outcome div.token-input-dropdown-facebook  { width: 738px }
+								</style>
+								<?php
+								//Get commitment list
+								try {
+									$dataList = array('gibbonPersonID' => $gibbonPersonID);
+									$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
+									$resultList = $connection2->prepare($sqlList);
+									$resultList->execute($dataList);
+								} catch (PDOException $e) {
+									echo "<div class='error'>".$e->getMessage().'</div>';
+								}
 
                                 $list = '';
                                 while ($rowList = $resultList->fetch()) {
@@ -918,31 +880,31 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     echo '<tr>';
                                     echo '<td colspan=2> ';
                                     switch ($i) {
-                                                        case 1:
-                                                            $title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
-                                                            break;
-                                                        case 2:
-                                                            $title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
-                                                            break;
-                                                        case 3:
-                                                            $title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
-                                                            break;
-                                                        case 4:
-                                                            $title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
-                                                            break;
-                                                        case 5:
-                                                            $title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
-                                                            break;
-                                                        case 6:
-                                                            $title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
-                                                            break;
-                                                        case 7:
-                                                            $title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
-                                                            break;
-                                                        case 8:
-                                                            $title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
-                                                            break;
-                                                    }
+										case 1:
+											$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
+											break;
+										case 2:
+											$title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
+											break;
+										case 3:
+											$title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
+											break;
+										case 4:
+											$title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
+											break;
+										case 5:
+											$title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
+											break;
+										case 6:
+											$title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
+											break;
+										case 7:
+											$title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
+											break;
+										case 8:
+											$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
+											break;
+									}
                                     echo "<p style='margin-bottom: 3px'><b>Outcome $i</b> - $title</p>";
                                     echo '</td>';
                                     echo '</tr>';
@@ -1031,37 +993,31 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 }
                                 ?>
 
-												<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-												<script type="text/javascript">
-													var date=new LiveValidation('date');
-													date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-													date.add(Validate.Presence);
-												 </script>
-												<script type="text/javascript">
-													$(function() {
-														$( "#date" ).datepicker();
-													});
-												</script>
-												<?php
-                                            echo '</td>';
+								<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
+								<script type="text/javascript">
+									var date=new LiveValidation('date');
+									date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
+									date.add(Validate.Presence);
+								 </script>
+								<script type="text/javascript">
+									$(function() {
+										$( "#date" ).datepicker();
+									});
+								</script>
+								<?php
+								echo '</td>';
                                 echo '</tr>';
 
                                 ?>
-										<tr>
-											<td>
-												<b>CAS Status *</b><br/>
-												<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-											</td>
-											<td class="right">
-												<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-													<option <?php if ($casStatusSchool == 'Complete') {
-    echo 'selected ';
-}
-                                ?>value="Complete">Complete</option>
-													<option <?php if ($casStatusSchool == 'Incomplete') {
-    echo 'selected ';
-}
-                                ?>value="Incomplete">Incomplete</option>
+								<tr>
+									<td>
+										<b>CAS Status *</b><br/>
+										<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
+									</td>
+									<td class="right">
+										<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
+													<option <?php if ($casStatusSchool == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
+													<option <?php if ($casStatusSchool == 'Incomplete') { echo 'selected '; } ?>value="Incomplete">Incomplete</option>
 												</select>
 											</td>
 										</tr>

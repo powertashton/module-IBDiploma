@@ -61,11 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
                         } catch (PDOException $e) {
                         }
 
-    echo "<option value='Please select...'>Please select...</option>";
-    while ($row = $result->fetch()) {
-        echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
-    }
-    ?>
+						echo "<option value='Please select...'>Please select...</option>";
+						while ($row = $result->fetch()) { echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
+						}
+						?>
 					</select>
 					<script type="text/javascript">
 						var gibbonPersonID=new LiveValidation('gibbonPersonID');

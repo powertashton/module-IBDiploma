@@ -30,8 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
     echo '</div>';
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) {
-        echo "<div class='error'>";
+    if ($role == false) { echo "<div class='error'>";
         echo 'You are not enroled in the IB Diploma programme.';
         echo '</div>';
     } else {
@@ -182,15 +181,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo '</td>';
                         echo '</tr>';
 
-                                //Print feedback if there is any
-                                try {
-                                    $dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
-                                    $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
-                                    $resultFeedback = $connection2->prepare($sqlFeedback);
-                                    $resultFeedback->execute($dataFeedback);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+						//Print feedback if there is any
+						try {
+							$dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+							$sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
+							$resultFeedback = $connection2->prepare($sqlFeedback);
+							$resultFeedback->execute($dataFeedback);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
 
                         if ($resultFeedback->rowCount() == 1) {
                             $rowFeedback = $resultFeedback->fetch();
