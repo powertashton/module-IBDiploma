@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -57,75 +60,33 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 
         //Step 1
         if ($step == 1) {
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_add.php&step=2' ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr class='break'>
-						<td colspan=2>
-							<h3 class='top'>Commitment Source</h3>
-						</td>
-					</tr>
+        
+        $form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_add.php&step=2');
+            $form->setClass('smallIntBorder fullWidth');
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('step', 2);
+           
+           	$form->addRow()->addHeading(__('Commitment Source'));
+           	
+            $row = $form->addRow();
+			$row->addLabel('Commitment Type', __('Commitment Type'));
+			$row->addRadio("type1")->fromArray(array("New" =>__("New"), "From School Activity" =>__("From School Activity")))->inline();
+           
 
-					<script type="text/javascript">
-						$(document).ready(function(){
-							$("#activityRow").css("display","none");
+				$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+				$sqlSelect = "SELECT gibbonActivity.gibbonActivityID as value, gibbonActivity.name as name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE active='Y' AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 
-							$(".type1").click(function(){
-								if ($('input[name=type1]:checked').val() == "New" ) {
-									$("#activityRow").css("display","none");
-								} else {
-									$("#activityRow").slideDown("fast", $("#activityRow").css("display","table-row")); //Slide Down Effect
-								}
-							 });
-						});
-					</script>
-					<tr>
-						<td>
-							<b>Commitment Type *</b><br/>
-						</td>
-						<td class="right">
-							<input type="radio" name="type1" value="New" class="type1" /> New <b><u>or</u></b>
-							<input type="radio" name="type1" value="From School Activity" class="type1" style='margin-left: 3px'/> From School Activity
-						</td>
-					</tr>
-					<tr id="activityRow">
-						<td>
-							<b>Choose Activity</b><br/>
-						</td>
-						<td class="right">
-							<select style="width: 302px" name="gibbonActivityID" id="gibbonActivityID">
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = "SELECT * FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE active='Y' AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-
-								echo "<option value='Please select...'>Please select...</option>";
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($row['gibbonPersonIDCASAdvisor'] == $rowSelect['gibbonPersonID']) {
-										$selected = 'selected';
-									}
-									echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Go">
-						</td>
-					</tr>
-				</table>
-			<?php
+            
+            $form->toggleVisibilityByClass('chooseActivity')->onRadio('type1')->when('From School Activity');
+            $row = $form->addRow()->addClass('chooseActivity');
+				$row->addLabel('chooseActivity', __('Type'));
+				$row->addSelect('chooseActivity')->fromQuery($pdo, $sqlSelect, $dataSelect)->placeholder(__('Please select...'));
+					
+            $row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit("Go");
+			echo $form->getOutput();
+			
 
         } else {
             $type = $_POST['type1'];
@@ -133,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 $type = 'New';
             }
             if ($type == 'From School Activity') {
-                $gibbonActivityID = $_POST['gibbonActivityID'];
+                $gibbonActivityID = $_POST['chooseActivity'];
                 if ($gibbonActivityID == '') {
                     echo "<div class='warning'>";
                     echo 'You have not specified an activity.';
@@ -157,93 +118,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                     }
                 }
             }
-
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php' ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr class='break'>
-						<td colspan=2>
-							<h3 class='top'>Basic Information</h3>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Name *</b><br/>
-							<span style="font-size: 90%"><i>Must be unique.</i></span>
-						</td>
-						<td class="right">
-							<input type='text' style='width: 302px' name='name' id='name' value='<?php if (isset($rowActivity['name'])) { echo $rowActivity['name']; } ?>' maxlength=50>
-							<script type="text/javascript">
-								var name=new LiveValidation('name');
-								name.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Status *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<select name="status" id="status" style="width: 302px">
-								<option value="Planning">Planning</option>
-								<option value="In Progress">In Progress</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Start Date *</b><br/>
-							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
-						</td>
-						<td class="right">
-							<input name="dateStart" id="dateStart" maxlength=10 <?php if (isset($rowActivity['programStart'])) { if ($rowActivity['programStart'] != '') { echo "value='".dateConvertBack($rowActivity['programStart'])."'"; } } ?> type="text" style="width: 300px">
-							<script type="text/javascript">
-								var dateStart=new LiveValidation('dateStart');
-								dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-							 	dateStart.add(Validate.Presence);
-							 </script>
-							 <script type="text/javascript">
-								$(function() {
-									$( "#dateStart" ).datepicker();
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>End Date</b><br/>
-							<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
-						</td>
-						<td class="right">
-							<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php if (isset($rowActivity['programEnd'])) { echo dateConvertBack($rowActivity['programEnd']); } ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var dateEnd=new LiveValidation('dateEnd');
-								dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-							 </script>
-							 <script type="text/javascript">
-								$(function() {
-									$( "#dateEnd" ).datepicker();
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b>Description</b><br/>
-							Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i><br/>
-							<?php
-                            echo "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>";
-							if (isset($row['description'])) {
-								echo $row['description'];
-							}
-							echo '</textarea>';
-							?>
-						</td>
-					</tr>
-
-					<?php
-                    if ($type == 'From School Activity' and $gibbonActivityID != '') {
+            
+            
+            if ($type == 'From School Activity' and $gibbonActivityID != '') {
                         try {
                             $dataCoord = array('gibbonActivityID' => $gibbonActivityID);
                             $sqlCoord = "SELECT surname, preferredName, email, phone1 FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND role='Organiser'";
@@ -256,69 +133,58 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                         if ($resultCoord->rowCount() > 0) {
                             $rowCoord = $resultCoord->fetch();
                         }
-                    }
-            		?>
+                    } 
+                    
+                    //If experience is not from school activity, page will throw errors for undefined variables for the setValues but is not neccesarily an actual issue for a standard user
+                    //Potentially TODO: Address that
+                    
+					$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
+						$form->setClass('smallIntBorder fullWidth');
+						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+						$form->setFactory(DatabaseFormFactory::create($pdo));
+						
+						$form->addRow()->addHeading(__('Basic Information'));
+						
+						$row = $form->addRow();
+							$row->addLabel('name', __('Name'));
+							$row->addTextField('name')->setValue($rowActivity['name'])->maxLength(30)->isRequired();
+							
+						$row = $form->addRow();
+							$row->addLabel('status', __('Status'));
+							$row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->isRequired();
 
-					<tr class='break'>
-						<td colspan=2>
-							<h3>Supervisor</h3>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Supervisor Name *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<?php if (isset($rowCoord['surname'])) { if ($rowCoord['surname'] != '') { echo formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true); } } ?>' maxlength=100>
-							<script type="text/javascript">
-								var supervisorName=new LiveValidation('supervisorName');
-								supervisorName.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Supervisor Email *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<?php if (isset($rowCoord['email'])) { echo $rowCoord['email']; } ?>' maxlength=255>
-							<script type="text/javascript">
-								var supervisorEmail=new LiveValidation('supervisorEmail');
-								supervisorEmail.add(Validate.Presence);
-								supervisorEmail.add(Validate.Email);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b>Supervisor Phone *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<?php if (isset($rowCoord['phone1'])) { echo $rowCoord['phone1']; } ?>' maxlength=20>
-							<script type="text/javascript">
-								var supervisorPhone=new LiveValidation('supervisorPhone');
-								supervisorPhone.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
+						$row = $form->addRow();
+							$row->addLabel('dateStart', __('Start Date'));
+							$row->addDate('dateStart')->setValue(dateConvertBack($guid, $rowActivity['programStart']))->isRequired();
 
+						$row = $form->addRow();
+							$row->addLabel('dateEnd', __('End Date'));
+							$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $rowActivity['programEnd']));
 
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* denotes a required field</i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="Submit">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+						$row = $form->addRow();
+							$column = $row->addColumn();
+								$column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
+								$column->addTextArea('description')->setRows(10)->setValue($rowActivity['description'])->setClass('fullWidth');
 
+						
+						$form->addRow()->addHeading(__('Supervisor'));
+						$row = $form->addRow();
+							$row->addLabel('supervisorName', __('Supervisor Name'));
+							$row->addTextField('supervisorName')->setValue(formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true))->maxLength(30)->isRequired();
+						
+						$row = $form->addRow();
+							$row->addLabel('supervisorEmail', __('Supervisor Email'));
+							$row->addEmail('supervisorEmail')->setValue($rowCoord['email'])->maxLength(30)->isRequired();
+							
+						
+						$row = $form->addRow();
+							$row->addLabel('supervisorPhone', __('Supervisor Phone'));
+							$row->addTextField('supervisorPhone')->setValue($rowCoord['phone1'])->maxLength(30)->isRequired();
+							
+						$row = $form->addRow();
+						$row->addFooter();
+						$row->addSubmit();
+						echo $form->getOutput();
         }
     }
 }

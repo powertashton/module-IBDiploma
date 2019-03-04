@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 //Module includes
@@ -66,8 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 echo '</div>';
             } else {
                 //Let's go!
-                $row = $result->fetch();
+                $values = $result->fetch();
+                 	echo "<div class='linkTop'>";
+                 	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>".__($guid, 'Back').'</a>';
+                 	echo '</div>';
+
+                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_deleteProcess.php?ibDiplomaCASCommitmentID=$ibDiplomaCASCommitmentID'."&ibDiplomaCASCommitmentID=".$_GET['ibDiplomaCASCommitmentID']);
+            	echo $form->getOutput();
                 ?>
+<!-- 
 				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_myCommitments_deleteProcess.php?ibDiplomaCASCommitmentID=$ibDiplomaCASCommitmentID" ?>">
 					<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 						<tr>
@@ -91,8 +100,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 						</tr>
 					</table>
 				</form>
+ -->
 				<?php
 
+				
             }
         }
     }

@@ -49,9 +49,9 @@ function staffCASRole($guid,  $gibbonPersonID, $connection2)
     }
 
     if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-        if ($row['role'] == 'Coordinator' or $row['role'] == 'Advisor') {
-            $output = $row['role'];
+        $values = $result->fetch();
+        if ($values['role'] == 'Coordinator' or $values['role'] == 'Advisor') {
+            $output = $values['role'];
         }
     }
 

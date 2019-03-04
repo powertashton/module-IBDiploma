@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -66,33 +69,30 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                 echo '</div>';
             } else {
                 $rowInterview = $resultInterview->fetch();
+                
+				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
+						$form->setClass('smallIntBorder fullWidth');
 
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_interview2Process.php' ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-						<style>
-							tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
-							tr.outcome div.token-input-dropdown-facebook  { width: 738px }
-						</style>
-						<?php
-                        //Get commitment list
-                        try {
-                            $dataList = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
-                            $resultList = $connection2->prepare($sqlList);
-                            $resultList->execute($dataList);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					
+						$form->addRow()->addHeading(__('Outcomes'));
+							$formRow = $form->addRow();
+					
+						try {
+							$dataList = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+							$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
+							$resultList = $connection2->prepare($sqlList);
+							$resultList->execute($dataList);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
 
 						$list = '';
-						while ($rowList = $resultList->fetch()) {
-							$list .= '{id: "'.$rowList['ibDiplomaCASCommitmentID'].'", name: "'.$rowList['name'].'"},';
+						while ($valuesList = $resultList->fetch()) {
+							$list .= '{id: "'.$valuesList['ibDiplomaCASCommitmentID'].'", name: "'.$valuesList['name'].'"},';
 						}
 						$list = substr($list, 0, -1);
 						for ($i = 1; $i < 9; ++$i) {
-							echo "<tr class='break'>";
-							echo '<td colspan=2> ';
 							switch ($i) {
 								case 1:
 									$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
@@ -119,66 +119,44 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
 									$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
 									break;
 							}
-							echo "<h3>Outcome $i</h3>";
-							echo "<p>$title</p>";
-							echo '</td>';
-							echo '</tr>';
-							echo "<tr class='outcome' id='outcome".$i."RowIntention'>";
-							echo '<td colspan=2> ';
-							echo "<input type='text' id='outcome".$i."' name='outcome".$i."' />";
+						
 							$prepopulate = '';
-							$where = '';
 							if ($rowInterview["2_outcome$i"] != '') {
-								$commitments = explode(',', $rowInterview["2_outcome$i"]);
-								foreach ($commitments as $commitment) {
-									$where .= 'ibDiplomaCASCommitmentID='.$commitment.' OR ';
-								}
-								$where = substr($where, 0, -4);
+								$outcomeList = array();
 								try {
-									$sqlPrepopulate = "SELECT * FROM ibDiplomaCASCommitment WHERE $where";
+									array_push($outcomeList, $rowInterview['2_outcome'.$i]);
+									$dataPrepopulate = ['outcomeList' => $rowInterview['2_outcome'.$i]];
+									$sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
 									$resultPrepopulate = $connection2->query($sqlPrepopulate);
 								} catch (PDOException $e) {
 									echo "<div class='error'>".$e->getMessage().'</div>';
 								}
-								while ($rowPrepopulate = $resultPrepopulate->fetch()) {
-									$prepopulate .= '{id: "'.$rowPrepopulate['ibDiplomaCASCommitmentID'].'", name: "'.$rowPrepopulate['name'].'"},';
-								}
-								if ($prepopulate != '') {
-									$prepopulate = substr($prepopulate, 0, -1);
+								while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
+									$prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
 								}
 							}
-							echo "<script type='text/javascript'>";
-							echo '$(document).ready(function() {';
-							echo ' $("#outcome'.$i.'").tokenInput([';
-							echo $list;
-							echo '],';
-							echo '{theme: "facebook",';
-							echo 'hintText: "Start typing a tag...",';
-							echo 'allowCreation: false,';
-							if ($prepopulate != '') {
-								echo "prePopulate: [$prepopulate],";
-							}
-							echo 'preventDuplicates: true});';
-							echo '});';
-							echo '</script>';
-
-							echo '</td>';
-							echo '</tr>';
+						
+								$data =  array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+								$sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
+								$row = $form->addRow()->addClass('tags');
+									$column = $row->addColumn();
+									$column->addLabel('outcome'.$i, __('Outcome '.$i))
+										->description(__($title));
+									$column->addFinder('outcome'.$i)
+										->fromQuery($pdo, $sql, $data)
+										->setParameter('hintText', __('Type the name of an approved commitment...'))
+										->setParameter('allowCreation', false)
+										->selected($prepopulate);
 						}
-						?>
 
-						<tr>
-							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="Submit">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+					
+						$row = $form->addRow();
+							$row->addFooter();
+							$row->addSubmit();
+						echo $form->getOutput();
+						
+						// HACK: Otherwise FastFinder width overrides this one :(
+						echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
 
             }
         }

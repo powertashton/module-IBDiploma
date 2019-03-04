@@ -22,6 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
+//LOAD FORM OBJECTS
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_invite.php') == false) {
 
     //Acess denied
@@ -57,6 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo '</h3>';
 
             ?>
+
+
+<!-- 
 			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php' ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 					<tr>
@@ -76,7 +83,25 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
 						</td>
 					</tr>
 				</table>
+ -->
+
+
 			<?php
+
+            $form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form->setClass('smallIntBorder fullWidth');
+            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/cas_supervisor_invite.php');
+            $form->addHiddenValue('step', 2);
+            
+            $row = $form->addRow();
+			$row->addLabel('Invitation Type', __('Invitation Type'));
+			$row->addRadio("type")->fromArray(array("Single" =>__("Single Commitment"), "Multiple" =>__("Multiple Commitments")))->isRequired()->inline();
+            
+            $row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit("Proceed");
+			echo $form->getOutput();
+
 
         } elseif ($step == 2) {
             $type = $_GET['type'];
@@ -87,69 +112,48 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo '<h3>';
             echo "Step 2 - $type";
             echo '</h3>';
-
-            echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'>";
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            if ($type == 'Single') {
-                echo '<tr>';
-                echo '<td>';
-                echo '<b>Student *</b><br/>';
-                echo '</td> ';
-                echo "<td class='right'> ";
-                echo "<select name='gibbonPersonID' id='gibbonPersonID' style='width: 302px'>";
-                try {
+            
+            
+			$form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
+			$form->setClass('smallIntBorder fullWidth');
+			$form->setFactory(DatabaseFormFactory::create($pdo));
+			
+			if ($type == 'Single') {
+				
+				 try {
                     if ($role == 'Coordinator') {
-                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber']);
-                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd ORDER BY rollGroup, surname, preferredName";
+                        $data = array('coordinator' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.surname,', ',gibbonPerson.firstName, ' (', gibbonRollGroup.nameShort,')') as name FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.status='Full' ORDER BY nameShort, surname, preferredName";
                     } else {
-                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'advisor' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor ORDER BY rollGroup, surname, preferredName";
+                        $data = array('advisor' => $_SESSION[$guid]['gibbonPersonID']);
+                    	$sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.surname,', ',gibbonPerson.firstName, ' (', gibbonRollGroup.nameShort,')') as name FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)  LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.status='Full' AND gibbonPersonIDCASAdvisor=:advisor ORDER BY nameShort, surname, preferredName";
                     }
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
                 } catch (PDOException $e) {
                 }
-                echo "<option value='Please select...'>Please select...</option>";
-                while ($rowSelect = $resultSelect->fetch()) {
-                    echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true, true).' ('.htmlPrep($rowSelect['rollGroup']).')</option>';
-                }
-                ?>
-					</select>
-					<script type="text/javascript">
-						var gibbonPersonID=new LiveValidation('gibbonPersonID');
-						gibbonPersonID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
-					 </script>
-					 <?php
-				echo '</td>';
-                echo '</tr>';
-                echo '<tr>';
-                echo '<td>';
-                echo '<b>Commitment *</b><br/>';
-                echo '</td> ';
-                echo "<td class='right'> ";
-                ?>
-				<select name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID" style="width: 302px">
-					<?php
-					try {
-						$dataSelect2 = array();
-						$sqlSelect2 = "SELECT * FROM ibDiplomaCASCommitment WHERE approval='Approved' ORDER BY name";
-						$resultSelect2 = $connection2->prepare($sqlSelect2);
-						$resultSelect2->execute($dataSelect2);
+                
+
+				$row = $form->addRow();
+					$row->addLabel('gibbonPersonID', __('Student'));
+					$row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, $data)->placeholder()->isRequired();				
+				
+				try {
+						$data2 = array();
+						$sql2 = "SELECT ibDiplomaCASCommitmentID as value, concat(ibDiplomaCASCommitment.name, ' (', ibDiplomaCASCommitment.supervisorName, ')') as name, gibbonPersonID as chainedTo FROM ibDiplomaCASCommitment WHERE approval='Approved'  ";
 					} catch (PDOException $e) {
 					}
+                    
+				 $row = $form->addRow();
+						$row->addLabel('ibDiplomaCASCommitmentID', __('Commitment'));
+						$row->addSelect('ibDiplomaCASCommitmentID')->fromQueryChained($pdo, $sql2, $data2, 'gibbonPersonID')->placeholder();
+									
+				$row = $form->addRow();
+					$row->addFooter();
+					$row->addSubmit('Proceed');
+				echo $form->getOutput();
 
-					while ($rowSelect2 = $resultSelect2->fetch()) {
-						echo "<option class='".$rowSelect2['gibbonPersonID']."' value='".$rowSelect2['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect2['name']).' ('.htmlPrep($rowSelect2['supervisorName']).')</option>';
-					}
-					?>
-					</select>
-					<script type="text/javascript">
-						$("#ibDiplomaCASCommitmentID").chainedTo("#gibbonPersonID");
-					</script>
-					<?php
-				echo '</td>';
-                echo '</tr>';
-            } else {
+			
+			
+			} else {
                 echo '<tr>';
                 echo "<td style='text-align: justify' colspan=2>";
                 echo 'By clicking proceed you will generate invitations for every student you take care of for CAS who is in the final year of their IB Diploma. As a coordinator this will be all students in the cohort: as an advisor, just the students you advise.<br/><br/>';
@@ -157,17 +161,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                 echo '</td> ';
                 echo '</tr>';
             }
-            echo '<tr>';
-            echo '<td>';
-            echo "<span style='font-size: 90%'><i>* denotes a required field</i></span>";
-            echo '</td>';
-            echo "<td class='right'>";
-            echo "<input type='hidden' name='type' value='$type'>";
-            echo "<input type='submit' value='Proceed'>";
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-            echo '</form>';
+				
+				
+            
+        
         } elseif ($step == 3) {
             $type = $_POST['type'];
             if ($type != 'Single' and $type != 'Multiple') {
@@ -206,9 +203,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                         echo 'Invite cannot be issued.';
                         echo '</div>';
                     } else {
-                        $row = $result->fetch();
-                        $student = $row['preferredName'].' '.$row['surname'];
-                        $studentFirst = $row['preferredName'];
+                        $values = $result->fetch();
+                        $student = $values['preferredName'].' '.$values['surname'];
+                        $studentFirst = $values['preferredName'];
 
                         //Check existence of and access to this commitment.
                         try {
@@ -225,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                             echo 'Invite cannot be issued.';
                             echo '</div>';
                         } else {
-                            $row = $result->fetch();
+                            $values = $result->fetch();
 
                             //Check for completion
                             try {
@@ -297,10 +294,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                             } catch (PDOException $e) {
                                             }
 
-                                            $to = $row['supervisorEmail'];
+                                            $to = $values['supervisorEmail'];
                                             $subject = $_SESSION[$guid]['organisationNameShort'].' CAS Supervisor Feedback Request';
-                                            $body = 'Dear '.$row['supervisorName'].',<br/><br/>';
-                                            $body = $body."We greatly appreciate your support as a CAS activity supervisor to $student (".$_SESSION[$guid]['organisationName'].'). In order for this activity ('.$row['name'].') to count towards '.$studentFirst."'s IB Diploma, we require a small amount of feedback from you.<br/><br/>";
+                                            $body = 'Dear '.$values['supervisorName'].',<br/><br/>';
+                                            $body = $body."We greatly appreciate your support as a CAS activity supervisor to $student (".$_SESSION[$guid]['organisationName'].'). In order for this activity ('.$values['name'].') to count towards '.$studentFirst."'s IB Diploma, we require a small amount of feedback from you.<br/><br/>";
                                             $body = $body."If you are willing and able to provide us with this feedback, you may do so by <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>";
                                             $body = $body.'Your assistance is most appreciated. Regards,<br/><br/>';
                                             $body = $body.$_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
@@ -314,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                                 echo '</div>';
                                             } else {
                                                 echo "<div class='warning'>";
-                                                echo 'The invite has been created, but could not be email. You may email the following link supervisor ('.$row['supervisorName'].') at '.$row['supervisorEmail'].': '.$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key";
+                                                echo 'The invite has been created, but could not be emailed. You may email the following link supervisor ('.$values['supervisorName'].') at '.$values['supervisorEmail'].': '.$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key";
                                                 echo '</div>';
                                             }
                                         }
@@ -345,17 +342,17 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                     echo 'Invites cannot be issued.';
                     echo '</div>';
                 } else {
-                    while ($row = $result->fetch()) {
-                        $student = $row['preferredName'].' '.$row['surname'];
-                        $studentFirst = $row['preferredName'];
+                    while ($values = $result->fetch()) {
+                        $student = $values['preferredName'].' '.$values['surname'];
+                        $studentFirst = $values['preferredName'];
 
                         echo '<h4>';
-                        echo $student.' ('.$row['rollGroup'].')';
+                        echo $student.' ('.$values['rollGroup'].')';
                         echo '</h4>';
 
                         //Scan through commitments for each student look for ones that are approved, complete and have not feedback.
                         try {
-                            $dataCommitment = array('gibbonPersonID' => $row['gibbonPersonID']);
+                            $dataCommitment = array('gibbonPersonID' => $values['gibbonPersonID']);
                             $sqlCommitment = "SELECT * FROM ibDiplomaCASCommitment WHERE status='Complete' AND approval='Approved' AND gibbonPersonID=:gibbonPersonID";
                             $resultCommitment = $connection2->prepare($sqlCommitment);
                             $resultCommitment->execute($dataCommitment);
@@ -364,10 +361,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                         }
 
                         if ($resultCommitment->rowCount() > 0) {
-                            while ($rowCommitment = $resultCommitment->fetch()) {
+                            while ($valuesCommitment = $resultCommitment->fetch()) {
                                 //Check for completion
                                 try {
-                                    $dataComplete = array('ibDiplomaCASCommitmentID' => $rowCommitment['ibDiplomaCASCommitmentID']);
+                                    $dataComplete = array('ibDiplomaCASCommitmentID' => $valuesCommitment['ibDiplomaCASCommitmentID']);
                                     $sqlComplete = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE complete='Y' AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID";
                                     $resultComplete = $connection2->prepare($sqlComplete);
                                     $resultComplete->execute($dataComplete);
@@ -384,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                     } catch (PDOException $e) {
                                         $lock = false;
                                         echo "<div class='error'>";
-                                        echo $rowCommitment['name'].': Invite cannot be issued due to a database error.';
+                                        echo $valuesCommitment['name'].': Invite cannot be issued due to a database error.';
                                         echo '</div>';
                                     }
 
@@ -417,28 +414,28 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
 
                                         if ($continue == false) {
                                             echo "<div class='error'>";
-                                            echo $rowCommitment['name'].': A unique key could not be generated, so the invite could not be sent.';
+                                            echo $valuesCommitment['name'].': A unique key could not be generated, so the invite could not be sent.';
                                             echo '</div>';
                                         } else {
                                             //Write to database
                                             $proceed = true;
                                             try {
-                                                $dataWrite = array('ibDiplomaCASCommitmentID' => $rowCommitment['ibDiplomaCASCommitmentID'], 'key' => $key);
+                                                $dataWrite = array('ibDiplomaCASCommitmentID' => $valuesCommitment['ibDiplomaCASCommitmentID'], 'key' => $key);
                                                 $sqlWrite = 'INSERT INTO ibDiplomaCASSupervisorFeedback SET ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID, ibDiplomaCASSupervisorFeedback.key=:key';
                                                 $resultWrite = $connection2->prepare($sqlWrite);
                                                 $resultWrite->execute($dataWrite);
                                             } catch (PDOException $e) {
                                                 $proceed = false;
                                                 echo "<div class='error'>";
-                                                echo $rowCommitment['name'].': Invite cannot be issued due to a database error.';
+                                                echo $valuesCommitment['name'].': Invite cannot be issued due to a database error.';
                                                 echo '</div>';
                                             }
 
                                             if ($proceed) {
-                                                $to = $rowCommitment['supervisorEmail'];
+                                                $to = $valuesCommitment['supervisorEmail'];
                                                 $subject = $_SESSION[$guid]['organisationNameShort'].' CAS Supervisor Feedback Request';
-                                                $body = 'Dear '.$rowCommitment['supervisorName'].',<br/><br/>';
-                                                $body = $body."We great appreciate your support as a CAS activity supervisor to $student (".$_SESSION[$guid]['organisationName'].'). In order for this activity ('.$rowCommitment['name'].') to count towards '.$studentFirst."'s IB Diploma, we require a small amount of feedback from you.<br/><br/>";
+                                                $body = 'Dear '.$valuesCommitment['supervisorName'].',<br/><br/>';
+                                                $body = $body."We great appreciate your support as a CAS activity supervisor to $student (".$_SESSION[$guid]['organisationName'].'). In order for this activity ('.$valuesCommitment['name'].') to count towards '.$studentFirst."'s IB Diploma, we require a small amount of feedback from you.<br/><br/>";
                                                 $body = $body."If you are willing and able to provide us with this feedback, you may do so by <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key'>clicking here</a>.<br/><br/>";
                                                 $body = $body.'Your assistance is most appreciated. Regards,<br/><br/>';
                                                 $body = $body.$_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
@@ -448,11 +445,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
 
                                                 if (mail($to, $subject, $body, $headers)) {
                                                     echo "<div class='success'>";
-                                                    echo $rowCommitment['name'].": An invite has been created and emailed to $to.";
+                                                    echo $valuesCommitment['name'].": An invite has been created and emailed to $to.";
                                                     echo '</div>';
                                                 } else {
                                                     echo "<div class='warning'>";
-                                                    echo $rowCommitment['name'].': An invite has been created, but could not be email. You may email the following link supervisor ('.$row['supervisorName'].') at '.$row['supervisorEmail'].': '.$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key";
+                                                    echo $valuesCommitment['name'].': An invite has been created, but could not be email. You may email the following link supervisor ('.$values['supervisorName'].') at '.$values['supervisorEmail'].': '.$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key";
                                                     echo '</div>';
                                                 }
                                             }

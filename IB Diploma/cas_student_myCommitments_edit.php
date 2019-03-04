@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 @session_start();
 
@@ -65,142 +67,58 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 echo 'The specified commitment could not be loaded.';
                 echo '</div>';
             } else {
-                //Let's go!
-                $row = $result->fetch();
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_editProcess.php' ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-						<tr class='break'>
-							<td colspan=2>
-								<h3 class='top'>Basic Information</h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Name *</b><br/>
-								<span style="font-size: 90%"><i>This value cannot be changed</i></span>
-							</td>
-							<td class="right">
-								<input readonly type='text' style='width: 302px' name='name' id='name' value='<?php echo $row['name'] ?>' maxlength=50>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Status *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
-							</td>
-							<td class="right">
-								<select name="status" id="status" style="width: 302px">
-									<option <?php if ($row['status'] == 'Planning') { echo 'selected '; } ?>value="Planning">Planning</option>
-									<option <?php if ($row['status'] == 'In Progress') { echo 'selected '; } ?>value="In Progress">In Progress</option>
-									<option <?php if ($row['status'] == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Start Date *</b><br/>
-								<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
-							</td>
-							<td class="right">
-								<input name="dateStart" id="dateStart" maxlength=10 value='<?php echo dateConvertBack($guid, $row['dateStart']) ?>' type="text" style="width: 300px">
-								<script type="text/javascript">
-									var dateStart=new LiveValidation('dateStart');
-									dateStart.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-									dateStart.add(Validate.Presence);
-								 </script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#dateStart" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>End Date</b><br/>
-								<span style="font-size: 90%"><i>dd/mm/yyyy</i></span>
-							</td>
-							<td class="right">
-								<input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dateEnd']) ?>" type="text" style="width: 300px">
-								<script type="text/javascript">
-									var dateEnd=new LiveValidation('dateEnd');
-									dateEnd.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-								 </script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#dateEnd" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2>
-								<b>Description</b><br/>
-								Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i><br/>
-								<?php echo "<textarea name='description' id='description' rows=15 style='width:738px; margin-left: 0px'>".$row['description'].'</textarea>' ?>
-							</td>
-						</tr>
 
-						<tr class='break'>
-							<td colspan=2>
-								<h3>Supervisor</h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Supervisor Name *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
-							</td>
-							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorName' id='supervisorName' value='<?php echo $row['supervisorName'] ?>' maxlength=100>
-								<script type="text/javascript">
-									var name=new LiveValidation('name');
-									name.add(Validate.Presence);
-								 </script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Supervisor Email *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
-							</td>
-							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorEmail' id='supervisorEmail' value='<?php echo $row['supervisorEmail'] ?>' maxlength=255>
-								<script type="text/javascript">
-									var supervisorEmail=new LiveValidation('supervisorEmail');
-									supervisorEmail.add(Validate.Presence);
-								 </script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Supervisor Phone *</b><br/>
-								<span style="font-size: 90%"><i></i></span>
-							</td>
-							<td class="right">
-								<input type='text' style='width: 302px' name='supervisorPhone' id='supervisorPhone' value='<?php echo $row['supervisorPhone'] ?>' maxlength=20>
-								<script type="text/javascript">
-									var supervisorPhone=new LiveValidation('supervisorPhone');
-									supervisorPhone.add(Validate.Presence);
-								 </script>
-							</td>
-						</tr>
+               $values = $result->fetch();
+               $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_editProcess.php');
+						$form->setClass('smallIntBorder fullWidth');
+						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+						$form->addHiddenValue('ibDiplomaCASCommitmentID', $ibDiplomaCASCommitmentID);
+						$form->setFactory(DatabaseFormFactory::create($pdo));
 
-						<tr>
-							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="ibDiplomaCASCommitmentID" value="<?php echo $ibDiplomaCASCommitmentID ?>">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="Submit">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
 
+						$form->addRow()->addHeading(__('Basic Information'));
+						
+						$row = $form->addRow();
+							$row->addLabel('name', __('Name'));
+							$row->addTextField('name')->setValue($values['name'])->maxLength(30)->readOnly()->isRequired();
+							
+						$row = $form->addRow();
+							$row->addLabel('status', __('Status'));
+							$row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->selected($values['status'])->isRequired();
+
+						$row = $form->addRow();
+							$row->addLabel('dateStart', __('Start Date'));
+							$row->addDate('dateStart')->setValue(dateConvertBack($guid, $values['dateStart']))->isRequired();
+
+						$row = $form->addRow();
+							$row->addLabel('dateEnd', __('End Date'));
+							$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $values['dateEnd']));
+
+						$row = $form->addRow();
+							$column = $row->addColumn();
+								$column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
+								$column->addTextArea('description')->setRows(10)->setValue($values['description'])->setClass('fullWidth');
+								
+						
+						$form->addRow()->addHeading(__('Supervisor'));
+						$row = $form->addRow();
+							$row->addLabel('supervisorName', __('Supervisor Name'));
+							$row->addTextField('supervisorName')->setValue($values['supervisorName'])->maxLength(30)->isRequired();
+						
+						$row = $form->addRow();
+							$row->addLabel('supervisorEmail', __('Supervisor Email'));
+							$row->addEmail('supervisorEmail')->setValue($values['supervisorEmail'])->isRequired();
+						
+						
+						$row = $form->addRow();
+							$row->addLabel('supervisorPhone', __('Supervisor Phone'))->description(__('Type, country code, number.'));
+							$row->addTextField('supervisorPhone')->setValue($values['supervisorPhone'])->maxLength(30)->isRequired();
+						
+						$row = $form->addRow();
+						$row->addFooter();
+						$row->addSubmit();
+						echo $form->getOutput();
+			
             }
         }
     }

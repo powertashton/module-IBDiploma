@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -35,117 +38,37 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+	
+	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_addProcess.php');
+	$form->setFactory(DatabaseFormFactory::create($pdo));
+	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+	$form->setClass('smallIntBorder fullWidth');
+	
+	$row = $form->addRow();
+		$row->addLabel('gibbonPersonID', __('Students'));
+		$row->addSelectStudent('gibbonPersonID',$_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => false, 'byRoll' => true, 'showRoll' => true))->selectMultiple()->isRequired();
+		
+	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+	$sql = "SELECT gibbonSchoolYearID as value,name FROM gibbonSchoolYear ORDER BY sequenceNumber";
+	$row = $form->addRow();
+		$row->addLabel('gibbonSchoolYearIDStart', __('Start Year'));
+		$row->addSelect('gibbonSchoolYearIDStart')->fromQuery($pdo, $sql)->placeholder(__('Please select...'))->isRequired();
+		
+	$row = $form->addRow();
+		$row->addLabel('gibbonSchoolYearIDEnd', __('End Year'));
+		$row->addSelect('gibbonSchoolYearIDEnd')->fromQuery($pdo, $sql)->placeholder(__('Please select...'))->isRequired();
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_addProcess.php' ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-			<tr>
-				<td>
-					<b>Students *</b><br/>
-				</td>
-				<td class="right">
-					<select name="Members[]" id="Members[]" multiple style="width: 302px; height: 150px">
-						<?php
-                        try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) { echo "<option value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true, true).'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b>Start Year *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
-				</td>
-				<td class="right">
-					<select name="gibbonSchoolYearIDStart" id="gibbonSchoolYearIDStart" style="width: 302px">
-						<option value="Please select...">Please select...</option>
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) {
-							echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-						}
-						?>
-					</select>
-					<script type="text/javascript">
-						var gibbonSchoolYearIDStart=new LiveValidation('gibbonSchoolYearIDStart');
-						gibbonSchoolYearIDStart.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
-					 </script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b>End Year *</b><br/>
-					<span style="font-size: 90%"><i></i></span>
-				</td>
-				<td class="right">
-					<select name="gibbonSchoolYearIDEnd" id="gibbonSchoolYearIDEnd" style="width: 302px">
-						<option value="Please select...">Please select...</option>
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
-						while ($rowSelect = $resultSelect->fetch()) {
-							echo '<option value='.$rowSelect['gibbonSchoolYearID'].'>'.$rowSelect['name'].'</option>';
-						}
-						?>
-					</select>
-					<script type="text/javascript">
-						var gibbonSchoolYearIDEnd=new LiveValidation('gibbonSchoolYearIDEnd');
-						gibbonSchoolYearIDEnd.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "Select something!"});
-					 </script>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b>CAS Advisor</b><br/>
-				</td>
-				<td class="right">
-					<select style="width: 302px" name="gibbonPersonIDCASAdvisor" id="gibbonPersonIDCASAdvisor">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$data = array();
-							$sql = "SELECT * FROM gibbonPerson JOIN ibDiplomaCASStaff ON (gibbonPerson.gibbonPersonID=ibDiplomaCASStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-							$result = $connection2->prepare($sql);
-							$result->execute($data);
-						} catch (PDOException $e) {
-						}
-						while ($row = $result->fetch()) { echo "<option value='".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span style="font-size: 90%"><i>* denotes a required field</i></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="Submit">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+	$sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.firstName, ' ',gibbonPerson.surname) As name FROM gibbonPerson inner join ibDiplomaCASStaff on ibDiplomaCASStaff.gibbonPersonID = gibbonPerson.gibbonPersonID ORDER BY  gibbonPerson.firstName";
+	$row = $form->addRow();
+		$row->addLabel('gibbonPersonIDCASAdvisor', __('CAS Advisor'));
+		$row->addSelect('gibbonPersonIDCASAdvisor')->fromQuery($pdo, $sql)->placeholder();
+	
+	$row = $form->addRow();
+		$row->addFooter();
+		$row->addSubmit();
+			
+	echo $form->getOutput();
+
 
 }
 ?>

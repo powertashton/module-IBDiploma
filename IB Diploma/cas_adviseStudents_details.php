@@ -17,7 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
+
+
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -59,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                 echo 'The specified student does not exist, or you do not have access to them.';
                 echo '</div>';
             } else {
-                $row = $result->fetch();
-                $image_240 = $row['image_240'];
+                $values = $result->fetch();
+                $image_240 = $values['image_240'];
 
                 echo "<div class='trail'>";
                 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_adviseStudents.php'>Advise CAS Students</a> > </div><div class='trailEnd'>Advise Student</div>";
@@ -74,12 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                 echo '<tr>';
                 echo "<td style='width: 34%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
+                echo formatName('', $values['preferredName'], $values['surname'], 'Student', true, true);
                 echo '</td>';
                 echo "<td style='width: 34%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>";
                 try {
-                    $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                    $dataDetail = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
                     $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
                     $resultDetail = $connection2->prepare($sqlDetail);
                     $resultDetail->execute($dataDetail);
@@ -87,22 +92,22 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 if ($resultDetail->rowCount() == 1) {
-                    $rowDetail = $resultDetail->fetch();
-                    echo '<i>'.$rowDetail['name'].'</i>';
+                    $valuesDetail = $resultDetail->fetch();
+                    echo '<i>'.$valuesDetail['name'].'</i>';
                 }
                 echo '</td>';
                 echo "<td style='width: 34%; vertical-align: top'>";
-                $casStatusSchool = $row['casStatusSchool'];
+                $casStatusSchool = $values['casStatusSchool'];
                 echo "<span style='font-size: 115%; font-weight: bold'>CAS Status</span><br/>";
-                if ($row['casStatusSchool'] == 'At Risk') {
+                if ($values['casStatusSchool'] == 'At Risk') {
                     echo "<img title='At Risk' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>";
-                } elseif ($row['casStatusSchool'] == 'On Task') {
+                } elseif ($values['casStatusSchool'] == 'On Task') {
                     echo "<img title='On Task' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
-                } elseif ($row['casStatusSchool'] == 'Excellence') {
+                } elseif ($values['casStatusSchool'] == 'Excellence') {
                     echo "<img title='Excellence' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on_small.png'/>";
-                } elseif ($row['casStatusSchool'] == 'Incomplete') {
+                } elseif ($values['casStatusSchool'] == 'Incomplete') {
                     echo "<img title='Incomplete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> Incomplete";
-                } elseif ($row['casStatusSchool'] == 'Complete') {
+                } elseif ($values['casStatusSchool'] == 'Complete') {
                     echo "<img title='Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> Complete";
                 }
                 echo '</td>';
@@ -159,50 +164,50 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo '</tr>';
 
                         $count = 0;
-                        $rowNum = 'odd';
+                        $valuesNum = 'odd';
                         $intended = array();
                         $complete = array();
-                        while ($row = $result->fetch()) {
+                        while ($values = $result->fetch()) {
                             if ($count % 2 == 0) {
-                                $rowNum = 'even';
+                                $valuesNum = 'even';
                             } else {
-                                $rowNum = 'odd';
+                                $valuesNum = 'odd';
                             }
                             ++$count;
 
                                 //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
+                                echo "<tr class=$valuesNum>";
                             echo '<td>';
-                            echo $row['name'];
+                            echo $values['name'];
                             echo '</td>';
                             echo '<td>';
-                            if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-                                echo $row['approval'];
+                            if ($values['approval'] == 'Pending' or $values['approval'] == 'Not Approved') {
+                                echo $values['approval'];
                             } else {
-                                echo $row['status'];
+                                echo $values['status'];
                             }
                             echo '</td>';
                             echo '<td>';
-                            if (substr($row['dateStart'], 0, 4) == substr($row['dateEnd'], 0, 4)) {
-                                if (substr($row['dateStart'], 5, 2) == substr($row['dateEnd'], 5, 2)) {
-                                    echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                            if (substr($values['dateStart'], 0, 4) == substr($values['dateEnd'], 0, 4)) {
+                                if (substr($values['dateStart'], 5, 2) == substr($values['dateEnd'], 5, 2)) {
+                                    echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
                                 } else {
-                                    echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                                    echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
                                 }
                             } else {
-                                echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
+                                echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateEnd'], 0, 4);
                             }
                             echo '</td>';
                             echo '<td>';
-                            if ($row['supervisorEmail'] != '') {
-                                echo "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
+                            if ($values['supervisorEmail'] != '') {
+                                echo "<a href='mailto:".$values['supervisorEmail']."'>".$values['supervisorName'].'</a>';
                             } else {
-                                echo $row['supervisorName'];
+                                echo $values['supervisorName'];
                             }
                             echo '</td>';
                             echo '<td>';
                             try {
-                                $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
+                                $dataFeedback = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
                                 $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
                                 $resultFeedback = $connection2->prepare($sqlFeedback);
                                 $resultFeedback->execute($dataFeedback);
@@ -214,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo "<img title='Supervisor Feedback Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
                             } else {
                                 try {
-                                    $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
+                                    $dataFeedback = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
                                     $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='N'";
                                     $resultFeedback = $connection2->prepare($sqlFeedback);
                                     $resultFeedback->execute($dataFeedback);
@@ -228,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             }
                             echo '</td>';
                             echo '<td>';
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_full.php&gibbonPersonID=$gibbonPersonID&ibDiplomaCASCommitmentID=".$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_full.php&gibbonPersonID=$gibbonPersonID&ibDiplomaCASCommitmentID=".$values['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
                             echo '</td>';
                             echo '</tr>';
                         }
@@ -258,8 +263,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 						} catch (PDOException $e) {
 							echo "<div class='error'>".$e->getMessage().'</div>';
 						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+						while ($valuesSelect = $resultSelect->fetch()) {
+							echo "<option value='".$valuesSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($valuesSelect['name']).'</option>';
 						}
 						?>
 					</select>
@@ -288,21 +293,21 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo '</tr>';
                         echo "<tbody class='body'>";
                         $count = 0;
-                        $rowNum = 'odd';
-                        while ($row = $result->fetch()) {
+                        $valuesNum = 'odd';
+                        while ($values = $result->fetch()) {
                             ++$count;
 
-                            $class = $row['ibDiplomaCASCommitmentID'];
+                            $class = $values['ibDiplomaCASCommitmentID'];
                             if ($class == '') {
                                 $class = 'General';
                             }
                             echo "<tr class='$class'>";
                             echo '<td>';
-                            if (is_null($row['ibDiplomaCASCommitmentID'])) {
+                            if (is_null($values['ibDiplomaCASCommitmentID'])) {
                                 echo '<b><i>General CAS</i></b>';
                             } else {
                                 try {
-                                    $dataCommitment = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
+                                    $dataCommitment = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
                                     $sqlCommitment = 'SELECT * FROM ibDiplomaCASCommitment WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID';
                                     $resultCommitment = $connection2->prepare($sqlCommitment);
                                     $resultCommitment->execute($dataCommitment);
@@ -310,16 +315,16 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
                                 if ($resultCommitment->rowCount() == 1) {
-                                    $rowCommitment = $resultCommitment->fetch();
-                                    echo $rowCommitment['name'];
+                                    $valuesCommitment = $resultCommitment->fetch();
+                                    echo $valuesCommitment['name'];
                                 }
                             }
                             echo '</td>';
                             echo '<td>';
-                            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10));
+                            echo dateConvertBack($guid, substr($values['timestamp'], 0, 10));
                             echo '</td>';
                             echo '<td>';
-                            echo $row['title'];
+                            echo $values['title'];
                             echo '</td>';
                             echo '<td>';
                             echo "<script type='text/javascript'>";
@@ -336,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo '</tr>';
                             echo "<tr class='comment-$count' id='comment-$count'>";
                             echo "<td style='background-color: #D4F6DC;' colspan=4>";
-                            echo $row['reflection'];
+                            echo $values['reflection'];
                             echo '</td>';
                             echo '</tr>';
                         }
@@ -373,38 +378,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     echo "This field is used to indicate whether or not the student has, in the school's opinion, completed the CAS component of the IB Diploma.";
                     echo '</p>';
 
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php' ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-							<tr>
-								<td>
-									<b>Status *</b><br/>
-									<span style="font-size: 90%"><i></i></span>
-								</td>
-								<td class="right">
-									<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-										<option <?php if ($casStatusSchool == '') { echo 'selected '; } ?>value=""></option>
-										<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
-										<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
-										<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
-										<option <?php if ($casStatusSchool == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
-										<option <?php if ($casStatusSchool == 'Incomplete') { echo 'selected '; } ?>value="Incomplete">Incomplete</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span style="font-size: 90%"><i>* denotes a required field</i></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="Submit">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+
+					$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
+					
+					$form->setFactory(DatabaseFormFactory::create($pdo));
+					$form->setClass('smallIntBorder fullWidth');
+					 
+					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+					 
+					 $row = $form->addRow();
+					 	$row->addHeading(__('Status *'));
+					 	$row->addSelect('casStatusSchool')->fromArray(array('' => __(''), 'At Risk' => __('At Risk'), 'On Task' => __('On Task'), 'Excellence' => __('Execellence'), 'Complete' => ('Complete'), 'Incomplete' => ('Incomplete')))->selected($casStatusSchool)->isRequired();
+					 
+					$row = $form->addRow();
+						$row->addFooter();
+						$row->addSubmit();
+						
+					echo $form->getOutput();
 
                 } elseif ($subpage == 'Interview 1') {
                     try {
@@ -422,23 +413,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo '</div>';
                     } else {
                         if ($resultInterview->rowCount() == 1) {
-                            $rowInterview = $resultInterview->fetch();
+                            $valuesInterview = $resultInterview->fetch();
                         }
-
-                        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php'>";
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo "<tr class='break'>";
-                        echo '<td colspan=2>';
-                        echo "<h3 class='top'>Commitment Goals</h3>";
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo '<td colspan=2>';
-                        echo '<p>';
-                        echo 'Work with the interviewee to determine a suitable, brief goal for each approved commitment.';
-                        echo '</p>';
-
-                        try {
+					try {
                             $dataCommitments = array('gibbonPersonID' => $gibbonPersonID);
                             $sqlCommitments = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
                             $resultCommitments = $connection2->prepare($sqlCommitments);
@@ -446,153 +423,70 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-
-                        if ($resultCommitments->rowCount() < 1) {
+					if ($resultCommitments->rowCount() < 1) {
                             echo "<div class='error'>";
                             echo 'There are no commitments to display.';
                             echo '</div>';
                         } else {
-                            echo "<table cellspacing='0' style='margin-top: 0px; width: 100%'>";
-                            echo "<tr class='head'>";
-                            echo "<th style='vertical-align: bottom'>";
-                            echo 'Commitment';
-                            echo '</th>';
-                            echo "<th style='vertical-align: bottom'>";
-                            echo 'Timing';
-                            echo '</th>';
-                            echo "<th style='vertical-align: bottom; width: 310px'>";
-                            echo 'Goals';
-                            echo '</th>';
-                            echo '</tr>';
-
-                            $count = 0;
-                            $rowNum = 'odd';
-                            while ($rowCommitments = $resultCommitments->fetch()) {
-                                if ($count % 2 == 0) {
-                                    $rowNum = 'even';
-                                } else {
-                                    $rowNum = 'odd';
-                                }
-                                ++$count;
-
-								//COLOR ROW BY STATUS!
-								echo "<tr class=$rowNum>";
-								echo '<td>';
-								echo $rowCommitments['name'];
-								echo '</td>';
-                                echo '<td>';
-                                if (substr($rowCommitments['dateStart'], 0, 4) == substr($rowCommitments['dateEnd'], 0, 4)) {
-                                    if (substr($rowCommitments['dateStart'], 5, 2) == substr($rowCommitments['dateEnd'], 5, 2)) {
-                                        echo date('F', mktime(0, 0, 0, substr($rowCommitments['dateStart'], 5, 2))).' '.substr($rowCommitments['dateStart'], 0, 4);
-                                    } else {
-                                        echo date('F', mktime(0, 0, 0, substr($rowCommitments['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($rowCommitments['dateEnd'], 5, 2))).' '.substr($rowCommitments['dateStart'], 0, 4);
-                                    }
-                                } else {
-                                    echo date('F', mktime(0, 0, 0, substr($rowCommitments['dateStart'], 5, 2))).' '.substr($rowCommitments['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($rowCommitments['dateEnd'], 5, 2))).' '.substr($rowCommitments['dateEnd'], 0, 4);
-                                }
-                                echo '</td>';
-                                echo '<td>';
-                                echo "<input type='hidden' name='$count-ibDiplomaCASCommitmentID' value='".$rowCommitments['ibDiplomaCASCommitmentID']."'>";
-                                echo "<input type='text' style='width: 302px' name='$count-goals' id='$count-goals' value='".$rowCommitments['goals']."' maxlength=255>";
-                                echo '</td>';
-                                echo '</tr>';
-                            }
-                            echo '</table>';
-                        }
-
-                        echo '</td>';
-                        echo '</tr>';
-
-                        echo "<tr class='break'>";
-                        echo '<td colspan=2>';
-                        echo '<h3>Notes</h3>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo '<td colspan=2>';
-                        echo 'Use this space to take notes on your conversation with the student. You may wish to consider:';
-                        echo "<i><ul style='margin-bottom: 0px'><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i><br/>";
-                        echo "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>";
-                        if (isset($rowInterview['1_notes'])) {
-                            echo $rowInterview['1_notes'];
-                        }
-                        echo '</textarea>';
-                        echo '</td>';
-                        echo '</tr>';
-
-                        echo "<tr class='break'>";
-                        echo '<td colspan=2>';
-                        echo '<h3>General Information</h3>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo '<td>';
-                        echo '<b>Interviewer *</b><br/>';
-                        echo '</td>';
-                        echo "<td class='right'>";
-                        if ($resultInterview->rowCount() == 1) {
-                            echo "<input readonly maxlength=255 value='".formatName('', $rowInterview['preferredName'], $rowInterview['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                        } else {
-                            echo "<input readonly maxlength=255 value='".formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo '<td>';
-                        echo '<b>Date *</b><br/>';
-                        echo "<span style='font-size: 90%'><i>Format: dd/mm/yyyy.</i></span>";
-                        echo '</td>';
-                        echo "<td class='right'>";
-                        $date = '';
-                        if (isset($rowInterview['1_date'])) {
-                            $date = dateConvertBack(substr($rowInterview['1_date'], 0, 10));
-                        }
-                        ?>
-
-							<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var date=new LiveValidation('date');
-								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-								date.add(Validate.Presence);
-							 </script>
-							<script type="text/javascript">
-								$(function() {
-									$( "#date" ).datepicker();
-								});
-							</script>
-							<?php
-						echo '</td>';
-                        echo '</tr>';
-
-                        ?>
-						<tr>
-							<td>
-								<b>CAS Status *</b><br/>
-								<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-							</td>
-							<td class="right">
-								<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-									<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
-									<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
-									<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span style="font-size: 90%"><i>* denotes a required field</i></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="count" value="<?php echo $count ?>">
-								<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="Submit">
-							</td>
-						</tr>
-					</table>
-					<?php
-                        echo '</form>';
+						
+						$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
+							$form->setClass('smallIntBorder fullWidth');
+							
+							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+							
+							$form->addRow()->addHeading(__('Commitment Goals'));
+								$formRow = $form->addRow();
+								$formRow->addLabel('label', __('Work with the interviewee to determine a suitable, brief goal for each approved commitment.'));
+							
+							$table = $form->addRow()->addTable()->setClass('mini fullWidth');
+								$row = $table->addHeaderRow();
+                					$row->addContent(__('Commitment'))->wrap('<div style="width: 120px;">', '</div>');
+									$row->addContent(__('Timing'))->wrap('<div style="width: 300px;">', '</div>');
+									$row->addContent(__('Goals'))->wrap('<div style="width: 120px;">', '</div>');
+							
+                        	$count = 0;
+							while ($valuesCommitments = $resultCommitments->fetch()) {
+								++$count;
+								$row = $table->addRow();
+									$row->addContent(__($valuesCommitments['name']));
+									if (substr($valuesCommitments['dateStart'], 0, 4) == substr($valuesCommitments['dateEnd'], 0, 4)) {
+											if (substr($valuesCommitments['dateStart'], 5, 2) == substr($valuesCommitments['dateEnd'], 5, 2)) {
+												$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
+											} else {
+												$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
+											}
+										} else {
+											$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateEnd'], 0, 4)));
+										}
+									$form->addHiddenValue($count.'-ibDiplomaCASCommitmentID', $valuesCommitments['ibDiplomaCASCommitmentID']);
+									$row->addTextField($count.'-goals')->setValue($valuesCommitments['goals'])->maxLength(255);
+							}
+						
+							$form->addRow()->addHeading(__('Notes'));
+								$row = $form->addRow();
+									$column = $row->addColumn();
+										$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i>'));
+										$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['1_notes'])->setClass('fullWidth');
+						
+							$form->addRow()->addHeading(__('General Information'));
+								$row = $form->addRow();
+									$row->addLabel('interviewer', __('Interviewer'));
+									$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+								$row = $form->addRow();
+									$row->addLabel('date', __('Date'));
+									$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['1_date']))->isRequired();
+								$row = $form->addRow();
+									$row->addLabel('casStatusSchool', __('CAS Status'));
+									$row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
+						
+							$form->addHiddenValue("count", $count);
+							$row = $form->addRow();
+								$row->addFooter();
+								$row->addSubmit();
+							echo $form->getOutput();
                     }
+                }
                 } elseif ($subpage == 'Interview 2') {
                     try {
                         $dataInterview = array('gibbonPersonID' => $gibbonPersonID);
@@ -613,30 +507,19 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo 'You have not yet completed Interview 1, and so cannot access Interview 2.';
                             echo '</div>';
                         } else {
-                            $rowInterview = $resultInterview->fetch();
-
-                            echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php'>";
-                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                            echo "<tr class='break'>";
-                            echo '<td colspan=2>';
-                            echo "<h3 class='top'>Outcomes</h3>";
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '<tr>';
-                            echo '<td colspan=2>';
-                            echo '<p>';
-                            echo 'Work with the interviewee to determine which commitments you think <b>might</b> satisfy each of the outcomes listed below. The student should have pre-filled this information before Interview 2.';
-                            echo '</p>';
-                            echo '</td>';
-                            echo '</tr>';
-
-                            ?>
-							<style>
-								tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
-								tr.outcome div.token-input-dropdown-facebook  { width: 738px }
-							</style>
-							<?php
-							//Get commitment list
+                            $valuesInterview = $resultInterview->fetch();
+							
+							
+							$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
+							$form->setClass('smallIntBorder fullWidth');
+							
+							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+							
+							$form->addRow()->addHeading(__('Commitment Goals'));
+								$formRow = $form->addRow();
+								$formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>might</b> satisfy each of the outcomes listed below. The student should have pre-filled this information before Interview 2.'));
+							
 							try {
 								$dataList = array('gibbonPersonID' => $gibbonPersonID);
 								$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
@@ -647,13 +530,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 							}
 
                             $list = '';
-                            while ($rowList = $resultList->fetch()) {
-                                $list .= '{id: "'.$rowList['ibDiplomaCASCommitmentID'].'", name: "'.$rowList['name'].'"},';
+                            while ($valuesList = $resultList->fetch()) {
+                                $list .= '{id: "'.$valuesList['ibDiplomaCASCommitmentID'].'", name: "'.$valuesList['name'].'"},';
                             }
                             $list = substr($list, 0, -1);
                             for ($i = 1; $i < 9; ++$i) {
-                                echo '<tr>';
-                                echo '<td colspan=2> ';
                                 switch ($i) {
 									case 1:
 										$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
@@ -680,137 +561,65 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 										$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
 										break;
 								}
-                                echo "<p style='margin-bottom: 3px'><b>Outcome $i</b> - $title</p>";
-                                echo '</td>';
-                                echo '</tr>';
-                                echo "<tr class='outcome' id='outcome".$i."RowIntention'>";
-                                echo '<td colspan=2> ';
-                                echo "<input type='text' id='outcome".$i."' name='outcome".$i."' />";
-                                $prepopulate = '';
-                                $where = '';
-                                if ($rowInterview["2_outcome$i"] != '') {
-                                    $commitments = explode(',', $rowInterview["2_outcome$i"]);
-                                    foreach ($commitments as $commitment) {
-                                        $where .= 'ibDiplomaCASCommitmentID='.$commitment.' OR ';
-                                    }
-                                    $where = substr($where, 0, -4);
+								
+								$prepopulate = '';
+                                if ($valuesInterview["2_outcome".$i] != '') {
+                                	echo "2_outcome".$i;
+                                	$outcomeList = array();
                                     try {
-                                        $sqlPrepopulate = "SELECT * FROM ibDiplomaCASCommitment WHERE $where";
+                                    	array_push($outcomeList, $valuesInterview['2_outcome'.$i]);
+										$dataPrepopulate = ['outcomeList' => $valuesInterview['2_outcome'.$i]];
+                                        $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
                                         $resultPrepopulate = $connection2->query($sqlPrepopulate);
                                     } catch (PDOException $e) {
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
-                                    while ($rowPrepopulate = $resultPrepopulate->fetch()) {
-                                        $prepopulate .= '{id: "'.$rowPrepopulate['ibDiplomaCASCommitmentID'].'", name: "'.$rowPrepopulate['name'].'"},';
-                                    }
-                                    if ($prepopulate != '') {
-                                        $prepopulate = substr($prepopulate, 0, -1);
+                                    while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
+                                        $prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
                                     }
                                 }
-                                echo "<script type='text/javascript'>";
-                                echo '$(document).ready(function() {';
-                                echo ' $("#outcome'.$i.'").tokenInput([';
-                                echo $list;
-                                echo '],';
-                                echo '{theme: "facebook",';
-                                echo 'hintText: "Start typing a tag...",';
-                                echo 'allowCreation: false,';
-                                if ($prepopulate != '') {
-                                    echo "prePopulate: [$prepopulate],";
-                                }
-                                echo 'preventDuplicates: true});';
-                                echo '});';
-                                echo '</script>';
-
-                                echo '</td>';
-                                echo '</tr>';
+                                
+                                	$data = array('gibbonPersonID' => $gibbonPersonID);
+                                	$sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
+									$row = $form->addRow()->addClass('tags');
+           								$column = $row->addColumn();
+            							$column->addLabel('outcome'.$i, __('Outcome '.$i))
+            								->description(__($title));
+										$column->addFinder('outcome'.$i)
+											->fromQuery($pdo, $sql, $data)
+											->setParameter('hintText', __('Type the name of an approved commitment...'))
+											->setParameter('allowCreation', false)
+											->selected($prepopulate);
                             }
-
-                            echo "<tr class='break'>";
-                            echo '<td colspan=2>';
-                            echo '<h3>Notes</h3>';
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '<tr>';
-                            echo '<td colspan=2>';
-                            echo 'Use this space to take notes on your conversation with the student. You may wish to consider:';
-                            echo "<i><ul style='margin-bottom: 0px'><li>How is student progressing?</li><li>Are all outcomes begun?</li><li>Which outcomes require more thought and action?</li></ul></i><br/>";
-                            echo "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>".$rowInterview['2_notes'].'</textarea>';
-                            echo '</td>';
-                            echo '</tr>';
-
-                            echo "<tr class='break'>";
-                            echo '<td colspan=2>';
-                            echo '<h3>General Information</h3>';
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '<tr>';
-                            echo '<td>';
-                            echo '<b>Interviewer *</b><br/>';
-                            echo '</td>';
-                            echo "<td class='right'>";
-                            if (!(is_null($rowInterview['2_gibbonPersonIDInterviewer']))) {
-                                echo "<input readonly maxlength=255 value='".formatName('', $rowInterview['preferredName'], $rowInterview['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                            } else {
-                                echo "<input readonly maxlength=255 value='".formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                            }
-                            echo '</td>';
-                            echo '</tr>';
-                            echo '<tr>';
-                            echo '<td>';
-                            echo '<b>Date *</b><br/>';
-                            echo "<span style='font-size: 90%'><i>Format: dd/mm/yyyy.</i></span>";
-                            echo '</td>';
-                            echo "<td class='right'>";
-                            $date = '';
-                            if ($rowInterview['2_date'] != '') {
-                                $date = dateConvertBack($guid, substr($rowInterview['2_date'], 0, 10));
-                            }
-                            ?>
-
-							<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var date=new LiveValidation('date');
-								date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-								date.add(Validate.Presence);
-							 </script>
-							<script type="text/javascript">
-								$(function() {
-									$( "#date" ).datepicker();
-								});
-							</script>
-							<?php
-							echo '</td>';
-                            echo '</tr>';
-
-							?>
-							<tr>
-								<td>
-									<b>CAS Status *</b><br/>
-									<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-								</td>
-								<td class="right">
-									<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-										<option <?php if ($casStatusSchool == 'At Risk') { echo 'selected '; } ?>value="At Risk">At Risk</option>
-										<option <?php if ($casStatusSchool == 'On Task') { echo 'selected '; } ?>value="On Task">On Task</option>
-										<option <?php if ($casStatusSchool == 'Excellence') { echo 'selected '; } ?>value="Excellence">Excellence</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span style="font-size: 90%"><i>* denotes a required field</i></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="count" value="<?php echo $count ?>">
-									<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="Submit">
-								</td>
-							</tr>
-						</table>
-						<?php
-					echo '</form>';
+                            $form->addRow()->addHeading(__('Notes'));
+								$row = $form->addRow();
+									$column = $row->addColumn();
+										$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>How is student progressing?</li><li>Are all outcomes begun?</li><li>Which outcomes require more thought and action?</li></ul></i>'));
+										$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['2_notes'])->setClass('fullWidth');
+						
+							$form->addRow()->addHeading(__('General Information'));
+								$row = $form->addRow();
+									$row->addLabel('interviewer', __('Interviewer'));
+									$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+								$row = $form->addRow();
+									$row->addLabel('date', __('Date'));
+									$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['2_date']))->isRequired();
+								$row = $form->addRow();
+									$row->addLabel('casStatusSchool', __('CAS Status'));
+									$row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
+						
+                            
+							$row = $form->addRow();
+								$row->addFooter();
+								$row->addSubmit();
+							echo $form->getOutput();
+							
+							// HACK: Otherwise FastFinder width overrides this one :(
+        					echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
+							
+						
+							
+                           
                         }
                     }
                 } elseif ($subpage == 'Interview 3') {
@@ -833,35 +642,23 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo 'You have not yet completed Interview 1, and so cannot access Interview 2.';
                             echo '</div>';
                         } else {
-                            $rowInterview = $resultInterview->fetch();
+                            $valuesInterview = $resultInterview->fetch();
 
-                            if (is_null($rowInterview['2_date'])) {
+                            if (is_null($valuesInterview['2_date'])) {
                                 echo "<div class='error'>";
                                 echo 'You have not yet completed Interview 2, and so cannot access Interview 3.';
                                 echo '</div>';
                             } else {
-                                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php'>";
-                                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                                echo "<tr class='break'>";
-                                echo '<td colspan=2>';
-                                echo "<h3 class='top'>Outcomes</h3>";
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo '<td colspan=2>';
-                                echo '<p>';
-                                echo 'Work with the interviewee to determine which commitments you think <b>have</b> satisfied each of the outcomes listed below. The student should have pre-filled this information before Interview 3. Use the second box for each outcome to record notes from your discussion.';
-                                echo '</p>';
-                                echo '</td>';
-                                echo '</tr>';
-
-                                ?>
-								<style>
-									tr.outcome ul.token-input-list-facebook { width: 738px; height: 25px!important; }
-									tr.outcome div.token-input-dropdown-facebook  { width: 738px }
-								</style>
-								<?php
-								//Get commitment list
+								$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
+								$form->setClass('smallIntBorder fullWidth');
+							
+								$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+								$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+							
+								$form->addRow()->addHeading(__('Outcomes'));
+									$formRow = $form->addRow();
+									$formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>have</b> satisfied each of the outcomes listed below. The student should have pre-filled this information before Interview 3. Use the second box for each outcome to record notes from your discussion'));
+							
 								try {
 									$dataList = array('gibbonPersonID' => $gibbonPersonID);
 									$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
@@ -871,15 +668,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 									echo "<div class='error'>".$e->getMessage().'</div>';
 								}
 
-                                $list = '';
-                                while ($rowList = $resultList->fetch()) {
-                                    $list .= '{id: "'.$rowList['ibDiplomaCASCommitmentID'].'", name: "'.$rowList['name'].'"},';
-                                }
-                                $list = substr($list, 0, -1);
-                                for ($i = 1; $i < 9; ++$i) {
-                                    echo '<tr>';
-                                    echo '<td colspan=2> ';
-                                    switch ($i) {
+								$list = '';
+								while ($valuesList = $resultList->fetch()) {
+									$list .= '{id: "'.$valuesList['ibDiplomaCASCommitmentID'].'", name: "'.$valuesList['name'].'"},';
+								}
+								$list = substr($list, 0, -1);
+								for ($i = 1; $i < 9; ++$i) {
+									switch ($i) {
 										case 1:
 											$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
 											break;
@@ -905,138 +700,67 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 											$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
 											break;
 									}
-                                    echo "<p style='margin-bottom: 3px'><b>Outcome $i</b> - $title</p>";
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    echo "<tr class='outcome' id='outcome".$i."RowIntention'>";
-                                    echo '<td colspan=2> ';
-                                    echo "<input class='outcome' type='text' id='outcome".$i."' name='outcome".$i."' />";
-                                    $prepopulate = '';
-                                    $where = '';
-                                    if ($rowInterview["3_outcome$i"] != '') {
-                                        $commitments = explode(',', $rowInterview["3_outcome$i"]);
-                                        foreach ($commitments as $commitment) {
-                                            $where .= 'ibDiplomaCASCommitmentID='.$commitment.' OR ';
-                                        }
-                                        $where = substr($where, 0, -4);
-                                        try {
-                                            $sqlPrepopulate = "SELECT * FROM ibDiplomaCASCommitment WHERE $where";
-                                            $resultPrepopulate = $connection2->query($sqlPrepopulate);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-                                        while ($rowPrepopulate = $resultPrepopulate->fetch()) {
-                                            $prepopulate .= '{id: "'.$rowPrepopulate['ibDiplomaCASCommitmentID'].'", name: "'.$rowPrepopulate['name'].'"},';
-                                        }
-                                        if ($prepopulate != '') {
-                                            $prepopulate = substr($prepopulate, 0, -1);
-                                        }
-                                    }
-                                    echo "<script type='text/javascript'>";
-                                    echo '$(document).ready(function() {';
-                                    echo ' $("#outcome'.$i.'").tokenInput([';
-                                    echo $list;
-                                    echo '],';
-                                    echo '{theme: "facebook",';
-                                    echo 'hintText: "Start typing a tag...",';
-                                    echo 'allowCreation: false,';
-                                    if ($prepopulate != '') {
-                                        echo "prePopulate: [$prepopulate],";
-                                    }
-                                    echo 'preventDuplicates: true});';
-                                    echo '});';
-                                    echo '</script>';
-                                    echo "<textarea name='outcome".$i."Notes' id='outcome".$i."Notes' rows=3 style='width:738px; margin: 0px 0px 10px 0px'>".$rowInterview['3_outcome'.$i.'Notes'].'</textarea>';
-                                    echo '</td>';
-                                    echo '</tr>';
-                                }
+								
+									$prepopulate = '';
+									if ($valuesInterview["3_outcome".$i] != '') {
+										echo "3_outcome".$i;
+										$outcomeList = array();
+										try {
+											array_push($outcomeList, $valuesInterview['3_outcome'.$i]);
+											$dataPrepopulate = ['outcomeList' => $valuesInterview['3_outcome'.$i]];
+											$sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
+											$resultPrepopulate = $connection2->query($sqlPrepopulate);
+										} catch (PDOException $e) {
+											echo "<div class='error'>".$e->getMessage().'</div>';
+										}
+										while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
+											$prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
+										}
+									}
+								
+										$data = array('gibbonPersonID' => $gibbonPersonID);
+										$sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
+										$row = $form->addRow()->addClass('tags');
+											$column = $row->addColumn();
+											$column->addLabel('outcome'.$i, __('Outcome '.$i))
+												->description(__($title));
+											$column->addFinder('outcome'.$i)
+												->fromQuery($pdo, $sql, $data)
+												->setParameter('hintText', __('Type the name of an approved commitment...'))
+												->setParameter('allowCreation', false)
+												->selected($prepopulate);
+											$column->addTextArea('outcome'.$i.'Notes')
+												->setRows(3)
+												->setValue($valuesInterview['3_outcome'.$i.'Notes'])
+												->setClass('fullWidth');
+								}
+								$form->addRow()->addHeading(__('Notes'));
+									$row = $form->addRow();
+										$column = $row->addColumn();
+											$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul style="margin-bottom: 0px"><li>Are all outcomes satisfactorily completed?</li></ul></i><br/>'));
+											$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['3_notes'])->setClass('fullWidth');
+						
+								$form->addRow()->addHeading(__('General Information'));
+									$row = $form->addRow();
+										$row->addLabel('interviewer', __('Interviewer'));
+										$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+									$row = $form->addRow();
+										$row->addLabel('date', __('Date'));
+										$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['3_date']))->isRequired();
+									$row = $form->addRow();
+										$row->addLabel('casStatusSchool', __('CAS Status'));
+										$row->addSelect('casStatusSchool')->fromArray(array('Complete' =>__('Complete'), 'Incomplete' => __('Incomplete')))->selected($casStatusSchool)->isRequired();
+						
+							
+								$row = $form->addRow();
+									$row->addFooter();
+									$row->addSubmit();
+								echo $form->getOutput();
+								
+								// HACK: Otherwise FastFinder width overrides this one :(
+        						echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
+							
 
-                                echo "<tr class='break'>";
-                                echo '<td colspan=2>';
-                                echo '<h3>Notes</h3>';
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo '<td colspan=2>';
-                                echo 'Use this space to take notes on your conversation with the student. You may wish to consider:';
-                                echo "<i><ul style='margin-bottom: 0px'><li>Are all outcomes satisfactorily completed?</li></ul></i><br/>";
-                                echo "<textarea name='notes' id='notes' rows=15 style='width:738px; margin-left: 0px'>".$rowInterview['3_notes'].'</textarea>';
-                                echo '</td>';
-                                echo '</tr>';
-
-                                echo "<tr class='break'>";
-                                echo '<td colspan=2>';
-                                echo '<h3>General Information</h3>';
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo '<td>';
-                                echo '<b>Interviewer *</b><br/>';
-                                echo '</td>';
-                                echo "<td class='right'>";
-                                if (!(is_null($rowInterview['3_gibbonPersonIDInterviewer']))) {
-                                    echo "<input readonly maxlength=255 value='".formatName('', $rowInterview['preferredName'], $rowInterview['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                                } else {
-                                    echo "<input readonly maxlength=255 value='".formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true)."' type='text' style='width: 300px'>";
-                                }
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo '<td>';
-                                echo '<b>Date *</b><br/>';
-                                echo "<span style='font-size: 90%'><i>Format: dd/mm/yyyy.</i></span>";
-                                echo '</td>';
-                                echo "<td class='right'>";
-                                $date = '';
-                                if ($rowInterview['3_date'] != '') {
-                                    $date = dateConvertBack($guid, substr($rowInterview['3_date'], 0, 10));
-                                }
-                                ?>
-
-								<input name="date" id="date" maxlength=10 value="<?php echo $date ?>" type="text" style="width: 300px">
-								<script type="text/javascript">
-									var date=new LiveValidation('date');
-									date.add( Validate.Format, {pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i, failureMessage: "Use dd/mm/yyyy." } );
-									date.add(Validate.Presence);
-								 </script>
-								<script type="text/javascript">
-									$(function() {
-										$( "#date" ).datepicker();
-									});
-								</script>
-								<?php
-								echo '</td>';
-                                echo '</tr>';
-
-                                ?>
-								<tr>
-									<td>
-										<b>CAS Status *</b><br/>
-										<span style="font-size: 90%"><i>Update the student's status within the CAS programme.</i></span>
-									</td>
-									<td class="right">
-										<select name="casStatusSchool" id="casStatusSchool" style="width: 302px">
-													<option <?php if ($casStatusSchool == 'Complete') { echo 'selected '; } ?>value="Complete">Complete</option>
-													<option <?php if ($casStatusSchool == 'Incomplete') { echo 'selected '; } ?>value="Incomplete">Incomplete</option>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span style="font-size: 90%"><i>* denotes a required field</i></span>
-											</td>
-											<td class="right">
-												<input type="hidden" name="count" value="<?php echo $count ?>">
-												<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="Submit">
-											</td>
-										</tr>
-										<tr>
-										</tr>
-									</table>
-									<?php
-                                echo '</form>';
                             }
                         }
                     }

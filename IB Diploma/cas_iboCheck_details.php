@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
             echo 'The specified student does not exist, or you do not have access to them.';
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_iboCheck.php'>IBO CAS Check</a> > </div><div class='trailEnd'>Student Details</div>";
@@ -100,12 +100,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
+            echo formatName('', $values['preferredName'], $values['surname'], 'Student', true, true);
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Year Group</span><br/>";
             try {
-                $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                $dataDetail = array('gibbonYearGroupID' => $values['gibbonYearGroupID']);
                 $sqlDetail = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
                 $resultDetail = $connection2->prepare($sqlDetail);
                 $resultDetail->execute($dataDetail);
@@ -113,14 +113,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultDetail->rowCount() == 1) {
-                $rowDetail = $resultDetail->fetch();
-                echo '<i>'.$rowDetail['name'].'</i>';
+                $valuesDetail = $resultDetail->fetch();
+                echo '<i>'.$valuesDetail['name'].'</i>';
             }
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>";
             try {
-                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
+                $dataDetail = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
                 $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
                 $resultDetail = $connection2->prepare($sqlDetail);
                 $resultDetail->execute($dataDetail);
@@ -128,24 +128,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultDetail->rowCount() == 1) {
-                $rowDetail = $resultDetail->fetch();
-                echo '<i>'.$rowDetail['name'].'</i>';
+                $valuesDetail = $resultDetail->fetch();
+                echo '<i>'.$valuesDetail['name'].'</i>';
             }
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>";
-            $casStatusSchool = $row['casStatusSchool'];
+            $casStatusSchool = $values['casStatusSchool'];
             echo "<span style='font-size: 115%; font-weight: bold'>CAS Status</span><br/>";
-            if ($row['casStatusSchool'] == 'At Risk') {
+            if ($values['casStatusSchool'] == 'At Risk') {
                 echo "<img title='At Risk' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>";
-            } elseif ($row['casStatusSchool'] == 'On Task') {
+            } elseif ($values['casStatusSchool'] == 'On Task') {
                 echo "<img title='On Task' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
-            } elseif ($row['casStatusSchool'] == 'Excellence') {
+            } elseif ($values['casStatusSchool'] == 'Excellence') {
                 echo "<img title='Excellence' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on_small.png'/>";
-            } elseif ($row['casStatusSchool'] == 'Incomplete') {
+            } elseif ($values['casStatusSchool'] == 'Incomplete') {
                 echo "<img title='Incomplete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> Incomplete";
-            } elseif ($row['casStatusSchool'] == 'Complete') {
+            } elseif ($values['casStatusSchool'] == 'Complete') {
                 echo "<img title='Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> Complete";
             }
             echo '</td>';
@@ -189,49 +189,49 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 echo '</tr>';
 
                 $count = 0;
-                $rowNum = 'odd';
+                $valuesNum = 'odd';
                 $intended = array();
                 $complete = array();
-                while ($row = $result->fetch()) {
+                while ($values = $result->fetch()) {
                     if ($count % 2 == 0) {
-                        $rowNum = 'even';
+                        $valuesNum = 'even';
                     } else {
-                        $rowNum = 'odd';
+                        $valuesNum = 'odd';
                     }
                     ++$count;
 
 					//COLOR ROW BY STATUS!
-					echo "<tr class=$rowNum>";
+					echo "<tr class=$valuesNum>";
                     echo '<td>';
-                    echo $row['name'];
+                    echo $values['name'];
                     echo '</td>';
                     echo '<td>';
-                    if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-                        echo $row['approval'];
+                    if ($values['approval'] == 'Pending' or $values['approval'] == 'Not Approved') {
+                        echo $values['approval'];
                     } else {
-                        echo $row['status'];
+                        echo $values['status'];
                     }
                     echo '</td>';
                     echo '<td>';
-                    if (substr($row['dateStart'], 0, 4) == substr($row['dateEnd'], 0, 4)) {
-                        if (substr($row['dateStart'], 5, 2) == substr($row['dateEnd'], 5, 2)) {
-                            echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                    if (substr($values['dateStart'], 0, 4) == substr($values['dateEnd'], 0, 4)) {
+                        if (substr($values['dateStart'], 5, 2) == substr($values['dateEnd'], 5, 2)) {
+                            echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
                         } else {
-                            echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                            echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
                         }
                     } else {
-                        echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
+                        echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateEnd'], 0, 4);
                     }
                     echo '</td>';
                     echo '<td>';
-                    if ($row['supervisorEmail'] != '') {
-                        echo "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
+                    if ($values['supervisorEmail'] != '') {
+                        echo "<a href='mailto:".$values['supervisorEmail']."'>".$values['supervisorName'].'</a>';
                     } else {
-                        echo $row['supervisorName'];
+                        echo $values['supervisorName'];
                     }
                     echo '</td>';
                     echo '<td>';
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_iboCheck_full.php&gibbonPersonID=$gibbonPersonID&ibDiplomaCASCommitmentID=".$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_iboCheck_full.php&gibbonPersonID=$gibbonPersonID&ibDiplomaCASCommitmentID=".$values['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -286,8 +286,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
 					} catch (PDOException $e) {
 					}
 
-					while ($rowSelect = $resultSelect->fetch()) {
-						echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+					while ($valuesSelect = $resultSelect->fetch()) {
+						echo "<option value='".$valuesSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($valuesSelect['name']).'</option>';
 					}
 					?>
 				</select>
@@ -316,21 +316,21 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                     echo '</tr>';
                     echo "<tbody class='body'>";
                     $count = 0;
-                    $rowNum = 'odd';
-                    while ($row = $result->fetch()) {
+                    $valuesNum = 'odd';
+                    while ($values = $result->fetch()) {
                         ++$count;
 
-                        $class = $row['ibDiplomaCASCommitmentID'];
+                        $class = $values['ibDiplomaCASCommitmentID'];
                         if ($class == '') {
                             $class = 'General';
                         }
                         echo "<tr class='$class'>";
                         echo '<td>';
-                        if (is_null($row['ibDiplomaCASCommitmentID'])) {
+                        if (is_null($values['ibDiplomaCASCommitmentID'])) {
                             echo '<b><i>General CAS</i></b>';
                         } else {
                             try {
-                                $dataCommitment = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
+                                $dataCommitment = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
                                 $sqlCommitment = 'SELECT * FROM ibDiplomaCASCommitment WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID';
                                 $resultCommitment = $connection2->prepare($sqlCommitment);
                                 $resultCommitment->execute($dataCommitment);
@@ -339,16 +339,16 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                             }
 
                             if ($resultCommitment->rowCount() == 1) {
-                                $rowCommitment = $resultCommitment->fetch();
-                                echo $rowCommitment['name'];
+                                $valuesCommitment = $resultCommitment->fetch();
+                                echo $valuesCommitment['name'];
                             }
                         }
                         echo '</td>';
                         echo '<td>';
-                        echo dateConvertBack(substr($row['timestamp'], 0, 10));
+                        echo dateConvertBack(substr($values['timestamp'], 0, 10));
                         echo '</td>';
                         echo '<td>';
-                        echo $row['title'];
+                        echo $values['title'];
                         echo '</td>';
                         echo '<td>';
                         echo "<script type='text/javascript'>";
@@ -365,7 +365,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                         echo '</tr>';
                         echo "<tr class='comment-$count' id='comment-$count'>";
                         echo "<td style='background-color: #D4F6DC' colspan=4>";
-                        echo $row['reflection'];
+                        echo $values['reflection'];
                         echo '</td>';
                         echo '</tr>';
                     }
