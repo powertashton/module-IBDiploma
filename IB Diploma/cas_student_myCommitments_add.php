@@ -147,7 +147,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 						
 						$row = $form->addRow();
 							$row->addLabel('name', __('Name'));
-							$row->addTextField('name')->setValue($rowActivity['name'])->maxLength(30)->isRequired();
+							if($type == 'New'){
+								$row->addTextField('name')->maxLength(30)->isRequired();
+							}
+							else {
+								$row->addTextField('name')->setValue($rowActivity['name'])->maxLength(30)->isRequired();
+							}
 							
 						$row = $form->addRow();
 							$row->addLabel('status', __('Status'));
@@ -155,31 +160,68 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 
 						$row = $form->addRow();
 							$row->addLabel('dateStart', __('Start Date'));
-							$row->addDate('dateStart')->setValue(dateConvertBack($guid, $rowActivity['programStart']))->isRequired();
-
+							if($type == 'New'){
+								$row->addDate('dateStart')->isRequired();
+							}
+							else {
+								$row->addDate('dateStart')->setValue(dateConvertBack($guid, $rowActivity['programStart']))->isRequired();
+							}
+							
+							
 						$row = $form->addRow();
 							$row->addLabel('dateEnd', __('End Date'));
-							$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $rowActivity['programEnd']));
+							if($type == 'New'){
+								$row->addDate('dateEnd');
+							}
+							else {
+								$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $rowActivity['programEnd']));
+							}
+							
 
 						$row = $form->addRow();
 							$column = $row->addColumn();
 								$column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
-								$column->addTextArea('description')->setRows(10)->setValue($rowActivity['description'])->setClass('fullWidth');
+								if($type == 'New'){
+									$column->addTextArea('description')->setRows(10)->setClass('fullWidth');
+								}
+								else {
+									$column->addTextArea('description')->setRows(10)->setValue($rowActivity['description'])->setClass('fullWidth');
+								}
+							
+								
 
 						
 						$form->addRow()->addHeading(__('Supervisor'));
 						$row = $form->addRow();
 							$row->addLabel('supervisorName', __('Supervisor Name'));
-							$row->addTextField('supervisorName')->setValue(formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true))->maxLength(30)->isRequired();
+							if($type == 'New'){
+									$row->addTextField('supervisorName')->maxLength(30)->isRequired();
+								}
+								else {
+									$row->addTextField('supervisorName')->setValue(formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true))->maxLength(30)->isRequired();
+								}
+							
 						
 						$row = $form->addRow();
 							$row->addLabel('supervisorEmail', __('Supervisor Email'));
-							$row->addEmail('supervisorEmail')->setValue($rowCoord['email'])->maxLength(30)->isRequired();
+							if($type == 'New'){
+									$row->addEmail('supervisorEmail')->maxLength(30)->isRequired();
+								}
+								else {
+									$row->addEmail('supervisorEmail')->setValue($rowCoord['email'])->maxLength(30)->isRequired();
+								}
+							
 							
 						
 						$row = $form->addRow();
 							$row->addLabel('supervisorPhone', __('Supervisor Phone'));
-							$row->addTextField('supervisorPhone')->setValue($rowCoord['phone1'])->maxLength(30)->isRequired();
+							if($type == 'New'){
+									$row->addTextField('supervisorPhone')->maxLength(30)->isRequired();
+								}
+								else {
+									$row->addTextField('supervisorPhone')->setValue($rowCoord['phone1'])->maxLength(30)->isRequired();
+								}
+							
 							
 						$row = $form->addRow();
 						$row->addFooter();
