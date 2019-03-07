@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                     echo 'You have not yet completed Interview 2, and so cannot prepare for Interview 3.';
                     echo '</div>';
                 } else {
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
+                $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
 								$form->setClass('smallIntBorder fullWidth');
 
 								$form->addHiddenValue('address', $_SESSION[$guid]['address']);

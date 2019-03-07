@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
         //Step 1
         if ($step == 1) {
         
-        $form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_add.php&step=2');
+        $form = Form::create('commitmentType',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_add.php&step=2');
             $form->setClass('smallIntBorder fullWidth');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('step', 2);
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
             $form->toggleVisibilityByClass('chooseActivity')->onRadio('type1')->when('From School Activity');
             $row = $form->addRow()->addClass('chooseActivity');
 				$row->addLabel('chooseActivity', __('Type'));
-				$row->addSelect('chooseActivity')->fromQuery($pdo, $sqlSelect, $dataSelect)->placeholder(__('Please select...'));
+				$row->addSelect('chooseActivity')->fromQuery($pdo, $sqlSelect, $dataSelect)->placeholder();
 					
             $row = $form->addRow();
 				$row->addFooter();
@@ -135,10 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                         }
                     } 
                     
-                    //If experience is not from school activity, page will throw errors for undefined variables for the setValues but is not neccesarily an actual issue for a standard user
-                    //Potentially TODO: Address that
-                    
-					$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
+					$form = Form::create('addCommitment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
 						$form->setClass('smallIntBorder fullWidth');
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 						$form->setFactory(DatabaseFormFactory::create($pdo));

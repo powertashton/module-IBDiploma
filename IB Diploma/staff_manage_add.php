@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
     echo '</div>';
 
     $returns = array();
-    $returns['error4'] = __($guid, 'Add failed because the selected person is already registered.');
+    $returns['error4'] = __('Add failed because the selected person is already registered.');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/IB Diploma/staff_manage_edit.php&ibDiplomaCASStaffID='.$_GET['editID'];
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
 	}
 	
 	
-	$form = Form::create('action',  $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_addProcess.php', 'post');
+	$form = Form::create('addStaff',  $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_addProcess.php', 'post');
 	$form->setClass('smallIntBorder fullWidth');
 	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 	$form->setFactory(DatabaseFormFactory::create($pdo));

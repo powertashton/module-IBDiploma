@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
             $values = $result->fetch();
            
             
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?ibDiplomaCASStaffID='.$ibDiplomaCASStaffID.'', 'post');
+            $form = Form::create('editStaff', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?ibDiplomaCASStaffID='.$ibDiplomaCASStaffID.'', 'post');
  			
  			$form->setFactory(DatabaseFormFactory::create($pdo));
 			$form->setClass('smallIntBorder fullWidth');

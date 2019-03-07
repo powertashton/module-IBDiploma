@@ -51,7 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
     	
         //Fail 3
         $URL = $URL.'&return=error3';
-        var_dump ($gibbonPersonID);
         header("Location: {$URL}");
     } else {
         try {

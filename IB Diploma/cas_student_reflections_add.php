@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
         //Step 1
         if ($step == 1) {
         
-            $form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_add.php&step=2');
+            $form = Form::create('reflectionType',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_add.php&step=2');
             $form->setClass('smallIntBorder fullWidth');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('step', 2);
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                     }
                 }
             }
-			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_addProcess.php');
+			$form = Form::create('reflectionAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_addProcess.php');
 				$form->setClass('smallIntBorder fullWidth');
 				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 				

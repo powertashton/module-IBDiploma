@@ -60,35 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo 'Step 1';
             echo '</h3>';
 
-            ?>
-
-
-<!-- 
-			<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php' ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr>
-						<td>
-							<b>Invitation Type *</b><br/>
-						</td>
-						<td class='right'>
-							<input checked type="radio" name="type" value="Single" class="type" /> Single Commitment
-							<input type="radio" name="type" value="Multiple" class="type" /> Multiple Commitments
-						</td>
-					</tr>
-					<tr>
-						<td class="right" colspan=2>
-							<input type="hidden" name="q" value="<?php echo '/modules/'.$_SESSION[$guid]['module'].'/cas_supervisor_invite.php' ?>">
-							<input type="hidden" name="step" value="2">
-							<input type="submit" value="Proceed">
-						</td>
-					</tr>
-				</table>
- -->
-
-
-			<?php
-
-            $form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('invitationType',$_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('smallIntBorder fullWidth');
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/cas_supervisor_invite.php');
             $form->addHiddenValue('step', 2);
@@ -114,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo '</h3>';
             
             
-			$form = Form::create('action',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
+			$form = Form::create('supervisorInvite',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
 			$form->setClass('smallIntBorder fullWidth');
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 			

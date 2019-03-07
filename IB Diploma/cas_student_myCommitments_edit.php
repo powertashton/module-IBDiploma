@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
             } else {
 
                $values = $result->fetch();
-               $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_editProcess.php');
+               $form = Form::create('commitmentEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_editProcess.php');
 						$form->setClass('smallIntBorder fullWidth');
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 						$form->addHiddenValue('ibDiplomaCASCommitmentID', $ibDiplomaCASCommitmentID);

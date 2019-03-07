@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_editProcess.php?ibDiplomaStudentID='.$ibDiplomaStudentID, 'post');
+            $form = Form::create('editStudent', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_editProcess.php?ibDiplomaStudentID='.$ibDiplomaStudentID, 'post');
  			
  			$form->setFactory(DatabaseFormFactory::create($pdo));
 			$form->setClass('smallIntBorder fullWidth');

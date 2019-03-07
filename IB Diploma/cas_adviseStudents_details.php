@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo 'There are no commitments to display.';
                         echo '</div>';
                     } else {
-                        echo "<table cellspacing='0' style='width: 100%'>";
+                        echo "<table cellspacing='0' style='width: 100%'  class='colorOddEven'>";
                         echo "<tr class='head'>";
                         echo "<th style='vertical-align: bottom'>";
                         echo 'Commitment';
@@ -168,15 +168,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $intended = array();
                         $complete = array();
                         while ($values = $result->fetch()) {
-                            if ($count % 2 == 0) {
-                                $valuesNum = 'even';
-                            } else {
-                                $valuesNum = 'odd';
-                            }
-                            ++$count;
-
+                            
                                 //COLOR ROW BY STATUS!
-                                echo "<tr class=$valuesNum>";
+                                echo "<tr>";
                             echo '<td>';
                             echo $values['name'];
                             echo '</td>';
@@ -379,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     echo '</p>';
 
 
-					$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
+					$form = Form::create('casStatus', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
 					
 					$form->setFactory(DatabaseFormFactory::create($pdo));
 					$form->setClass('smallIntBorder fullWidth');
@@ -429,7 +423,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo '</div>';
                         } else {
 						
-						$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
+						$form = Form::create('interview1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
 							$form->setClass('smallIntBorder fullWidth');
 							
 							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -510,7 +504,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $valuesInterview = $resultInterview->fetch();
 							
 							
-							$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
+							$form = Form::create('interview2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
 							$form->setClass('smallIntBorder fullWidth');
 							
 							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -564,7 +558,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 								
 								$prepopulate = '';
                                 if ($valuesInterview["2_outcome".$i] != '') {
-                                	echo "2_outcome".$i;
                                 	$outcomeList = array();
                                     try {
                                     	array_push($outcomeList, $valuesInterview['2_outcome'.$i]);
@@ -649,7 +642,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo 'You have not yet completed Interview 2, and so cannot access Interview 3.';
                                 echo '</div>';
                             } else {
-								$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
+								$form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
 								$form->setClass('smallIntBorder fullWidth');
 							
 								$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);

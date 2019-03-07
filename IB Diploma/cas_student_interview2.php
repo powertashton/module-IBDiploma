@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
             } else {
                 $rowInterview = $resultInterview->fetch();
                 
-				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
+				$form = Form::create('interview2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
 						$form->setClass('smallIntBorder fullWidth');
 
 						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
