@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                 $values = $result->fetch();
                 
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_reflections_deleteProcess.php?ibDiplomaCASReflectionID=$ibDiplomaCASReflectionID");
-            	echo $form->getOutput();
+                echo $form->getOutput();
             }
         }
     }

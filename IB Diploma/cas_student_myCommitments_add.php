@@ -66,27 +66,27 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('step', 2);
            
-           	$form->addRow()->addHeading(__('Commitment Source'));
-           	
+               $form->addRow()->addHeading(__('Commitment Source'));
+               
             $row = $form->addRow();
-			$row->addLabel('Commitment Type', __('Commitment Type'));
-			$row->addRadio("type1")->fromArray(array("New" =>__("New"), "From School Activity" =>__("From School Activity")))->inline();
+            $row->addLabel('Commitment Type', __('Commitment Type'));
+            $row->addRadio("type1")->fromArray(array("New" =>__("New"), "From School Activity" =>__("From School Activity")))->inline();
            
 
-				$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-				$sqlSelect = "SELECT gibbonActivity.gibbonActivityID as value, gibbonActivity.name as name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE active='Y' AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sqlSelect = "SELECT gibbonActivity.gibbonActivityID as value, gibbonActivity.name as name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE active='Y' AND gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 
             
             $form->toggleVisibilityByClass('chooseActivity')->onRadio('type1')->when('From School Activity');
             $row = $form->addRow()->addClass('chooseActivity');
-				$row->addLabel('chooseActivity', __('Type'));
-				$row->addSelect('chooseActivity')->fromQuery($pdo, $sqlSelect, $dataSelect)->placeholder();
-					
+                $row->addLabel('chooseActivity', __('Type'));
+                $row->addSelect('chooseActivity')->fromQuery($pdo, $sqlSelect, $dataSelect)->placeholder();
+                    
             $row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit("Go");
-			echo $form->getOutput();
-			
+                $row->addFooter();
+                $row->addSubmit("Go");
+            echo $form->getOutput();
+            
 
         } else {
             $type = $_POST['type1'];
@@ -135,95 +135,95 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                         }
                     } 
                     
-					$form = Form::create('addCommitment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
-						$form->setClass('smallIntBorder fullWidth');
-						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-						$form->setFactory(DatabaseFormFactory::create($pdo));
-						
-						$form->addRow()->addHeading(__('Basic Information'));
-						
-						$row = $form->addRow();
-							$row->addLabel('name', __('Name'));
-							if($type == 'New'){
-								$row->addTextField('name')->maxLength(30)->isRequired();
-							}
-							else {
-								$row->addTextField('name')->setValue($rowActivity['name'])->maxLength(30)->isRequired();
-							}
-							
-						$row = $form->addRow();
-							$row->addLabel('status', __('Status'));
-							$row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->isRequired();
+                    $form = Form::create('addCommitment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
+                        $form->setClass('smallIntBorder fullWidth');
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->setFactory(DatabaseFormFactory::create($pdo));
+                        
+                        $form->addRow()->addHeading(__('Basic Information'));
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('name', __('Name'));
+                            if($type == 'New'){
+                                $row->addTextField('name')->maxLength(30)->isRequired();
+                            }
+                            else {
+                                $row->addTextField('name')->setValue($rowActivity['name'])->maxLength(30)->isRequired();
+                            }
+                            
+                        $row = $form->addRow();
+                            $row->addLabel('status', __('Status'));
+                            $row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->isRequired();
 
-						$row = $form->addRow();
-							$row->addLabel('dateStart', __('Start Date'));
-							if($type == 'New'){
-								$row->addDate('dateStart')->isRequired();
-							}
-							else {
-								$row->addDate('dateStart')->setValue(dateConvertBack($guid, $rowActivity['programStart']))->isRequired();
-							}
-							
-							
-						$row = $form->addRow();
-							$row->addLabel('dateEnd', __('End Date'));
-							if($type == 'New'){
-								$row->addDate('dateEnd');
-							}
-							else {
-								$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $rowActivity['programEnd']));
-							}
-							
+                        $row = $form->addRow();
+                            $row->addLabel('dateStart', __('Start Date'));
+                            if($type == 'New'){
+                                $row->addDate('dateStart')->isRequired();
+                            }
+                            else {
+                                $row->addDate('dateStart')->setValue(dateConvertBack($guid, $rowActivity['programStart']))->isRequired();
+                            }
+                            
+                            
+                        $row = $form->addRow();
+                            $row->addLabel('dateEnd', __('End Date'));
+                            if($type == 'New'){
+                                $row->addDate('dateEnd');
+                            }
+                            else {
+                                $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $rowActivity['programEnd']));
+                            }
+                            
 
-						$row = $form->addRow();
-							$column = $row->addColumn();
-								$column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
-								if($type == 'New'){
-									$column->addTextArea('description')->setRows(10)->setClass('fullWidth');
-								}
-								else {
-									$column->addTextArea('description')->setRows(10)->setValue($rowActivity['description'])->setClass('fullWidth');
-								}
-							
-								
+                        $row = $form->addRow();
+                            $column = $row->addColumn();
+                                $column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
+                                if($type == 'New'){
+                                    $column->addTextArea('description')->setRows(10)->setClass('fullWidth');
+                                }
+                                else {
+                                    $column->addTextArea('description')->setRows(10)->setValue($rowActivity['description'])->setClass('fullWidth');
+                                }
+                            
+                                
 
-						
-						$form->addRow()->addHeading(__('Supervisor'));
-						$row = $form->addRow();
-							$row->addLabel('supervisorName', __('Supervisor Name'));
-							if($type == 'New'){
-									$row->addTextField('supervisorName')->maxLength(30)->isRequired();
-								}
-								else {
-									$row->addTextField('supervisorName')->setValue(formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true))->maxLength(30)->isRequired();
-								}
-							
-						
-						$row = $form->addRow();
-							$row->addLabel('supervisorEmail', __('Supervisor Email'));
-							if($type == 'New'){
-									$row->addEmail('supervisorEmail')->maxLength(30)->isRequired();
-								}
-								else {
-									$row->addEmail('supervisorEmail')->setValue($rowCoord['email'])->maxLength(30)->isRequired();
-								}
-							
-							
-						
-						$row = $form->addRow();
-							$row->addLabel('supervisorPhone', __('Supervisor Phone'));
-							if($type == 'New'){
-									$row->addTextField('supervisorPhone')->maxLength(30)->isRequired();
-								}
-								else {
-									$row->addTextField('supervisorPhone')->setValue($rowCoord['phone1'])->maxLength(30)->isRequired();
-								}
-							
-							
-						$row = $form->addRow();
-						$row->addFooter();
-						$row->addSubmit();
-						echo $form->getOutput();
+                        
+                        $form->addRow()->addHeading(__('Supervisor'));
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorName', __('Supervisor Name'));
+                            if($type == 'New'){
+                                    $row->addTextField('supervisorName')->maxLength(30)->isRequired();
+                                }
+                                else {
+                                    $row->addTextField('supervisorName')->setValue(formatName('', $rowCoord['preferredName'], $rowCoord['surname'], 'Staff', true, true))->maxLength(30)->isRequired();
+                                }
+                            
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorEmail', __('Supervisor Email'));
+                            if($type == 'New'){
+                                    $row->addEmail('supervisorEmail')->maxLength(30)->isRequired();
+                                }
+                                else {
+                                    $row->addEmail('supervisorEmail')->setValue($rowCoord['email'])->maxLength(30)->isRequired();
+                                }
+                            
+                            
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorPhone', __('Supervisor Phone'));
+                            if($type == 'New'){
+                                    $row->addTextField('supervisorPhone')->maxLength(30)->isRequired();
+                                }
+                                else {
+                                    $row->addTextField('supervisorPhone')->setValue($rowCoord['phone1'])->maxLength(30)->isRequired();
+                                }
+                            
+                            
+                        $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+                        echo $form->getOutput();
         }
     }
 }

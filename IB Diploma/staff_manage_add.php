@@ -46,33 +46,33 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
         returnProcess($guid, $_GET['return'], $editLink, $returns);
     }
 
-	try{
-	$data = array();
+    try{
+    $data = array();
     $sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-	$result = $connection2->prepare($sql);
+    $result = $connection2->prepare($sql);
     $result->execute($data);
-	} catch (PDOException $e) {
-	}
-	
-	
-	$form = Form::create('addStaff',  $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_addProcess.php', 'post');
-	$form->setClass('smallIntBorder fullWidth');
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-	$form->setFactory(DatabaseFormFactory::create($pdo));
+    } catch (PDOException $e) {
+    }
+    
+    
+    $form = Form::create('addStaff',  $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_addProcess.php', 'post');
+    $form->setClass('smallIntBorder fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->setFactory(DatabaseFormFactory::create($pdo));
 
 
-	$row = $form->addRow();
-		$row->addLabel('gibbonPersonID', __('Staff'));
-		$row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired();
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Staff'));
+        $row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired();
 
- 	$row = $form->addRow();
- 		$row->addLabel('role', __('Role'));
-		$row->addSelect('role')->fromArray(array('Coordinator' =>__('Coordinator'), 'Advisor' => __('Advisor')))->placeholder()->isRequired();
+     $row = $form->addRow();
+         $row->addLabel('role', __('Role'));
+        $row->addSelect('role')->fromArray(array('Coordinator' =>__('Coordinator'), 'Advisor' => __('Advisor')))->placeholder()->isRequired();
 
-	$row = $form->addRow();
-	$row->addFooter();
-	$row->addSubmit();
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSubmit();
 
-	echo $form->getOutput();
+    echo $form->getOutput();
 }
 ?>

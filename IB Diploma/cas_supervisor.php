@@ -100,25 +100,25 @@ if ($resultKey->rowCount() < 1) {
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('key', $key);
             
-            	$row = $form->addRow();
-            		$row->addLabel('attendance', __('Attendance'));
-					$row->addSelect('attendance')
-					->fromArray(array('60%' =>__('60%'), '60-84%' => __('60-84%'),'85-99%' =>__('85-99%'),'100%' =>__('100%')))
-					->placeholder()
-					->isRequired();
-						
-				$row = $form->addRow();
-					$column = $row->addColumn();
-					$column ->addLabel('evaluation', __('Evaluation'))->description(__('Please use the space below to briefly evaluate '.$rowKey['preferredName'].'s participation in this commitment. You may wish to consider: <i><ul style="margin-bottom: 0px"><li>Attitude</li><li>Enthusiasm</li><li>Dedication</li></ul></i>'));
-					$column ->addTextArea('evaluation')
-					->setRows(10)
-					->setClass('fullWidth')
-					->isRequired();
+                $row = $form->addRow();
+                    $row->addLabel('attendance', __('Attendance'));
+                    $row->addSelect('attendance')
+                    ->fromArray(array('60%' =>__('60%'), '60-84%' => __('60-84%'),'85-99%' =>__('85-99%'),'100%' =>__('100%')))
+                    ->placeholder()
+                    ->isRequired();
+                        
+                $row = $form->addRow();
+                    $column = $row->addColumn();
+                    $column ->addLabel('evaluation', __('Evaluation'))->description(__('Please use the space below to briefly evaluate '.$rowKey['preferredName'].'s participation in this commitment. You may wish to consider: <i><ul style="margin-bottom: 0px"><li>Attitude</li><li>Enthusiasm</li><li>Dedication</li></ul></i>'));
+                    $column ->addTextArea('evaluation')
+                    ->setRows(10)
+                    ->setClass('fullWidth')
+                    ->isRequired();
             
             $row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit();
-			echo $form->getOutput();
+                $row->addFooter();
+                $row->addSubmit();
+            echo $form->getOutput();
             
         }
     }

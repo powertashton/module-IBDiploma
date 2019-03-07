@@ -245,24 +245,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
 
                     echo "<div class='linkTop'>";
                     echo 'Filter Commitment: '; ?>
-					<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-						<option selected value=''>All</option>
-						<option selected value='General'>General CAS</option>
-						<?php
-						try {
-							$dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-							$sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
-						while ($valuesSelect = $resultSelect->fetch()) {
-							echo "<option value='".$valuesSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($valuesSelect['name']).'</option>';
-						}
-						?>
-					</select>
-					<?php
+                    <select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+                        <option selected value=''>All</option>
+                        <option selected value='General'>General CAS</option>
+                        <?php
+                        try {
+                            $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
+                            $sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
+                            $resultSelect = $connection2->prepare($sqlSelect);
+                            $resultSelect->execute($dataSelect);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        while ($valuesSelect = $resultSelect->fetch()) {
+                            echo "<option value='".$valuesSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($valuesSelect['name']).'</option>';
+                        }
+                        ?>
+                    </select>
+                    <?php
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
@@ -342,29 +342,29 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo "</tbody'>";
                         echo '</table>';
                         ?>
-						<script type="text/javascript">
-							$(document).ready(function() {
-								$('.searchInput').val(1);
-								$('.body').find("tr:visible:odd").addClass('odd');
-								$('.body').find("tr:visible:even").addClass('even');
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                $('.searchInput').val(1);
+                                $('.body').find("tr:visible:odd").addClass('odd');
+                                $('.body').find("tr:visible:even").addClass('even');
 
-								$(".searchInput").change(function(){
-									$('.body').find("tr").hide() ;
-									if ($('.searchInput :selected').val() == "" ) {
-										$('.body').find("tr").show() ;
-									}
-									else {
-										$('.body').find('.' + $('.searchInput :selected').val()).show();
-									}
+                                $(".searchInput").change(function(){
+                                    $('.body').find("tr").hide() ;
+                                    if ($('.searchInput :selected').val() == "" ) {
+                                        $('.body').find("tr").show() ;
+                                    }
+                                    else {
+                                        $('.body').find('.' + $('.searchInput :selected').val()).show();
+                                    }
 
-									$('.body').find("tr").removeClass('odd even');
-									$('.body').find('tr:visible:odd').addClass('odd');
-									$('.body').find('tr:visible:even').addClass('even');
-								});
+                                    $('.body').find("tr").removeClass('odd even');
+                                    $('.body').find('tr:visible:odd').addClass('odd');
+                                    $('.body').find('tr:visible:even').addClass('even');
+                                });
 
-							});
-						</script>
-						<?php
+                            });
+                        </script>
+                        <?php
 
                     }
                 } elseif ($subpage == 'CAS Status') {
@@ -373,23 +373,23 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     echo '</p>';
 
 
-					$form = Form::create('casStatus', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
-					
-					$form->setFactory(DatabaseFormFactory::create($pdo));
-					$form->setClass('smallIntBorder fullWidth');
-					 
-					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-					$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
-					 
-					 $row = $form->addRow();
-					 	$row->addHeading(__('Status *'));
-					 	$row->addSelect('casStatusSchool')->fromArray(array('' => __(''), 'At Risk' => __('At Risk'), 'On Task' => __('On Task'), 'Excellence' => __('Execellence'), 'Complete' => ('Complete'), 'Incomplete' => ('Incomplete')))->selected($casStatusSchool)->isRequired();
-					 
-					$row = $form->addRow();
-						$row->addFooter();
-						$row->addSubmit();
-						
-					echo $form->getOutput();
+                    $form = Form::create('casStatus', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
+                    
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->setClass('smallIntBorder fullWidth');
+                     
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                     
+                     $row = $form->addRow();
+                         $row->addHeading(__('Status *'));
+                         $row->addSelect('casStatusSchool')->fromArray(array('' => __(''), 'At Risk' => __('At Risk'), 'On Task' => __('On Task'), 'Excellence' => __('Execellence'), 'Complete' => ('Complete'), 'Incomplete' => ('Incomplete')))->selected($casStatusSchool)->isRequired();
+                     
+                    $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+                        
+                    echo $form->getOutput();
 
                 } elseif ($subpage == 'Interview 1') {
                     try {
@@ -409,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         if ($resultInterview->rowCount() == 1) {
                             $valuesInterview = $resultInterview->fetch();
                         }
-					try {
+                    try {
                             $dataCommitments = array('gibbonPersonID' => $gibbonPersonID);
                             $sqlCommitments = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
                             $resultCommitments = $connection2->prepare($sqlCommitments);
@@ -417,68 +417,68 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-					if ($resultCommitments->rowCount() < 1) {
+                    if ($resultCommitments->rowCount() < 1) {
                             echo "<div class='error'>";
                             echo 'There are no commitments to display.';
                             echo '</div>';
                         } else {
-						
-						$form = Form::create('interview1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
-							$form->setClass('smallIntBorder fullWidth');
-							
-							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
-							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-							
-							$form->addRow()->addHeading(__('Commitment Goals'));
-								$formRow = $form->addRow();
-								$formRow->addLabel('label', __('Work with the interviewee to determine a suitable, brief goal for each approved commitment.'));
-							
-							$table = $form->addRow()->addTable()->setClass('mini fullWidth');
-								$row = $table->addHeaderRow();
-                					$row->addContent(__('Commitment'))->wrap('<div style="width: 120px;">', '</div>');
-									$row->addContent(__('Timing'))->wrap('<div style="width: 300px;">', '</div>');
-									$row->addContent(__('Goals'))->wrap('<div style="width: 120px;">', '</div>');
-							
-                        	$count = 0;
-							while ($valuesCommitments = $resultCommitments->fetch()) {
-								++$count;
-								$row = $table->addRow();
-									$row->addContent(__($valuesCommitments['name']));
-									if (substr($valuesCommitments['dateStart'], 0, 4) == substr($valuesCommitments['dateEnd'], 0, 4)) {
-											if (substr($valuesCommitments['dateStart'], 5, 2) == substr($valuesCommitments['dateEnd'], 5, 2)) {
-												$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
-											} else {
-												$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
-											}
-										} else {
-											$row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateEnd'], 0, 4)));
-										}
-									$form->addHiddenValue($count.'-ibDiplomaCASCommitmentID', $valuesCommitments['ibDiplomaCASCommitmentID']);
-									$row->addTextField($count.'-goals')->setValue($valuesCommitments['goals'])->maxLength(255);
-							}
-						
-							$form->addRow()->addHeading(__('Notes'));
-								$row = $form->addRow();
-									$column = $row->addColumn();
-										$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i>'));
-										$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['1_notes'])->setClass('fullWidth');
-						
-							$form->addRow()->addHeading(__('General Information'));
-								$row = $form->addRow();
-									$row->addLabel('interviewer', __('Interviewer'));
-									$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
-								$row = $form->addRow();
-									$row->addLabel('date', __('Date'));
-									$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['1_date']))->isRequired();
-								$row = $form->addRow();
-									$row->addLabel('casStatusSchool', __('CAS Status'));
-									$row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
-						
-							$form->addHiddenValue("count", $count);
-							$row = $form->addRow();
-								$row->addFooter();
-								$row->addSubmit();
-							echo $form->getOutput();
+                        
+                        $form = Form::create('interview1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
+                            $form->setClass('smallIntBorder fullWidth');
+                            
+                            $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            
+                            $form->addRow()->addHeading(__('Commitment Goals'));
+                                $formRow = $form->addRow();
+                                $formRow->addLabel('label', __('Work with the interviewee to determine a suitable, brief goal for each approved commitment.'));
+                            
+                            $table = $form->addRow()->addTable()->setClass('mini fullWidth');
+                                $row = $table->addHeaderRow();
+                                    $row->addContent(__('Commitment'))->wrap('<div style="width: 120px;">', '</div>');
+                                    $row->addContent(__('Timing'))->wrap('<div style="width: 300px;">', '</div>');
+                                    $row->addContent(__('Goals'))->wrap('<div style="width: 120px;">', '</div>');
+                            
+                            $count = 0;
+                            while ($valuesCommitments = $resultCommitments->fetch()) {
+                                ++$count;
+                                $row = $table->addRow();
+                                    $row->addContent(__($valuesCommitments['name']));
+                                    if (substr($valuesCommitments['dateStart'], 0, 4) == substr($valuesCommitments['dateEnd'], 0, 4)) {
+                                            if (substr($valuesCommitments['dateStart'], 5, 2) == substr($valuesCommitments['dateEnd'], 5, 2)) {
+                                                $row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
+                                            } else {
+                                                $row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4)));
+                                            }
+                                        } else {
+                                            $row->addContent(__(date('F', mktime(0, 0, 0, substr($valuesCommitments['dateStart'], 5, 2))).' '.substr($valuesCommitments['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($valuesCommitments['dateEnd'], 5, 2))).' '.substr($valuesCommitments['dateEnd'], 0, 4)));
+                                        }
+                                    $form->addHiddenValue($count.'-ibDiplomaCASCommitmentID', $valuesCommitments['ibDiplomaCASCommitmentID']);
+                                    $row->addTextField($count.'-goals')->setValue($valuesCommitments['goals'])->maxLength(255);
+                            }
+                        
+                            $form->addRow()->addHeading(__('Notes'));
+                                $row = $form->addRow();
+                                    $column = $row->addColumn();
+                                        $column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>Is there a balance across commitments?</li><li>Are commitments genuine and meaningful?</li><li>Do commitments require student to show persistence and commitment?</li></ul></i>'));
+                                        $column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['1_notes'])->setClass('fullWidth');
+                        
+                            $form->addRow()->addHeading(__('General Information'));
+                                $row = $form->addRow();
+                                    $row->addLabel('interviewer', __('Interviewer'));
+                                    $row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+                                $row = $form->addRow();
+                                    $row->addLabel('date', __('Date'));
+                                    $row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['1_date']))->isRequired();
+                                $row = $form->addRow();
+                                    $row->addLabel('casStatusSchool', __('CAS Status'));
+                                    $row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
+                        
+                            $form->addHiddenValue("count", $count);
+                            $row = $form->addRow();
+                                $row->addFooter();
+                                $row->addSubmit();
+                            echo $form->getOutput();
                     }
                 }
                 } elseif ($subpage == 'Interview 2') {
@@ -502,26 +502,26 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             echo '</div>';
                         } else {
                             $valuesInterview = $resultInterview->fetch();
-							
-							
-							$form = Form::create('interview2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
-							$form->setClass('smallIntBorder fullWidth');
-							
-							$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
-							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-							
-							$form->addRow()->addHeading(__('Commitment Goals'));
-								$formRow = $form->addRow();
-								$formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>might</b> satisfy each of the outcomes listed below. The student should have pre-filled this information before Interview 2.'));
-							
-							try {
-								$dataList = array('gibbonPersonID' => $gibbonPersonID);
-								$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
-								$resultList = $connection2->prepare($sqlList);
-								$resultList->execute($dataList);
-							} catch (PDOException $e) {
-								echo "<div class='error'>".$e->getMessage().'</div>';
-							}
+                            
+                            
+                            $form = Form::create('interview2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
+                            $form->setClass('smallIntBorder fullWidth');
+                            
+                            $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            
+                            $form->addRow()->addHeading(__('Commitment Goals'));
+                                $formRow = $form->addRow();
+                                $formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>might</b> satisfy each of the outcomes listed below. The student should have pre-filled this information before Interview 2.'));
+                            
+                            try {
+                                $dataList = array('gibbonPersonID' => $gibbonPersonID);
+                                $sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
+                                $resultList = $connection2->prepare($sqlList);
+                                $resultList->execute($dataList);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
 
                             $list = '';
                             while ($valuesList = $resultList->fetch()) {
@@ -530,38 +530,38 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $list = substr($list, 0, -1);
                             for ($i = 1; $i < 9; ++$i) {
                                 switch ($i) {
-									case 1:
-										$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
-										break;
-									case 2:
-										$title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
-										break;
-									case 3:
-										$title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
-										break;
-									case 4:
-										$title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
-										break;
-									case 5:
-										$title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
-										break;
-									case 6:
-										$title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
-										break;
-									case 7:
-										$title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
-										break;
-									case 8:
-										$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
-										break;
-								}
-								
-								$prepopulate = '';
+                                    case 1:
+                                        $title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
+                                        break;
+                                    case 2:
+                                        $title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
+                                        break;
+                                    case 3:
+                                        $title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
+                                        break;
+                                    case 4:
+                                        $title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
+                                        break;
+                                    case 5:
+                                        $title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
+                                        break;
+                                    case 6:
+                                        $title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
+                                        break;
+                                    case 7:
+                                        $title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
+                                        break;
+                                    case 8:
+                                        $title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
+                                        break;
+                                }
+                                
+                                $prepopulate = '';
                                 if ($valuesInterview["2_outcome".$i] != '') {
-                                	$outcomeList = array();
+                                    $outcomeList = array();
                                     try {
-                                    	array_push($outcomeList, $valuesInterview['2_outcome'.$i]);
-										$dataPrepopulate = ['outcomeList' => $valuesInterview['2_outcome'.$i]];
+                                        array_push($outcomeList, $valuesInterview['2_outcome'.$i]);
+                                        $dataPrepopulate = ['outcomeList' => $valuesInterview['2_outcome'.$i]];
                                         $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
                                         $resultPrepopulate = $connection2->query($sqlPrepopulate);
                                     } catch (PDOException $e) {
@@ -572,46 +572,46 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     }
                                 }
                                 
-                                	$data = array('gibbonPersonID' => $gibbonPersonID);
-                                	$sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
-									$row = $form->addRow()->addClass('tags');
-           								$column = $row->addColumn();
-            							$column->addLabel('outcome'.$i, __('Outcome '.$i))
-            								->description(__($title));
-										$column->addFinder('outcome'.$i)
-											->fromQuery($pdo, $sql, $data)
-											->setParameter('hintText', __('Type the name of an approved commitment...'))
-											->setParameter('allowCreation', false)
-											->selected($prepopulate);
+                                    $data = array('gibbonPersonID' => $gibbonPersonID);
+                                    $sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
+                                    $row = $form->addRow()->addClass('tags');
+                                           $column = $row->addColumn();
+                                        $column->addLabel('outcome'.$i, __('Outcome '.$i))
+                                            ->description(__($title));
+                                        $column->addFinder('outcome'.$i)
+                                            ->fromQuery($pdo, $sql, $data)
+                                            ->setParameter('hintText', __('Type the name of an approved commitment...'))
+                                            ->setParameter('allowCreation', false)
+                                            ->selected($prepopulate);
                             }
                             $form->addRow()->addHeading(__('Notes'));
-								$row = $form->addRow();
-									$column = $row->addColumn();
-										$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>How is student progressing?</li><li>Are all outcomes begun?</li><li>Which outcomes require more thought and action?</li></ul></i>'));
-										$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['2_notes'])->setClass('fullWidth');
-						
-							$form->addRow()->addHeading(__('General Information'));
-								$row = $form->addRow();
-									$row->addLabel('interviewer', __('Interviewer'));
-									$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
-								$row = $form->addRow();
-									$row->addLabel('date', __('Date'));
-									$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['2_date']))->isRequired();
-								$row = $form->addRow();
-									$row->addLabel('casStatusSchool', __('CAS Status'));
-									$row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
-						
+                                $row = $form->addRow();
+                                    $column = $row->addColumn();
+                                        $column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul><li>How is student progressing?</li><li>Are all outcomes begun?</li><li>Which outcomes require more thought and action?</li></ul></i>'));
+                                        $column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['2_notes'])->setClass('fullWidth');
+                        
+                            $form->addRow()->addHeading(__('General Information'));
+                                $row = $form->addRow();
+                                    $row->addLabel('interviewer', __('Interviewer'));
+                                    $row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+                                $row = $form->addRow();
+                                    $row->addLabel('date', __('Date'));
+                                    $row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['2_date']))->isRequired();
+                                $row = $form->addRow();
+                                    $row->addLabel('casStatusSchool', __('CAS Status'));
+                                    $row->addSelect('casStatusSchool')->fromArray(array('At Risk' =>__('At Risk'), 'On Task' => __('On Task'), 'Excellence' =>__('Excellence')))->selected($casStatusSchool)->isRequired();
+                        
                             
-							$row = $form->addRow();
-								$row->addFooter();
-								$row->addSubmit();
-							echo $form->getOutput();
-							
-							// HACK: Otherwise FastFinder width overrides this one :(
-        					echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
-							
-						
-							
+                            $row = $form->addRow();
+                                $row->addFooter();
+                                $row->addSubmit();
+                            echo $form->getOutput();
+                            
+                            // HACK: Otherwise FastFinder width overrides this one :(
+                            echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
+                            
+                        
+                            
                            
                         }
                     }
@@ -642,117 +642,117 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo 'You have not yet completed Interview 2, and so cannot access Interview 3.';
                                 echo '</div>';
                             } else {
-								$form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
-								$form->setClass('smallIntBorder fullWidth');
-							
-								$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
-								$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-							
-								$form->addRow()->addHeading(__('Outcomes'));
-									$formRow = $form->addRow();
-									$formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>have</b> satisfied each of the outcomes listed below. The student should have pre-filled this information before Interview 3. Use the second box for each outcome to record notes from your discussion'));
-							
-								try {
-									$dataList = array('gibbonPersonID' => $gibbonPersonID);
-									$sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
-									$resultList = $connection2->prepare($sqlList);
-									$resultList->execute($dataList);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
+                                $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
+                                $form->setClass('smallIntBorder fullWidth');
+                            
+                                $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            
+                                $form->addRow()->addHeading(__('Outcomes'));
+                                    $formRow = $form->addRow();
+                                    $formRow->addContent( __('Work with the interviewee to determine which commitments you think <b>have</b> satisfied each of the outcomes listed below. The student should have pre-filled this information before Interview 3. Use the second box for each outcome to record notes from your discussion'));
+                            
+                                try {
+                                    $dataList = array('gibbonPersonID' => $gibbonPersonID);
+                                    $sqlList = "SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved' ORDER BY name";
+                                    $resultList = $connection2->prepare($sqlList);
+                                    $resultList->execute($dataList);
+                                } catch (PDOException $e) {
+                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                }
 
-								$list = '';
-								while ($valuesList = $resultList->fetch()) {
-									$list .= '{id: "'.$valuesList['ibDiplomaCASCommitmentID'].'", name: "'.$valuesList['name'].'"},';
-								}
-								$list = substr($list, 0, -1);
-								for ($i = 1; $i < 9; ++$i) {
-									switch ($i) {
-										case 1:
-											$title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
-											break;
-										case 2:
-											$title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
-											break;
-										case 3:
-											$title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
-											break;
-										case 4:
-											$title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
-											break;
-										case 5:
-											$title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
-											break;
-										case 6:
-											$title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
-											break;
-										case 7:
-											$title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
-											break;
-										case 8:
-											$title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
-											break;
-									}
-								
-									$prepopulate = '';
-									if ($valuesInterview["3_outcome".$i] != '') {
-										echo "3_outcome".$i;
-										$outcomeList = array();
-										try {
-											array_push($outcomeList, $valuesInterview['3_outcome'.$i]);
-											$dataPrepopulate = ['outcomeList' => $valuesInterview['3_outcome'.$i]];
-											$sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
-											$resultPrepopulate = $connection2->query($sqlPrepopulate);
-										} catch (PDOException $e) {
-											echo "<div class='error'>".$e->getMessage().'</div>';
-										}
-										while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
-											$prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
-										}
-									}
-								
-										$data = array('gibbonPersonID' => $gibbonPersonID);
-										$sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
-										$row = $form->addRow()->addClass('tags');
-											$column = $row->addColumn();
-											$column->addLabel('outcome'.$i, __('Outcome '.$i))
-												->description(__($title));
-											$column->addFinder('outcome'.$i)
-												->fromQuery($pdo, $sql, $data)
-												->setParameter('hintText', __('Type the name of an approved commitment...'))
-												->setParameter('allowCreation', false)
-												->selected($prepopulate);
-											$column->addTextArea('outcome'.$i.'Notes')
-												->setRows(3)
-												->setValue($valuesInterview['3_outcome'.$i.'Notes'])
-												->setClass('fullWidth');
-								}
-								$form->addRow()->addHeading(__('Notes'));
-									$row = $form->addRow();
-										$column = $row->addColumn();
-											$column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul style="margin-bottom: 0px"><li>Are all outcomes satisfactorily completed?</li></ul></i><br/>'));
-											$column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['3_notes'])->setClass('fullWidth');
-						
-								$form->addRow()->addHeading(__('General Information'));
-									$row = $form->addRow();
-										$row->addLabel('interviewer', __('Interviewer'));
-										$row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
-									$row = $form->addRow();
-										$row->addLabel('date', __('Date'));
-										$row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['3_date']))->isRequired();
-									$row = $form->addRow();
-										$row->addLabel('casStatusSchool', __('CAS Status'));
-										$row->addSelect('casStatusSchool')->fromArray(array('Complete' =>__('Complete'), 'Incomplete' => __('Incomplete')))->selected($casStatusSchool)->isRequired();
-						
-							
-								$row = $form->addRow();
-									$row->addFooter();
-									$row->addSubmit();
-								echo $form->getOutput();
-								
-								// HACK: Otherwise FastFinder width overrides this one :(
-        						echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
-							
+                                $list = '';
+                                while ($valuesList = $resultList->fetch()) {
+                                    $list .= '{id: "'.$valuesList['ibDiplomaCASCommitmentID'].'", name: "'.$valuesList['name'].'"},';
+                                }
+                                $list = substr($list, 0, -1);
+                                for ($i = 1; $i < 9; ++$i) {
+                                    switch ($i) {
+                                        case 1:
+                                            $title = "<span style='font-weight: bold' title='They are able to see themselves as individuals with various skills and abilities, some more developed than others, and understand that they can make choices about how they wish to move forward.'>Increased their awareness of their own strengths and areas for growth</span>";
+                                            break;
+                                        case 2:
+                                            $title = "<span style='font-weight: bold' title='A new challenge may be an unfamiliar activity, or an extension to an existing one.'>Undertaken new challenges</span>";
+                                            break;
+                                        case 3:
+                                            $title = "<span style='font-weight: bold' title='Planning and initiation will often be in collaboration with others. It can be shown in activities that are part of larger projects, for example, ongoing school activities in the local community, as well as in small student-led activities.'>Planned and initiated activities</span>";
+                                            break;
+                                        case 4:
+                                            $title = "<span style='font-weight: bold' title='Collaboration can be shown in many different activities, such as team sports, playing music in a band, or helping in a kindergarten. At least one project, involving collaboration and the integration of at least two of creativity, action and service, is required.'>Worked collaboratively with others</span>";
+                                            break;
+                                        case 5:
+                                            $title = "<span style='font-weight: bold' title='At a minimum, this implies attending regularly and accepting a share of the responsibility for dealing with problems that arise in the course of activities.'>Shown perseverance and commitment in their activities</span>";
+                                            break;
+                                        case 6:
+                                            $title = "<span style='font-weight: bold' title='Students may be involved in international projects but there are many global issues that can be acted upon locally or nationally (for example, environmental concerns, caring for the elderly).'>Engaged with issues of global importance</span>";
+                                            break;
+                                        case 7:
+                                            $title = "<span style='font-weight: bold' title='Ethical decisions arise in almost any CAS activity (for example, on the sports field, in musical composition, in relationships with others involved in service activities). Evidence of thinking about ethical issues can be shown in various ways, including journal entries and conversations with CAS advisers.'>Considered the ethical implications of their actions</span>";
+                                            break;
+                                        case 8:
+                                            $title = "<span style='font-weight: bold' title='As with new challenges, new skills may be shown in activities that the student has not previously undertaken, or in increased expertise in an established area.'>Developed new skills</span>";
+                                            break;
+                                    }
+                                
+                                    $prepopulate = '';
+                                    if ($valuesInterview["3_outcome".$i] != '') {
+                                        echo "3_outcome".$i;
+                                        $outcomeList = array();
+                                        try {
+                                            array_push($outcomeList, $valuesInterview['3_outcome'.$i]);
+                                            $dataPrepopulate = ['outcomeList' => $valuesInterview['3_outcome'.$i]];
+                                            $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
+                                            $resultPrepopulate = $connection2->query($sqlPrepopulate);
+                                        } catch (PDOException $e) {
+                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                        }
+                                        while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
+                                            $prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
+                                        }
+                                    }
+                                
+                                        $data = array('gibbonPersonID' => $gibbonPersonID);
+                                        $sql = "SELECT name as name, ibDiplomaCASCommitmentID as value FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID AND approval='Approved'";
+                                        $row = $form->addRow()->addClass('tags');
+                                            $column = $row->addColumn();
+                                            $column->addLabel('outcome'.$i, __('Outcome '.$i))
+                                                ->description(__($title));
+                                            $column->addFinder('outcome'.$i)
+                                                ->fromQuery($pdo, $sql, $data)
+                                                ->setParameter('hintText', __('Type the name of an approved commitment...'))
+                                                ->setParameter('allowCreation', false)
+                                                ->selected($prepopulate);
+                                            $column->addTextArea('outcome'.$i.'Notes')
+                                                ->setRows(3)
+                                                ->setValue($valuesInterview['3_outcome'.$i.'Notes'])
+                                                ->setClass('fullWidth');
+                                }
+                                $form->addRow()->addHeading(__('Notes'));
+                                    $row = $form->addRow();
+                                        $column = $row->addColumn();
+                                            $column->addContent( __('Use this space to take notes on your conversation with the student. You may wish to consider:<i><ul style="margin-bottom: 0px"><li>Are all outcomes satisfactorily completed?</li></ul></i><br/>'));
+                                            $column->addTextArea('notes')->setRows(15)->setValue($valuesInterview['3_notes'])->setClass('fullWidth');
+                        
+                                $form->addRow()->addHeading(__('General Information'));
+                                    $row = $form->addRow();
+                                        $row->addLabel('interviewer', __('Interviewer'));
+                                        $row->addTextField('interviewer')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', true, true))->readOnly()->isRequired();
+                                    $row = $form->addRow();
+                                        $row->addLabel('date', __('Date'));
+                                        $row->addDate('date')->setValue(dateConvertBack($guid, $valuesInterview['3_date']))->isRequired();
+                                    $row = $form->addRow();
+                                        $row->addLabel('casStatusSchool', __('CAS Status'));
+                                        $row->addSelect('casStatusSchool')->fromArray(array('Complete' =>__('Complete'), 'Incomplete' => __('Incomplete')))->selected($casStatusSchool)->isRequired();
+                        
+                            
+                                $row = $form->addRow();
+                                    $row->addFooter();
+                                    $row->addSubmit();
+                                echo $form->getOutput();
+                                
+                                // HACK: Otherwise FastFinder width overrides this one :(
+                                echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
+                            
 
                             }
                         }

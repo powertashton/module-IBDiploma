@@ -57,24 +57,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
         echo "<div class='linkTop'>";
         echo 'Filter Commitment: ';
         ?>
-		<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-			<option selected value=''>All</option>
-			<option selected value='General'>General CAS</option>
-			<?php
-			try {
-				$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-				$sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-				$resultSelect = $connection2->prepare($sqlSelect);
-				$resultSelect->execute($dataSelect);
-			} catch (PDOException $e) {
-			}
+        <select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+            <option selected value=''>All</option>
+            <option selected value='General'>General CAS</option>
+            <?php
+            try {
+                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sqlSelect = 'SELECT DISTINCT ibDiplomaCASCommitment.ibDiplomaCASCommitmentID, name FROM ibDiplomaCASReflection JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.ibDiplomaCASCommitmentID=ibDiplomaCASReflection.ibDiplomaCASCommitmentID) WHERE ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
+                $resultSelect = $connection2->prepare($sqlSelect);
+                $resultSelect->execute($dataSelect);
+            } catch (PDOException $e) {
+            }
 
-			while ($rowSelect = $resultSelect->fetch()) {
-				echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-			}
-			?>
-		</select>
-		<?php
+            while ($rowSelect = $resultSelect->fetch()) {
+                echo "<option value='".$rowSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
+            }
+            ?>
+        </select>
+        <?php
         echo '</div>';
 
         if ($result->rowCount() < 1) {
@@ -154,28 +154,28 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
             echo "</tbody'>";
             echo '</table>';
             ?>
-			<script type="text/javascript">
-				$(document).ready(function() {
-					$('.searchInput').val(1);
-					$('.body').find("tr:visible:odd").addClass('odd');
-					$('.body').find("tr:visible:even").addClass('even');
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.searchInput').val(1);
+                    $('.body').find("tr:visible:odd").addClass('odd');
+                    $('.body').find("tr:visible:even").addClass('even');
 
-					$(".searchInput").change(function(){
-						$('.body').find("tr").hide() ;
-						if ($('.searchInput :selected').val() == "" ) {
-							$('.body').find("tr").show() ;
-						}
-						else {
-							$('.body').find('.' + $('.searchInput :selected').val()).show();
-						}
+                    $(".searchInput").change(function(){
+                        $('.body').find("tr").hide() ;
+                        if ($('.searchInput :selected').val() == "" ) {
+                            $('.body').find("tr").show() ;
+                        }
+                        else {
+                            $('.body').find('.' + $('.searchInput :selected').val()).show();
+                        }
 
-						$('.body').find("tr").removeClass('odd even');
-						$('.body').find('tr:visible:odd').addClass('odd');
-						$('.body').find('tr:visible:even').addClass('even');
-					});
-				});
-			</script>
-			<?php
+                        $('.body').find("tr").removeClass('odd even');
+                        $('.body').find('tr:visible:odd').addClass('odd');
+                        $('.body').find('tr:visible:even').addClass('even');
+                    });
+                });
+            </script>
+            <?php
 
         }
     }

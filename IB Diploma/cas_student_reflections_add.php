@@ -60,27 +60,27 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('step', 2);
            
-           	$form->addRow()->addHeading(__('Reflection Source'));
-           	
+               $form->addRow()->addHeading(__('Reflection Source'));
+               
             $row = $form->addRow();
-			$row->addLabel('Reflection Type', __('Reflection Type'));
-			$row->addRadio("type1")->fromArray(array("General CAS Reflection" =>__("General CAS Reflection"), "Commitment Reflection" =>__("Commitment Reflection")))->inline();
+            $row->addLabel('Reflection Type', __('Reflection Type'));
+            $row->addRadio("type1")->fromArray(array("General CAS Reflection" =>__("General CAS Reflection"), "Commitment Reflection" =>__("Commitment Reflection")))->inline();
             
             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-			$sql = "SELECT ibDiplomaCASCommitmentID as value, concat(ibDiplomaCASCommitment.name, ' (', ibDiplomaCASCommitment.supervisorName, ')') as name FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID";
+            $sql = "SELECT ibDiplomaCASCommitmentID as value, concat(ibDiplomaCASCommitment.name, ' (', ibDiplomaCASCommitment.supervisorName, ')') as name FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID";
             
             $form->toggleVisibilityByClass('ibDiplomaCASCommitmentID')->onRadio('type1')->when('Commitment Reflection');
             $row = $form->addRow()->addClass('ibDiplomaCASCommitmentID');
-				$row->addLabel('ibDiplomaCASCommitmentID', __('Choose Activity'));
-				$row->addSelect('ibDiplomaCASCommitmentID')->fromQuery($pdo, $sql, $data)->placeholder();
-					
+                $row->addLabel('ibDiplomaCASCommitmentID', __('Choose Activity'));
+                $row->addSelect('ibDiplomaCASCommitmentID')->fromQuery($pdo, $sql, $data)->placeholder();
+                    
             $row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit("Go");
-				
-			echo $form->getOutput();
-			
-		//Step 2
+                $row->addFooter();
+                $row->addSubmit("Go");
+                
+            echo $form->getOutput();
+            
+        //Step 2
         } else {
             $type = $_POST['type1'];
             if ($type != 'General CAS Reflection' and $type != 'Commitment Reflection') {
@@ -111,42 +111,42 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                     }
                 }
             }
-			$form = Form::create('reflectionAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_addProcess.php');
-				$form->setClass('smallIntBorder fullWidth');
-				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-				
-			
-				$row = $form->addRow();
-					$row->addLabel('type', __('Type'));
-					$row->addTextField('type')->setValue($type)->readOnly()->isRequired();
-					
-				if ($type == 'Commitment Reflection') {
-				$row = $form->addRow();
-					$row->addLabel('commitment', __('Commitment'));
-					$row->addTextField('commitment')->setValue($rowActivity['name'])->readOnly()->isRequired();
-					$form->addHiddenValue('ibDiplomaCASCommitmentID', $rowActivity['ibDiplomaCASCommitmentID']);
-				}
-				$row = $form->addRow();
-					$row->addLabel('title', __('Title'));
-					$row->addTextField('title')->setValue()->isRequired();
+            $form = Form::create('reflectionAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_reflections_addProcess.php');
+                $form->setClass('smallIntBorder fullWidth');
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                
+            
+                $row = $form->addRow();
+                    $row->addLabel('type', __('Type'));
+                    $row->addTextField('type')->setValue($type)->readOnly()->isRequired();
+                    
+                if ($type == 'Commitment Reflection') {
+                $row = $form->addRow();
+                    $row->addLabel('commitment', __('Commitment'));
+                    $row->addTextField('commitment')->setValue($rowActivity['name'])->readOnly()->isRequired();
+                    $form->addHiddenValue('ibDiplomaCASCommitmentID', $rowActivity['ibDiplomaCASCommitmentID']);
+                }
+                $row = $form->addRow();
+                    $row->addLabel('title', __('Title'));
+                    $row->addTextField('title')->setValue()->isRequired();
 
 
-				$editor = getSettingByScope($connection2, 'reflection', '', 20, false, true);
-				$row = $form->addRow();
-				$column = $row->addColumn();
-				if ($type == 'Commitment Reflection') {
-					$column->addLabel('reflection', __('Reflection'))->description('When describing your experience in this commitment you may wish to include:');
-				} else {
-					$column->addLabel('reflection', __('Reflection'))->description('When describing your experience of CAS in general you may wish to include:<i><ul><li>What was the nature of your experience?</li><li>What have you learned or accomplished?</li><li>What aspects were new or challenging?</li><li>How could it have been more challenging?</li><li>Did it match your expectations, if not, how?</li><li>How might you do things differently in the future?</li></ul></i>');
-				} 							
+                $editor = getSettingByScope($connection2, 'reflection', '', 20, false, true);
+                $row = $form->addRow();
+                $column = $row->addColumn();
+                if ($type == 'Commitment Reflection') {
+                    $column->addLabel('reflection', __('Reflection'))->description('When describing your experience in this commitment you may wish to include:');
+                } else {
+                    $column->addLabel('reflection', __('Reflection'))->description('When describing your experience of CAS in general you may wish to include:<i><ul><li>What was the nature of your experience?</li><li>What have you learned or accomplished?</li><li>What aspects were new or challenging?</li><li>How could it have been more challenging?</li><li>Did it match your expectations, if not, how?</li><li>How might you do things differently in the future?</li></ul></i>');
+                }                             
 
-				$column->addEditor('reflection',$guid)->setRows(15)->setValue($editor)->isRequired();
-	
-				$row = $form->addRow();
-					$row->addFooter();
-					$row->addSubmit();
-				
-				echo $form->getOutput();
+                $column->addEditor('reflection',$guid)->setRows(15)->setValue($editor)->isRequired();
+    
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+                
+                echo $form->getOutput();
 
 
         }

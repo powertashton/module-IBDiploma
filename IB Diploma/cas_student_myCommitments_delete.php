@@ -69,14 +69,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
             } else {
                 //Let's go!
                 $values = $result->fetch();
-                 	echo "<div class='linkTop'>";
-                 	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>".__('Back').'</a>';
-                 	echo '</div>';
+                     echo "<div class='linkTop'>";
+                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>".__('Back').'</a>';
+                     echo '</div>';
 
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_deleteProcess.php?ibDiplomaCASCommitmentID=$ibDiplomaCASCommitmentID'."&ibDiplomaCASCommitmentID=".$_GET['ibDiplomaCASCommitmentID']);
-            	echo $form->getOutput();
+                echo $form->getOutput();
 
-				
+                
             }
         }
     }

@@ -66,37 +66,37 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
             $values = $result->fetch();
 
             $form = Form::create('editStudent', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_editProcess.php?ibDiplomaStudentID='.$ibDiplomaStudentID, 'post');
- 			
- 			$form->setFactory(DatabaseFormFactory::create($pdo));
-			$form->setClass('smallIntBorder fullWidth');
-			
- 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
- 			
-			
-			$row = $form->addRow();
+             
+             $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+            
+             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+             
+            
+            $row = $form->addRow();
                 $row->addLabel('Student',__('Student'));
                 $row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true, true));
-			
-			$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-			$sql = "SELECT gibbonSchoolYearID as value,name FROM gibbonSchoolYear ORDER BY sequenceNumber";
-			$row = $form->addRow();
-				$row->addLabel('gibbonSchoolYearIDStart', __('Start Year'));
-				$row->addSelect('gibbonSchoolYearIDStart')->fromQuery($pdo, $sql)->placeholder()->isRequired();
+            
+            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $sql = "SELECT gibbonSchoolYearID as value,name FROM gibbonSchoolYear ORDER BY sequenceNumber";
+            $row = $form->addRow();
+                $row->addLabel('gibbonSchoolYearIDStart', __('Start Year'));
+                $row->addSelect('gibbonSchoolYearIDStart')->fromQuery($pdo, $sql)->placeholder()->isRequired();
                 
-			$row = $form->addRow();
-				$row->addLabel('gibbonSchoolYearIDEnd', __('End Year'));
-				$row->addSelect('gibbonSchoolYearIDEnd')->fromQuery($pdo, $sql)->placeholder()->isRequired();
+            $row = $form->addRow();
+                $row->addLabel('gibbonSchoolYearIDEnd', __('End Year'));
+                $row->addSelect('gibbonSchoolYearIDEnd')->fromQuery($pdo, $sql)->placeholder()->isRequired();
 
-			$sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.firstName, ' ',gibbonPerson.surname) As name FROM gibbonPerson inner join ibDiplomaCASStaff on ibDiplomaCASStaff.gibbonPersonID = gibbonPerson.gibbonPersonID ORDER BY  gibbonPerson.firstName";
-			$row = $form->addRow();
-				$row->addLabel('gibbonPersonIDCASAdvisor', __('CAS Advisor'));
-				$row->addSelect('gibbonPersonIDCASAdvisor')->fromQuery($pdo, $sql)->placeholder();
-			
-			$row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit();
-			
-			echo $form->getOutput();
+            $sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.firstName, ' ',gibbonPerson.surname) As name FROM gibbonPerson inner join ibDiplomaCASStaff on ibDiplomaCASStaff.gibbonPersonID = gibbonPerson.gibbonPersonID ORDER BY  gibbonPerson.firstName";
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonIDCASAdvisor', __('CAS Advisor'));
+                $row->addSelect('gibbonPersonIDCASAdvisor')->fromQuery($pdo, $sql)->placeholder();
+            
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+            
+            echo $form->getOutput();
         }
     }
 }

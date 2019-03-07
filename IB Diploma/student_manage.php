@@ -110,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
             }
             ++$count;
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$rowNum>";
             echo '<td>';
             echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
             echo '</td>';

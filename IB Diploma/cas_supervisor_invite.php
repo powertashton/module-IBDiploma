@@ -66,13 +66,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             $form->addHiddenValue('step', 2);
             
             $row = $form->addRow();
-			$row->addLabel('Invitation Type', __('Invitation Type'));
-			$row->addRadio("type")->fromArray(array("Single" =>__("Single Commitment"), "Multiple" =>__("Multiple Commitments")))->isRequired()->inline();
+            $row->addLabel('Invitation Type', __('Invitation Type'));
+            $row->addRadio("type")->fromArray(array("Single" =>__("Single Commitment"), "Multiple" =>__("Multiple Commitments")))->isRequired()->inline();
             
             $row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit("Proceed");
-			echo $form->getOutput();
+                $row->addFooter();
+                $row->addSubmit("Proceed");
+            echo $form->getOutput();
 
 
         } elseif ($step == 2) {
@@ -86,46 +86,46 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo '</h3>';
             
             
-			$form = Form::create('supervisorInvite',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
-			$form->setClass('smallIntBorder fullWidth');
-			$form->setFactory(DatabaseFormFactory::create($pdo));
-			
-			if ($type == 'Single') {
-				
-				 try {
+            $form = Form::create('supervisorInvite',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
+            $form->setClass('smallIntBorder fullWidth');
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            
+            if ($type == 'Single') {
+                
+                 try {
                     if ($role == 'Coordinator') {
                         $data = array('coordinator' => $_SESSION[$guid]['gibbonPersonID']);
                         $sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.surname,', ',gibbonPerson.firstName, ' (', gibbonRollGroup.nameShort,')') as name FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.status='Full' ORDER BY nameShort, surname, preferredName";
                     } else {
                         $data = array('advisor' => $_SESSION[$guid]['gibbonPersonID']);
-                    	$sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.surname,', ',gibbonPerson.firstName, ' (', gibbonRollGroup.nameShort,')') as name FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)  LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.status='Full' AND gibbonPersonIDCASAdvisor=:advisor ORDER BY nameShort, surname, preferredName";
+                        $sql = "SELECT gibbonPerson.gibbonPersonID as value, concat(gibbonPerson.surname,', ',gibbonPerson.firstName, ' (', gibbonRollGroup.nameShort,')') as name FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)  LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPerson.status='Full' AND gibbonPersonIDCASAdvisor=:advisor ORDER BY nameShort, surname, preferredName";
                     }
                 } catch (PDOException $e) {
                 }
                 
 
-				$row = $form->addRow();
-					$row->addLabel('gibbonPersonID', __('Student'));
-					$row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, $data)->placeholder()->isRequired();				
-				
-				try {
-						$data2 = array();
-						$sql2 = "SELECT ibDiplomaCASCommitmentID as value, concat(ibDiplomaCASCommitment.name, ' (', ibDiplomaCASCommitment.supervisorName, ')') as name, gibbonPersonID as chainedTo FROM ibDiplomaCASCommitment WHERE approval='Approved'  ";
-					} catch (PDOException $e) {
-					}
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Student'));
+                    $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql, $data)->placeholder()->isRequired();                
+                
+                try {
+                        $data2 = array();
+                        $sql2 = "SELECT ibDiplomaCASCommitmentID as value, concat(ibDiplomaCASCommitment.name, ' (', ibDiplomaCASCommitment.supervisorName, ')') as name, gibbonPersonID as chainedTo FROM ibDiplomaCASCommitment WHERE approval='Approved'  ";
+                    } catch (PDOException $e) {
+                    }
                     
-				 $row = $form->addRow();
-						$row->addLabel('ibDiplomaCASCommitmentID', __('Commitment'));
-						$row->addSelect('ibDiplomaCASCommitmentID')->fromQueryChained($pdo, $sql2, $data2, 'gibbonPersonID')->placeholder();
-									
-				$row = $form->addRow();
-					$row->addFooter();
-					$row->addSubmit('Proceed');
-				echo $form->getOutput();
+                 $row = $form->addRow();
+                        $row->addLabel('ibDiplomaCASCommitmentID', __('Commitment'));
+                        $row->addSelect('ibDiplomaCASCommitmentID')->fromQueryChained($pdo, $sql2, $data2, 'gibbonPersonID')->placeholder();
+                                    
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit('Proceed');
+                echo $form->getOutput();
 
-			
-			
-			} else {
+            
+            
+            } else {
                 echo '<tr>';
                 echo "<td style='text-align: justify' colspan=2>";
                 echo 'By clicking proceed you will generate invitations for every student you take care of for CAS who is in the final year of their IB Diploma. As a coordinator this will be all students in the cohort: as an advisor, just the students you advise.<br/><br/>';
@@ -133,8 +133,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                 echo '</td> ';
                 echo '</tr>';
             }
-				
-				
+                
+                
             
         
         } elseif ($step == 3) {

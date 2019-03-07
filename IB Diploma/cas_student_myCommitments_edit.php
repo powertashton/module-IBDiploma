@@ -70,55 +70,55 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
 
                $values = $result->fetch();
                $form = Form::create('commitmentEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_editProcess.php');
-						$form->setClass('smallIntBorder fullWidth');
-						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-						$form->addHiddenValue('ibDiplomaCASCommitmentID', $ibDiplomaCASCommitmentID);
-						$form->setFactory(DatabaseFormFactory::create($pdo));
+                        $form->setClass('smallIntBorder fullWidth');
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->addHiddenValue('ibDiplomaCASCommitmentID', $ibDiplomaCASCommitmentID);
+                        $form->setFactory(DatabaseFormFactory::create($pdo));
 
 
-						$form->addRow()->addHeading(__('Basic Information'));
-						
-						$row = $form->addRow();
-							$row->addLabel('name', __('Name'));
-							$row->addTextField('name')->setValue($values['name'])->maxLength(30)->readOnly()->isRequired();
-							
-						$row = $form->addRow();
-							$row->addLabel('status', __('Status'));
-							$row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->selected($values['status'])->isRequired();
+                        $form->addRow()->addHeading(__('Basic Information'));
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('name', __('Name'));
+                            $row->addTextField('name')->setValue($values['name'])->maxLength(30)->readOnly()->isRequired();
+                            
+                        $row = $form->addRow();
+                            $row->addLabel('status', __('Status'));
+                            $row->addSelect('status')->fromArray(array('Planning' =>__('Planning'), 'In Progress' => __('In Progress'), 'Complete' =>__('Complete')))->selected($values['status'])->isRequired();
 
-						$row = $form->addRow();
-							$row->addLabel('dateStart', __('Start Date'));
-							$row->addDate('dateStart')->setValue(dateConvertBack($guid, $values['dateStart']))->isRequired();
+                        $row = $form->addRow();
+                            $row->addLabel('dateStart', __('Start Date'));
+                            $row->addDate('dateStart')->setValue(dateConvertBack($guid, $values['dateStart']))->isRequired();
 
-						$row = $form->addRow();
-							$row->addLabel('dateEnd', __('End Date'));
-							$row->addDate('dateEnd')->setValue(dateConvertBack($guid, $values['dateEnd']));
+                        $row = $form->addRow();
+                            $row->addLabel('dateEnd', __('End Date'));
+                            $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $values['dateEnd']));
 
-						$row = $form->addRow();
-							$column = $row->addColumn();
-								$column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
-								$column->addTextArea('description')->setRows(10)->setValue($values['description'])->setClass('fullWidth');
-								
-						
-						$form->addRow()->addHeading(__('Supervisor'));
-						$row = $form->addRow();
-							$row->addLabel('supervisorName', __('Supervisor Name'));
-							$row->addTextField('supervisorName')->setValue($values['supervisorName'])->maxLength(30)->isRequired();
-						
-						$row = $form->addRow();
-							$row->addLabel('supervisorEmail', __('Supervisor Email'));
-							$row->addEmail('supervisorEmail')->setValue($values['supervisorEmail'])->isRequired();
-						
-						
-						$row = $form->addRow();
-							$row->addLabel('supervisorPhone', __('Supervisor Phone'))->description(__('Type, country code, number.'));
-							$row->addTextField('supervisorPhone')->setValue($values['supervisorPhone'])->maxLength(30)->isRequired();
-						
-						$row = $form->addRow();
-						$row->addFooter();
-						$row->addSubmit();
-						echo $form->getOutput();
-			
+                        $row = $form->addRow();
+                            $column = $row->addColumn();
+                                $column->addLabel('description', __('Description'))->description(__('Use this space to describe the activity you are undertaking. You may wish to include:<i><ul><li>What is the nature of the activity?</li><li>How long will it last?</li><li>How frequently will your take part?</li><li>How is it new and challenging?</li><li>What do you hope to accomplish?</li></ul></i>'));
+                                $column->addTextArea('description')->setRows(10)->setValue($values['description'])->setClass('fullWidth');
+                                
+                        
+                        $form->addRow()->addHeading(__('Supervisor'));
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorName', __('Supervisor Name'));
+                            $row->addTextField('supervisorName')->setValue($values['supervisorName'])->maxLength(30)->isRequired();
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorEmail', __('Supervisor Email'));
+                            $row->addEmail('supervisorEmail')->setValue($values['supervisorEmail'])->isRequired();
+                        
+                        
+                        $row = $form->addRow();
+                            $row->addLabel('supervisorPhone', __('Supervisor Phone'))->description(__('Type, country code, number.'));
+                            $row->addTextField('supervisorPhone')->setValue($values['supervisorPhone'])->maxLength(30)->isRequired();
+                        
+                        $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+                        echo $form->getOutput();
+            
             }
         }
     }

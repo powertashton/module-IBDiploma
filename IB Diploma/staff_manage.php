@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
             }
             ++$count;
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$valuesNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$valuesNum>";
             echo '<td>';
             echo formatName('', $values['preferredName'], $values['surname'], 'Staff', true, true);
             echo '</td>';

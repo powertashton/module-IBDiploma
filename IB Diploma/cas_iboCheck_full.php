@@ -169,15 +169,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_fu
                     echo '</td>';
                     echo '</tr>';
 
-					//Print feedback if there is any
-					try {
-						$dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
-						$sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
-						$resultFeedback = $connection2->prepare($sqlFeedback);
-						$resultFeedback->execute($dataFeedback);
-					} catch (PDOException $e) {
-						echo "<div class='error'>".$e->getMessage().'</div>';
-					}
+                    //Print feedback if there is any
+                    try {
+                        $dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+                        $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
+                        $resultFeedback = $connection2->prepare($sqlFeedback);
+                        $resultFeedback->execute($dataFeedback);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
 
                     if ($resultFeedback->rowCount() == 1) {
                         $valuesFeedback = $resultFeedback->fetch();

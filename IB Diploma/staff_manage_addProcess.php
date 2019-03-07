@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
     $role = $_POST['role'];
 
     if ($gibbonPersonID == '' or $role == '') {
-    	
+        
         //Fail 3
         $URL = $URL.'&return=error3';
         header("Location: {$URL}");

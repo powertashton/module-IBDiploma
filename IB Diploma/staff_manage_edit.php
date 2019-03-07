@@ -66,32 +66,32 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
            
             
             $form = Form::create('editStaff', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?ibDiplomaCASStaffID='.$ibDiplomaCASStaffID.'', 'post');
- 			
- 			$form->setFactory(DatabaseFormFactory::create($pdo));
-			$form->setClass('smallIntBorder fullWidth');
-			
- 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-			$form->addHiddenValue('ibDiplomaCASStaffID', $ibDiplomaCASStaffID);
-			
- 			$form->setFactory(DatabaseFormFactory::create($pdo));
-			$form->setClass('smallIntBorder fullWidth');
-			
-			$row = $form->addRow();
+             
+             $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+            
+             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('ibDiplomaCASStaffID', $ibDiplomaCASStaffID);
+            
+             $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+            
+            $row = $form->addRow();
                 $row->addLabel('Staff',__('Staff'));
-				$row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Staff', true, true));
-				 
-			$row = $form->addRow();
-				$row->addLabel('role',__('Role'));
-				$row->addSelect('role')->fromArray(array('Coordinator' => __('Coordinator'), 'Advisor' => __('Advisor')))->selected($values['role'])->isRequired();
+                $row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Staff', true, true));
+                 
+            $row = $form->addRow();
+                $row->addLabel('role',__('Role'));
+                $row->addSelect('role')->fromArray(array('Coordinator' => __('Coordinator'), 'Advisor' => __('Advisor')))->selected($values['role'])->isRequired();
 
-			
-			$row = $form->addRow();
-				$row->addFooter();
-				$row->addSubmit();
-				
+            
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+                
             $form->loadAllValuesFrom($values);
-			
-			echo $form->getOutput();	
+            
+            echo $form->getOutput();    
 
         }
     }
