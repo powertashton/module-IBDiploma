@@ -95,6 +95,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
+                
+            $form->loadAllValuesFrom($values);
             
             echo $form->getOutput();
         }
