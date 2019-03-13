@@ -58,10 +58,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 echo 'The specified commitment could not be loaded.';
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $values = $result->fetch();
 
                 echo '<h1>';
-                echo $row['name'].'<br>';
+                echo $values['name'].'<br>';
                 echo '</h1>';
 
                 echo "<div style='width:510px; float: left; font-size: 115%; margin-top: -5px'>";
@@ -79,13 +79,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                     echo 'There are no reflections to display in this commitment';
                     echo '</div>';
                 } else {
-                    while ($rowReflections = $resultReflections->fetch()) {
+                    while ($valuesReflections = $resultReflections->fetch()) {
                         echo '<h3>';
-                        echo $rowReflections['title'].'<br/>';
-                        echo "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>".dateConvertBack(substr($rowReflections['timestamp'], 0, 10)).' at '.substr($rowReflections['timestamp'], 11, 5).'</span>';
+                        echo $valuesReflections['title'].'<br/>';
+                        echo "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>".dateConvertBack(substr($valuesReflections['timestamp'], 0, 10)).' at '.substr($valuesReflections['timestamp'], 11, 5).'</span>';
                         echo '</h3>';
                         echo '<p>';
-                        echo $rowReflections['reflection'];
+                        echo $valuesReflections['reflection'];
                         echo '</p>';
                     }
                 }
@@ -97,48 +97,48 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 echo '<tr>';
                 echo "<td style='width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Status</span><br/>";
-                if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-                    echo $row['approval'];
+                if ($values['approval'] == 'Pending' or $values['approval'] == 'Not Approved') {
+                    echo $values['approval'];
                 } else {
-                    echo $row['status'];
+                    echo $values['status'];
                 }
                 echo '</td>';
                 echo "<td style='width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>";
-                echo dateConvertBack($guid, $row['dateStart']);
+                echo dateConvertBack($guid, $values['dateStart']);
                 echo '</td>';
                 echo "<td style='width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>";
-                echo dateConvertBack($guid, $row['dateEnd']);
+                echo dateConvertBack($guid, $values['dateEnd']);
                 echo '</td>';
                 echo '</tr>';
                 echo '<tr>';
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Supervisor</span><br/>";
-                echo $row['supervisorName'];
+                echo $values['supervisorName'];
                 echo '</td>';
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Phone</span><br/>";
-                echo $row['supervisorPhone'];
+                echo $values['supervisorPhone'];
                 echo '</td>';
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Email</span><br/>";
-                echo $row['supervisorEmail'];
+                echo $values['supervisorEmail'];
                 echo '</td>';
                 echo '</tr>';
-                if ($row['description'] != '') {
+                if ($values['description'] != '') {
                     echo '<tr>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>";
                     echo "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>";
-                    echo $row['description'];
+                    echo $values['description'];
                     echo '</td>';
                     echo '</tr>';
                 }
-                if ($row['goals'] != '') {
+                if ($values['goals'] != '') {
                     echo '<tr>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>";
                     echo "<span style='font-size: 115%; font-weight: bold'>Goals</span><br/>";
-                    echo $row['goals'];
+                    echo $values['goals'];
                     echo '</td>';
                     echo '</tr>';
                 }

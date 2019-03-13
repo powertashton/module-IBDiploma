@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
         header("Location: {$URL}");
     } else {
         $update = true;
-        $choices = $_POST['Members'];
+        $choices = $_POST['gibbonPersonID'];
 
         if (count($choices) < 1) {
             //Fail 2

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 //Module includes
@@ -66,33 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 echo '</div>';
             } else {
                 //Let's go!
-                $row = $result->fetch();
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_myCommitments_deleteProcess.php?ibDiplomaCASCommitmentID=$ibDiplomaCASCommitmentID" ?>">
-					<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-						<tr>
-							<td>
-								<b>Are you sure you want to delete "<?php echo $row['name'] ?>" from the IB Diploma programme?</b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i>This operation cannot be undone, and may lead to loss of vital data in your system.<br/>PROCEED WITH CAUTION!</i></span>
-							</td>
-							<td class="right">
+                $values = $result->fetch();
+                     echo "<div class='linkTop'>";
+                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>".__('Back').'</a>';
+                     echo '</div>';
 
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input name="ibDiplomaCASCommitmentID" id="ibDiplomaCASCommitmentID" value="<?php echo $ibDiplomaCASCommitmentID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="Yes">
-							</td>
-							<td class="right">
+                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_deleteProcess.php?ibDiplomaCASCommitmentID=$ibDiplomaCASCommitmentID'."&ibDiplomaCASCommitmentID=".$_GET['ibDiplomaCASCommitmentID']);
+                echo $form->getOutput();
 
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+                
             }
         }
     }

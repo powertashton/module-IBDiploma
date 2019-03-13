@@ -35,7 +35,7 @@ try {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $ibDiplomaCASStaffID = $_GET['ibDiplomaCASStaffID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&ibDiplomaCASStaffID=$ibDiplomaCASStaffID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&ibDiplomaCASStaffID=".$ibDiplomaCASStaffID;
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_edit.php') == false) {
 
@@ -51,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
         header("Location: {$URL}");
     } else {
         try {
+        
             $data = array('ibDiplomaCASStaffID' => $ibDiplomaCASStaffID);
             $sql = 'SELECT * FROM ibDiplomaCASStaff WHERE ibDiplomaCASStaffID=:ibDiplomaCASStaffID';
             $result = $connection2->prepare($sql);

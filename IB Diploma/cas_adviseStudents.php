@@ -65,31 +65,31 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
             echo 'Filter Roll Group: ';
 
             ?>
-				<script type="text/javascript">
-				$(document).ready(function() {
-					$('.searchInput').val(1);
-					$('.body').find("tr:odd").addClass('odd');
-					$('.body').find("tr:even").addClass('even');
-						
-					$(".searchInput").change(function(){
-						$('.body').find("tr").hide() ;
-						if ($('.searchInput :selected').val() == "" ) {
-							$('.body').find("tr").show() ;
-						}
-						else {
-							$('.body').find('.' + $('.searchInput :selected').val()).show();
-						}
-									
-						$('.body').find("tr").removeClass('odd even');
-						$('.body').find('tr:visible:odd').addClass('odd');
-						$('.body').find('tr:visible:even').addClass('even');
-					});
-				});
-				</script>
+                <script type="text/javascript">
+                $(document).ready(function() {
+                    $('.searchInput').val(1);
+                    $('.body').find("tr:odd").addClass('odd');
+                    $('.body').find("tr:even").addClass('even');
+                        
+                    $(".searchInput").change(function(){
+                        $('.body').find("tr").hide() ;
+                        if ($('.searchInput :selected').val() == "" ) {
+                            $('.body').find("tr").show() ;
+                        }
+                        else {
+                            $('.body').find('.' + $('.searchInput :selected').val()).show();
+                        }
+                                    
+                        $('.body').find("tr").removeClass('odd even');
+                        $('.body').find('tr:visible:odd').addClass('odd');
+                        $('.body').find('tr:visible:even').addClass('even');
+                    });
+                });
+                </script>
 
-				<select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-					<option selected value=''>All</option>
-					<?php
+                <select name="searchInput" class="searchInput" style='float: none; width: 100px'>
+                    <option selected value=''>All</option>
+                    <?php
                     try {
                         if ($role == 'Coordinator') {
                             $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber']);
@@ -104,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-					while ($rowSelect = $resultSelect->fetch()) {
-						echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['rollGroup']).'</option>';
-					}
-					?>
-				</select>
-			<?php	
+                    while ($rowSelect = $resultSelect->fetch()) {
+                        echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['rollGroup']).'</option>';
+                    }
+                    ?>
+                </select>
+            <?php    
             echo '</div>';
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
             while ($row = $result->fetch()) {
                 ++$count;
 
-				//COLOR ROW BY STATUS!
-				echo "<tr class='".$row['gibbonRollGroupID']."' id='".$row['rollGroup']."' name='".$row['rollGroup']."'>";
+                //COLOR ROW BY STATUS!
+                echo "<tr class='".$row['gibbonRollGroupID']."' id='".$row['rollGroup']."' name='".$row['rollGroup']."'>";
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
                 echo '</td>';

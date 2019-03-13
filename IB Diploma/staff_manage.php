@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
         echo '</tr>';
 
         $count = 0;
-        $rowNum = 'odd';
+        $valuesNum = 'odd';
 
         try {
             $resultPage = $connection2->prepare($sqlPage);
@@ -90,25 +90,25 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
 
-        while ($row = $resultPage->fetch()) {
+        while ($values = $resultPage->fetch()) {
             if ($count % 2 == 0) {
-                $rowNum = 'even';
+                $valuesNum = 'even';
             } else {
-                $rowNum = 'odd';
+                $valuesNum = 'odd';
             }
             ++$count;
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
+            //COLOR ROW BY STATUS!
+            echo "<tr class=$valuesNum>";
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+            echo formatName('', $values['preferredName'], $values['surname'], 'Staff', true, true);
             echo '</td>';
             echo '<td>';
-            echo $row['role'];
+            echo $values['role'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&ibDiplomaCASStaffID='.$row['ibDiplomaCASStaffID']."'><img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&ibDiplomaCASStaffID='.$row['ibDiplomaCASStaffID']."'><img title='Delete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&ibDiplomaCASStaffID='.$values['ibDiplomaCASStaffID']."'><img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&ibDiplomaCASStaffID='.$values['ibDiplomaCASStaffID']."'><img title='Delete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.1.00
+-------
+Refactored to Object Orientated PHP
+
 v1.0.10
 -------
 Fixed indentation in beautified PHP code
@@ -101,79 +105,79 @@ Prepped module to work with Core v2.0.00 semi automaitc module updates
 v0.6.00
 -------
 Commitments: removed C, A, S status and outcomes from student view.
-	Edited myCommitments.php, myCommitments_edit.php, myCommitments_add.php
+    Edited myCommitments.php, myCommitments_edit.php, myCommitments_add.php
 
 Reflections: new action for student to record their reflections:
-	Updated table gibbonAction
-	Updated table gibbonPermission
-	Updated file manifest.php
-	Added new table ibDiplomaCASReflection
-	New files cas_reflections*.php
-	Edited files myCommitments_view.php, cas_adviseStudents_full.php
+    Updated table gibbonAction
+    Updated table gibbonPermission
+    Updated file manifest.php
+    Added new table ibDiplomaCASReflection
+    New files cas_reflections*.php
+    Edited files myCommitments_view.php, cas_adviseStudents_full.php
 
 Student: removed field casStatusIBO
-	Edited table ibDiplomaStudent
-	Edited various files
+    Edited table ibDiplomaStudent
+    Edited various files
 
 CAS Advisor: revamped interface, using subpages
-	Edited cas_adviseStudents_details.php
-	Removed cas_adviseStudents_details_interview*.php
-	Renamed cas_adviseStudents_detailsProcess.php to cas_adviseStudents_detailsStatusProcess.php
+    Edited cas_adviseStudents_details.php
+    Removed cas_adviseStudents_details_interview*.php
+    Renamed cas_adviseStudents_detailsProcess.php to cas_adviseStudents_detailsStatusProcess.php
 
 Commitment: changed commitment's "Description & Goal" to "Description"
-	Edited files myCommitments_add.php, myCommitments_edit.php
+    Edited files myCommitments_add.php, myCommitments_edit.php
 
 Commitment: add field "goal" which is set in Interview 1, but viewable to student, advisor, and IBO
-	Edited table ibDiplomaCASCommitment
-	Edited files myCommitments_view.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
+    Edited table ibDiplomaCASCommitment
+    Edited files myCommitments_view.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
 
 CAS Status: change to from in progress, etc to At risk, On task, Excellence
-	Edited table ibDiplomaStudent
-	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
+    Edited table ibDiplomaStudent
+    Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
 
 Make supervisor phone number and email compulsory
-	Edited files myCommitments_add*.php, myCommitments_edit*.php
+    Edited files myCommitments_add*.php, myCommitments_edit*.php
 
 Advise Students: Added filter to student list and reflection list
-	Edited file cas_adviseStudents.php, cas_adviseStudents_details.php
+    Edited file cas_adviseStudents.php, cas_adviseStudents_details.php
 
 Reflections: Added filter to reflection list
-	Edited file cas_reflections.php
+    Edited file cas_reflections.php
 
 Student Commitments: renamed files
-	Changed file names myCommitments *.php to cas_student_myCommitments.php
-	Updates table gibbonAction
+    Changed file names myCommitments *.php to cas_student_myCommitments.php
+    Updates table gibbonAction
 
 Interviews: changed generic note input to specific structure and flow for each of the 3 interviews
-	Edited structure of ibDiplomaCASInterview
-	Edited page cas_adviseStudents_details.php
-	New files cas_adviseStudents_details*Process.php
-	Updated table gibbonAction
-	Updated table gibbonPermission
-	New files cas_student_interview2*.php, cas_student_interview3*.php
+    Edited structure of ibDiplomaCASInterview
+    Edited page cas_adviseStudents_details.php
+    New files cas_adviseStudents_details*Process.php
+    Updated table gibbonAction
+    Updated table gibbonPermission
+    New files cas_student_interview2*.php, cas_student_interview3*.php
 
 Student Commitments: made name unique
-	Edited table ibDiplomaCASCommitment
-	Edited file user_manage_add*.php
+    Edited table ibDiplomaCASCommitment
+    Edited file user_manage_add*.php
 
 IBO Check
-	Removed file cas_iboCheck_detailsProcess.php
-	Edited files cas_iboCheck*.php
+    Removed file cas_iboCheck_detailsProcess.php
+    Edited files cas_iboCheck*.php
 
 Images
-	Removed img/outcome*.acorn, outcome*.png
+    Removed img/outcome*.acorn, outcome*.png
 
 Commitment Supervisor: Ability to complete feedback form without logging in
-	New table ibDiplomaCASSupervisorFeedback
-	New files cas_supervisor*.php
-	Updated table gibbonAction
-	Updated table gibbonPermission
-	New file cas_supervisor_invite.php
-	Edited file cas_adviseStudents_details.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
+    New table ibDiplomaCASSupervisorFeedback
+    New files cas_supervisor*.php
+    Updated table gibbonAction
+    Updated table gibbonPermission
+    New file cas_supervisor_invite.php
+    Edited file cas_adviseStudents_details.php, cas_adviseStudents_full.php, cas_iboCheck_full.php
 
 Interview 3: added new statuses for final interview: complete, incomplete
-	Edited table ibDiplomaStudent
-	Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
+    Edited table ibDiplomaStudent
+    Edited files cas_adviseStudents.php, cas_adviseStudents_details.php, cas_iboCheck.php, cas_iboCheck_details.php
 
 
 v0.5.02
@@ -196,8 +200,8 @@ Ability for students to create CAS commitments
 An overall view per student showing the learning outcomes, which have been met, which are expected, which are outstanding, etc.
 Ability for advisors and coordinators to see commitment summary and details for relevant students
 Ability for advisors and coordinators to:
- 	Approve per commitment
- 	Set school status for CAS as whole
-   	Record details of student interviews
+     Approve per commitment
+     Set school status for CAS as whole
+       Record details of student interviews
 Ability for an external agent (e.g. IBO) to come in, view a summary for each student and set their status.
 Manifest + Publish
