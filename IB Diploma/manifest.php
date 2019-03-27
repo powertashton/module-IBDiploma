@@ -25,102 +25,102 @@ $description = 'A module to facilitate schools to run the IB Diploma programme.'
 $entryURL = 'index.php';
 $type = 'Additional';
 $category = 'IB';
-$version = '1.1.00';
+$version = '1.1.01';
 $author = 'Ross Parker, Ashton Power';
 $url = 'http://rossparker.org';
 
 //Module tables
-$moduleTables[0] = 'CREATE TABLE `ibDiplomaCASInterview` (
-  `ibDiplomaCASInterviewID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `1_gibbonPersonIDInterviewer` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDInterviewee` int(10) unsigned zerofill NOT NULL,
-  `1_date` date NOT NULL,
-  `1_notes` text NOT NULL,
-  `2_gibbonPersonIDInterviewer` int(10) unsigned zerofill DEFAULT NULL,
-  `2_date` date DEFAULT NULL,
-  `2_notes` text NOT NULL,
-  `2_outcome1` TEXT NOT NULL,
-  `2_outcome2` TEXT NOT NULL,
-  `2_outcome3` TEXT NOT NULL,
-  `2_outcome4` TEXT NOT NULL,
-  `2_outcome5` TEXT NOT NULL,
-  `2_outcome6` TEXT NOT NULL,
-  `2_outcome7` TEXT NOT NULL,
-  `2_outcome8` TEXT NOT NULL,
-  `3_gibbonPersonIDInterviewer` int(10) unsigned zerofill DEFAULT NULL,
-  `3_date` date DEFAULT NULL,
-  `3_notes` text,
-  `3_outcome1` TEXT NOT NULL,
-  `3_outcome1Notes` text NOT NULL,
-  `3_outcome2` TEXT NOT NULL,
-  `3_outcome2Notes` text NOT NULL,
-  `3_outcome3` TEXT NOT NULL,
-  `3_outcome3Notes` text NOT NULL,
-  `3_outcome4` TEXT NOT NULL,
-  `3_outcome4Notes` text NOT NULL,
-  `3_outcome5` TEXT NOT NULL,
-  `3_outcome5Notes` text NOT NULL,
-  `3_outcome6` TEXT NOT NULL,
-  `3_outcome6Notes` text NOT NULL,
-  `3_outcome7` TEXT NOT NULL,
-  `3_outcome7Notes` text NOT NULL,
-  `3_outcome8` TEXT NOT NULL,
-  `3_outcome8Notes` text NOT NULL,
+$moduleTables[0] = "CREATE TABLE `ibDiplomaCASInterview` (
+  `ibDiplomaCASInterviewID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `1_gibbonPersonIDInterviewer` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDInterviewee` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `1_date` DATE NOT NULL,
+  `1_notes` TEXT,
+  `2_gibbonPersonIDInterviewer` INT(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `2_date` DATE DEFAULT NULL,
+  `2_notes` TEXT,
+  `2_outcome1` TEXT,
+  `2_outcome2` TEXT,
+  `2_outcome3` TEXT,
+  `2_outcome4` TEXT,
+  `2_outcome5` TEXT,
+  `2_outcome6` TEXT,
+  `2_outcome7` TEXT,
+  `2_outcome8` TEXT,
+  `3_gibbonPersonIDInterviewer` INT(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `3_date` DATE DEFAULT NULL,
+  `3_notes` TEXT,
+  `3_outcome1` TEXT,
+  `3_outcome1Notes` TEXT,
+  `3_outcome2` TEXT,
+  `3_outcome2Notes` TEXT,
+  `3_outcome3` TEXT,
+  `3_outcome3Notes` TEXT,
+  `3_outcome4` TEXT,
+  `3_outcome4Notes` TEXT,
+  `3_outcome5` TEXT,
+  `3_outcome5Notes` TEXT,
+  `3_outcome6` TEXT,
+  `3_outcome6Notes` TEXT,
+  `3_outcome7` TEXT,
+  `3_outcome7Notes` TEXT,
+  `3_outcome8` TEXT,
+  `3_outcome8Notes` TEXT,
   PRIMARY KEY (`ibDiplomaCASInterviewID`),
   UNIQUE KEY `gibbonPersonIDInterviewee` (`gibbonPersonIDInterviewee`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;';
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[1] = "CREATE TABLE `ibDiplomaCASCommitment` (
-  `ibDiplomaCASCommitmentID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `approval` enum('Pending','Not Approved','Approved') NOT NULL DEFAULT 'Pending',
-  `status` enum('Planning','In Progress','Complete','Incomplete') NOT NULL,
-  `dateStart` date NOT NULL,
-  `dateEnd` date DEFAULT NULL,
-  `supervisorName` varchar(100) NOT NULL,
-  `supervisorEmail` varchar(255) NOT NULL,
-  `supervisorPhone` varchar(20) NOT NULL,
-  `description` text NOT NULL,
-  `goals` varchar(255) NOT NULL,
+  `ibDiplomaCASCommitmentID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `approval` ENUM('Pending','Not Approved','Approved') NOT NULL DEFAULT 'Pending',
+  `status` ENUM('Planning','In Progress','Complete','Incomplete') NOT NULL,
+  `dateStart` DATE NOT NULL,
+  `dateEnd` DATE DEFAULT NULL,
+  `supervisorName` VARCHAR(100) NOT NULL,
+  `supervisorEmail` VARCHAR(255) NOT NULL,
+  `supervisorPhone` VARCHAR(20) NOT NULL,
+  `description` TEXT,
+  `goals` VARCHAR(255),
   PRIMARY KEY (`ibDiplomaCASCommitmentID`),
   UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[2] = "CREATE TABLE `ibDiplomaCASStaff` (
-  `ibDiplomaCASStaffID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `role` enum('Coordinator','Advisor') NOT NULL,
+  `ibDiplomaCASStaffID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `role` ENUM('Coordinator','Advisor') NOT NULL,
   PRIMARY KEY (`ibDiplomaCASStaffID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[3] = "CREATE TABLE `ibDiplomaStudent` (
-  `ibDiplomaStudentID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearIDStart` int(3) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearIDEnd` int(3) unsigned zerofill NOT NULL,
-  `gibbonPersonIDCASAdvisor` int(10) unsigned zerofill DEFAULT NULL,
-  `casStatusSchool` enum('','At Risk','On Task','Excellence','Complete','Incomplete') NOT NULL,
+  `ibDiplomaStudentID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearIDStart` INT(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearIDEnd` INT(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDCASAdvisor` INT(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `casStatusSchool` ENUM('','At Risk','On Task','Excellence','Complete','Incomplete') NOT NULL,
   PRIMARY KEY (`ibDiplomaStudentID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
 
-$moduleTables[4] = 'CREATE TABLE `ibDiplomaCASReflection` (
-  `ibDiplomaCASReflectionID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `ibDiplomaCASCommitmentID` int(12) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+$moduleTables[4] = "CREATE TABLE `ibDiplomaCASReflection` (
+  `ibDiplomaCASReflectionID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `ibDiplomaCASCommitmentID` INT(12) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `title` VARCHAR( 100 ) NOT NULL,
-  `reflection` text NOT NULL,
+  `reflection` TEXT NOT NULL,
   PRIMARY KEY (`ibDiplomaCASReflectionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;';
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;";
 
 $moduleTables[5] = "CREATE TABLE `ibDiplomaCASSupervisorFeedback` (
-  `ibDiplomaCASSupervisorFeedbackID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `ibDiplomaCASCommitmentID` int(12) unsigned zerofill NOT NULL,
-  `key` varchar(40) NOT NULL,
-  `complete` enum('N','Y') NOT NULL DEFAULT 'N',
-  `attendance` enum('','<60%','60-84%','85-99%','100%') NOT NULL,
-  `evaluation` text NOT NULL,
+  `ibDiplomaCASSupervisorFeedbackID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
+  `ibDiplomaCASCommitmentID` INT(12) UNSIGNED ZEROFILL NOT NULL,
+  `key` VARCHAR(40) NOT NULL,
+  `complete` ENUM('N','Y') NOT NULL DEFAULT 'N',
+  `attendance` ENUM('','<60%','60-84%','85-99%','100%') NOT NULL,
+  `evaluation` TEXT NOT NULL,
   PRIMARY KEY (`ibDiplomaCASSupervisorFeedbackID`),
   UNIQUE KEY `key` (`key`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;";
