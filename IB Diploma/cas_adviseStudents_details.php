@@ -376,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     $form = Form::create('casStatus', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_detailsStatusProcess.php', "post");
                     
                     $form->setFactory(DatabaseFormFactory::create($pdo));
-                    $form->setClass('smallIntBorder fullWidth');
+                    
                      
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -424,7 +424,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         } else {
                         
                         $form = Form::create('interview1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview1Process.php");
-                            $form->setClass('smallIntBorder fullWidth');
                             
                             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -505,7 +504,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             
                             
                             $form = Form::create('interview2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview2Process.php");
-                            $form->setClass('smallIntBorder fullWidth');
                             
                             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -605,14 +603,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $row = $form->addRow();
                                 $row->addFooter();
                                 $row->addSubmit();
-                            echo $form->getOutput();
-                            
-                            // HACK: Otherwise FastFinder width overrides this one :(
-                            echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
-                            
-                        
-                            
-                           
+                            echo $form->getOutput();                        
                         }
                     }
                 } elseif ($subpage == 'Interview 3') {
@@ -643,7 +634,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 echo '</div>';
                             } else {
                                 $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
-                                $form->setClass('smallIntBorder fullWidth');
                             
                                 $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -750,8 +740,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     $row->addSubmit();
                                 echo $form->getOutput();
                                 
-                                // HACK: Otherwise FastFinder width overrides this one :(
-                                echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
                             
 
                             }

@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
     $form = Form::create('addStudent', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->setClass('smallIntBorder fullWidth');
+    
     
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));

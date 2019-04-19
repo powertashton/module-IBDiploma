@@ -76,7 +76,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                     echo '</div>';
                 } else {
                 $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
-                                $form->setClass('smallIntBorder fullWidth');
 
                                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                             
@@ -159,9 +158,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                                     $row->addFooter();
                                     $row->addSubmit();
                                 echo $form->getOutput();
-                                
-                                // HACK: Otherwise FastFinder width overrides this one :(
-                                echo '<style>.tags ul.token-input-list-facebook {width: 100% !important;} </style>';
 
                 }
             }

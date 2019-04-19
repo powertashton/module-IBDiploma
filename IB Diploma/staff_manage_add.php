@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ad
     
     
     $form = Form::create('addStaff',  $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_addProcess.php', 'post');
-    $form->setClass('smallIntBorder fullWidth');
+    
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

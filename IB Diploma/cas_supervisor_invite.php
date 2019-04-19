@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             echo '</h3>';
 
             $form = Form::create('invitationType',$_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-            $form->setClass('smallIntBorder fullWidth');
+            
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/cas_supervisor_invite.php');
             $form->addHiddenValue('step', 2);
             
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             
             
             $form = Form::create('supervisorInvite',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_supervisor_invite.php&step=3'", 'post');
-            $form->setClass('smallIntBorder fullWidth');
+            
             $form->setFactory(DatabaseFormFactory::create($pdo));
             
             if ($type == 'Single') {

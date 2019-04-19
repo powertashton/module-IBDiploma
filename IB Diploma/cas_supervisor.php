@@ -96,7 +96,7 @@ if ($resultKey->rowCount() < 1) {
 
             
             $form = Form::create('supervisorEvaluation',$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_supervisorProcess.php", "post");
-            $form->setClass('smallIntBorder fullWidth');
+            
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('key', $key);
             
