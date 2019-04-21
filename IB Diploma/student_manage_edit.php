@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
             $form = Form::create('editStudent', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/student_manage_editProcess.php?ibDiplomaStudentID='.$ibDiplomaStudentID, 'post');
              
              $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
+            
             
              $form->addHiddenValue('address', $_SESSION[$guid]['address']);
              

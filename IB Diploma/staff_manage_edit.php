@@ -68,13 +68,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
             $form = Form::create('editStaff', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?ibDiplomaCASStaffID='.$ibDiplomaCASStaffID.'', 'post');
              
              $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
+            
             
              $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('ibDiplomaCASStaffID', $ibDiplomaCASStaffID);
             
              $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('smallIntBorder fullWidth');
+            
             
             $row = $form->addRow();
                 $row->addLabel('Staff',__('Staff'));

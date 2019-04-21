@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
         if ($step == 1) {
         
         $form = Form::create('commitmentType',$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_add.php&step=2');
-            $form->setClass('smallIntBorder fullWidth');
+            
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('step', 2);
            
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                     } 
                     
                     $form = Form::create('addCommitment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_addProcess.php');
-                        $form->setClass('smallIntBorder fullWidth');
+                        
                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                         $form->setFactory(DatabaseFormFactory::create($pdo));
                         

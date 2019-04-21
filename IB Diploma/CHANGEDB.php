@@ -184,3 +184,39 @@ $sql[$count][1] = '
 $sql[$count][0] = '1.0.11';
 $sql[$count][1] = '
 ';
+
+//v1.1.1
+++$count;
+$sql[$count][0] = '1.1.01';
+$sql[$count][1] = '
+ALTER TABLE `ibDiplomaCASInterview`
+CHANGE `1_notes` `1_notes` TEXT NULL,
+CHANGE `2_notes` `2_notes` TEXT NULL,
+CHANGE `2_outcome1` `2_outcome1` TEXT NULL,
+CHANGE `2_outcome2` `2_outcome2` TEXT NULL,
+CHANGE `2_outcome3` `2_outcome3` TEXT NULL,
+CHANGE `2_outcome4` `2_outcome4` TEXT NULL,
+CHANGE `2_outcome5` `2_outcome5` TEXT NULL,
+CHANGE `2_outcome6` `2_outcome6` TEXT NULL,
+CHANGE `2_outcome7` `2_outcome7` TEXT NULL,
+CHANGE `2_outcome8` `2_outcome8` TEXT NULL,
+CHANGE `3_outcome1` `3_outcome1` TEXT NULL,
+CHANGE `3_outcome1Notes` `3_outcome1Notes` TEXT NULL,
+CHANGE `3_outcome2` `3_outcome2` TEXT NULL,
+CHANGE `3_outcome2Notes` `3_outcome2Notes` TEXT NULL,
+CHANGE `3_outcome3` `3_outcome3` TEXT NULL,
+CHANGE `3_outcome3Notes` `3_outcome3Notes` TEXT NULL,
+CHANGE `3_outcome4` `3_outcome4` TEXT NULL,
+CHANGE `3_outcome4Notes` `3_outcome4Notes` TEXT NULL,
+CHANGE `3_outcome5` `3_outcome5` TEXT NULL,
+CHANGE `3_outcome5Notes` `3_outcome5Notes` TEXT NULL,
+CHANGE `3_outcome6` `3_outcome6` TEXT NULL,
+CHANGE `3_outcome6Notes` `3_outcome6Notes` TEXT NULL,
+CHANGE `3_outcome7` `3_outcome7` TEXT NULL,
+CHANGE `3_outcome7Notes` `3_outcome7Notes` TEXT NULL,
+CHANGE `3_outcome8` `3_outcome8` TEXT NULL,
+CHANGE `3_outcome8Notes` `3_outcome8Notes` TEXT NULL;end
+
+ALTER TABLE `ibDiplomaCASCommitment`
+CHANGE `description` `description` TEXT NULL,
+CHANGE `goals` `goals` VARCHAR(255) NULL;end';
