@@ -34,18 +34,15 @@ try {
     $resultKey = $connection2->prepare($sqlKey);
     $resultKey->execute($dataKey);
 } catch (PDOException $e) {
-    echo "<div class='error'>".$e->getMessage().'</div>';
+    $page->addError($e->getMessage());
 }
 
 if ($resultKey->rowCount() < 1) {
-    echo "<div class='error'>";
-    echo 'The supervisor feedback form cannot be displayed.';
-    echo '</div>';
+    $page->addError(__('The supervisor feedback form cannot be displayed.'));
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > IB Diploma > </div><div class='trailEnd'>CAS Supervisor Feedback Form</div>";
-    echo '</div>';
-
+    $page->breadcrumbs
+        ->add(__('CAS Supervisor Feedback Form'));
+        
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -60,13 +57,11 @@ if ($resultKey->rowCount() < 1) {
             $resultComplete = $connection2->prepare($sqlComplete);
             $resultComplete->execute($dataComplete);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($resultComplete->rowCount() > 0) {
-            echo "<div class='error'>";
-            echo 'Supervisor feedback has already been completed for this commitment.';
-            echo '</div>';
+            $page->addError(__('Supervisor feedback has already been completed for this commitment.'));
         } else {
             //Print out student and commitment details
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";

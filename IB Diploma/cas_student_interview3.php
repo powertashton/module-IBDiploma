@@ -28,19 +28,15 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_interview3.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     if (enroled($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>Student: Interview 3</div>";
-        echo '</div>';
+
+        $page->breadcrumbs->add(__('Student: Interview 3'));
+        
         echo '<p>';
         echo 'This page allows you to pre-enter information about your outcomes prior to Interview 3. For each of the 8 outcomes below, indicate which commitments you think <b>have</b> satisfied that outcome. In the interview you will be asked to give verbal explanations and evidence (e.g. certificates) of how you met the outcomes.';
         echo '</p>';
@@ -55,25 +51,19 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
             $resultInterview = $connection2->prepare($sqlInterview);
             $resultInterview->execute($dataInterview);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($resultInterview->rowCount() > 1) {
-            echo "<div class='error'>";
-            echo 'Interview cannot be displayed.';
-            echo '</div>';
+            $page->addError(__('Interview cannot be displayed.'));
         } else {
             if ($resultInterview->rowCount() == 0) {
-                echo "<div class='error'>";
-                echo 'You have not yet completed Interview 1, and so cannot prepare for Interview 2.';
-                echo '</div>';
+                $page->addError(__('You have not yet completed Interview 1, and so cannot prepare for Interview 3.'));
             } else {
                 $rowInterview = $resultInterview->fetch();
 
                 if (is_null($rowInterview['2_date'])) {
-                    echo "<div class='error'>";
-                    echo 'You have not yet completed Interview 2, and so cannot prepare for Interview 3.';
-                    echo '</div>';
+                    $page->addError(__('You have not yet completed Interview 2, and so cannot prepare for Interview 3.'));
                 } else {
                 $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_student_interview2Process.php");
 
@@ -88,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                                     $resultList = $connection2->prepare($sqlList);
                                     $resultList->execute($dataList);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
 
                                 $list = '';
@@ -133,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_int
                                             $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
                                             $resultPrepopulate = $connection2->query($sqlPrepopulate);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                            $page->addError($e->getMessage());
                                         }
                                         while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
                                             $prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();

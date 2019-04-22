@@ -29,19 +29,15 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_invite.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) { echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+    if ($role == false) { $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>Invite CAS Supervisor Feedback</div>";
-        echo '</div>';
 
+        $page->breadcrumbs
+            ->add(__('Invite CAS Supervisor Feedback'));
+            
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -152,9 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                 $gibbonPersonID = $_POST['gibbonPersonID'];
                 $ibDiplomaCASCommitmentID = $_POST['ibDiplomaCASCommitmentID'];
                 if ($gibbonPersonID == '' or $ibDiplomaCASCommitmentID == '') {
-                    echo "<div class='error'>";
-                    echo 'You have not specified a student or commitment.';
-                    echo '</div>';
+                    $page->addError(__('You have not specified a student or commitment.'));
                 } else {
                     try {
                         if ($role == 'Coordinator') {
@@ -167,13 +161,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($result->rowCount() != 1) {
-                        echo "<div class='error'>";
-                        echo 'Invite cannot be issued.';
-                        echo '</div>';
+                        $page->addError(__('Invite cannot be issued.'));
                     } else {
                         $values = $result->fetch();
                         $student = $values['preferredName'].' '.$values['surname'];
@@ -186,13 +178,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
 
                         if ($result->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo 'Invite cannot be issued.';
-                            echo '</div>';
+                            $page->addError(__('Invite cannot be issued.'));
                         } else {
                             $values = $result->fetch();
 
@@ -203,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                 $resultComplete = $connection2->prepare($sqlComplete);
                                 $resultComplete->execute($dataComplete);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $page->addError($e->getMessage());
                             }
 
                             if ($resultComplete->rowCount() > 0) {
@@ -218,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                     $resultLock = $connection2->query($sqlLock);
                                 } catch (PDOException $e) {
                                     $lock = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
 
                                 if ($lock) {
@@ -242,9 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                     }
 
                                     if ($continue == false) {
-                                        echo "<div class='error'>";
-                                        echo 'A unique key cannot be generated, so it is not possible to continue.';
-                                        echo '</div>';
+                                        $page->addError(__('A unique key cannot be generated, so it is not possible to continue.'));
                                     } else {
                                         //Write to database
                                         $proceed = true;
@@ -255,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                             $result->execute($data);
                                         } catch (PDOException $e) {
                                             $proceed = false;
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                            $page->addError($e->getMessage());
                                         }
 
                                         if ($proceed) {
@@ -306,13 +294,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $page->addError($e->getMessage());
                 }
 
                 if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo 'Invites cannot be issued.';
-                    echo '</div>';
+                    $page->addError(__('Invites cannot be issued.'));
                 } else {
                     while ($values = $result->fetch()) {
                         $student = $values['preferredName'].' '.$values['surname'];
@@ -329,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                             $resultCommitment = $connection2->prepare($sqlCommitment);
                             $resultCommitment->execute($dataCommitment);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
 
                         if ($resultCommitment->rowCount() > 0) {
@@ -341,7 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                     $resultComplete = $connection2->prepare($sqlComplete);
                                     $resultComplete->execute($dataComplete);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
 
                                 if ($resultComplete->rowCount() <= 0) {
@@ -352,9 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                         $resultLock = $connection2->query($sqlLock);
                                     } catch (PDOException $e) {
                                         $lock = false;
-                                        echo "<div class='error'>";
-                                        echo $valuesCommitment['name'].': Invite cannot be issued due to a database error.';
-                                        echo '</div>';
+                                        $page->addError(__($valuesCommitment['name'].': Invite cannot be issued due to a database error.'));
                                     }
 
                                     if ($lock) {
@@ -385,9 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                         }
 
                                         if ($continue == false) {
-                                            echo "<div class='error'>";
-                                            echo $valuesCommitment['name'].': A unique key could not be generated, so the invite could not be sent.';
-                                            echo '</div>';
+                                            $page->addError(__($valuesCommitment['name'].': A unique key could not be generated, so the invite could not be sent.'));
                                         } else {
                                             //Write to database
                                             $proceed = true;
@@ -398,9 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                                 $resultWrite->execute($dataWrite);
                                             } catch (PDOException $e) {
                                                 $proceed = false;
-                                                echo "<div class='error'>";
-                                                echo $valuesCommitment['name'].': Invite cannot be issued due to a database error.';
-                                                echo '</div>';
+                                                $page->addError(__($valuesCommitment['name'].': Invite cannot be issued due to a database error.'));
                                             }
 
                                             if ($proceed) {

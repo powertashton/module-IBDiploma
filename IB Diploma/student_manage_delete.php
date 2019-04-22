@@ -26,24 +26,19 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_delete.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_manage.php'>Student Enrolment</a> > </div><div class='trailEnd'>Delete Student Enrolment</div>";
-    echo '</div>';
-
+    $page->breadcrumbs
+        ->add(__('Student Enrolment'), 'student_manage.php')
+        ->add(__('Delete Student Enrolment'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
     $ibDiplomaStudentID = $_GET['ibDiplomaStudentID'];
-    if ($ibDiplomaStudentID == '') { echo "<div class='error'>";
-        echo 'You have not specified a student member.';
-        echo '</div>';
+    if ($ibDiplomaStudentID == '') { $page->addError(__('You have not specified a student member.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'ibDiplomaStudentID' => $ibDiplomaStudentID);
@@ -51,13 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage_
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo 'The selected student member does not exist.';
-            echo '</div>';
+           $page->addError(__('The selected student member does not exist.'));
         } else {
             //Let's go!
             $values = $result->fetch();

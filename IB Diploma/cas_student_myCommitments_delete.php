@@ -27,21 +27,17 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myCommitments_delete.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     if (enroled($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>My Commitments</a> > </div><div class='trailEnd'>Delete Commitment</div>";
-        echo '</div>';
-
+        $page->breadcrumbs
+            ->add(__('My Commitments'), 'cas_student_myCommitments.php')
+            ->add(__('Delete Commitment'));
+            
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -49,9 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
         //Check if school year specified
         $ibDiplomaCASCommitmentID = $_GET['ibDiplomaCASCommitmentID'];
         if ($ibDiplomaCASCommitmentID == '') {
-            echo "<div class='error'>";
-            echo 'You have not specified a student member.';
-            echo '</div>';
+            $page->addError(__('You have not specified a student member.'));
         } else {
             try {
                 $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
@@ -59,13 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo 'The selected commitment does not exist.';
-                echo '</div>';
+                $page->addError(__('The selected commitment does not exist.'));
             } else {
                 //Let's go!
                 $values = $result->fetch();

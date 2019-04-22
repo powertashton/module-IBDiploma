@@ -24,15 +24,11 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myCommitments_view.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this page.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this page.'));
 } else {
     if (enroled($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
         //Proceed!
         //Get class variable
@@ -50,13 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo 'The specified commitment could not be loaded.';
-                echo '</div>';
+                $page->addError(__('The specified commitment could not be loaded.'));
             } else {
                 $values = $result->fetch();
 
@@ -71,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                     $resultReflections = $connection2->prepare($sqlReflections);
                     $resultReflections->execute($dataReflections);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $page->addError($e->getMessage());
                 }
 
                 if ($resultReflections->rowCount() < 1) {

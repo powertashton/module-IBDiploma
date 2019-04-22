@@ -25,14 +25,10 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_details.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $gibbonPersonID = $_GET['gibbonPersonID'];
-    if ($gibbonPersonID == '') { echo "<div class='error'>";
-        echo 'You have not specified a student.';
-        echo '</div>';
+    if ($gibbonPersonID == '') { $page->addError(__('You have not specified a student.'));
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'gibbonPersonID' => $gibbonPersonID);
@@ -40,20 +36,18 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo 'The specified student does not exist, or you do not have access to them.';
-            echo '</div>';
+            $page->addError(__('The specified student does not exist, or you do not have access to them.'));
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_iboCheck.php'>IBO CAS Check</a> > </div><div class='trailEnd'>Student Details</div>";
-            echo '</div>';
-
+            $page->breadcrumbs
+                ->add(__('IBO CAS Check'), 'cas_iboCheck.php')
+                ->add(__('Student Details'));
+                
             if (isset($_GET['updateReturn'])) {
                 $updateReturn = $_GET['updateReturn'];
             } else {
@@ -110,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 $resultDetail = $connection2->prepare($sqlDetail);
                 $resultDetail->execute($dataDetail);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
             if ($resultDetail->rowCount() == 1) {
                 $valuesDetail = $resultDetail->fetch();
@@ -125,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 $resultDetail = $connection2->prepare($sqlDetail);
                 $resultDetail->execute($dataDetail);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
             if ($resultDetail->rowCount() == 1) {
                 $valuesDetail = $resultDetail->fetch();
@@ -162,13 +156,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
 
             if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo 'There are no commitments to display.';
-                echo '</div>';
+                $page->addError(__('There are no commitments to display.'));
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
@@ -246,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $page->addError($e->getMessage());
                 }
 
                 echo "<div class='linkTop'>";
@@ -295,9 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                 echo '</div>';
 
                 if ($result->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo 'There are no reflections to display.';
-                    echo '</div>';
+                    $page->addError(__('There are no reflections to display.'));
                 } else {
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
@@ -335,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_iboCheck_de
                                 $resultCommitment = $connection2->prepare($sqlCommitment);
                                 $resultCommitment->execute($dataCommitment);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $page->addError($e->getMessage());
                             }
 
                             if ($resultCommitment->rowCount() == 1) {

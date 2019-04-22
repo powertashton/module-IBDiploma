@@ -25,15 +25,11 @@ include './modules/IB Diploma/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/hook_studentProfile_cas.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     if (enroled($guid, $gibbonPersonID, $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'The selected student is not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('The selected student is not enroled in the IB Diploma programme.'));
     } else {
         try {
             $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -41,15 +37,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/hook_studentPro
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>";
-            echo 'Commitments cannot be displayed.';
-            echo '</div>';
+            $page->addError(__('Commitments cannot be displayed.'));
         }
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo 'There are no commitments to display.';
-            echo '</div>';
+            $page->addError(__('There are no commitments to display.'));
         } else {
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
