@@ -28,24 +28,19 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_edit.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/staff_manage.php'>Manage CAS Staff</a> > </div><div class='trailEnd'>Edit CAS Staff</div>";
-    echo '</div>';
-
+    $page->breadcrumbs
+        ->add(__('Manage CAS Staff'), 'staff_manage.php')
+        ->add(__('Edit CAS Staff'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
     $ibDiplomaCASStaffID = $_GET['ibDiplomaCASStaffID'];
-    if ($ibDiplomaCASStaffID == 'Y') { echo "<div class='error'>";
-        echo 'You have not specified an activity.';
-        echo '</div>';
+    if ($ibDiplomaCASStaffID == 'Y') {$page->addError(__('You have not specified an activity.'));
     } else {
         try {
             $data = array('ibDiplomaCASStaffID' => $ibDiplomaCASStaffID);
@@ -53,13 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_ed
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() == 0) {
-            echo "<div class='error'>";
-            echo 'The selected activity does not exist.';
-            echo '</div>';
+            $page->addError(__('The selected activity does not exist.'));
         } else {
             //Let's go!
             $values = $result->fetch();

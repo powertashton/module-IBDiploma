@@ -25,19 +25,14 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveCommitments.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) { echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+    if ($role == false) { $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>Approve CAS Commitments</div>";
-        echo '</div>';
-
+    
+        $page->breadcrumbs->add(__('Approve CAS Commitments'));
+        
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -53,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() < 1) {

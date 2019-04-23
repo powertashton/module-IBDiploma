@@ -24,13 +24,11 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>Manage Student Enrolment</div>";
-    echo '</div>';
+        $page->breadcrumbs
+        ->add(__('Manage Student Enrolment'));
+    
     echo '<p>';
     echo 'This page only displays students enroled in the current school year.';
     echo '</p>';
@@ -54,18 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { echo "<div class='error'>";
-        echo 'Students cannot be displayed.';
-        echo '</div>';
+    } catch (PDOException $e) { $page->addError(__('Students cannot be displayed.'));
     }
 
     echo "<div class='linkTop'>";
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_manage_add.php'><img title='New' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    if ($result->rowCount() < 1) { echo "<div class='error'>";
-        echo 'There are no students to display.';
-        echo '</div>';
+    if ($result->rowCount() < 1) { $page->addError(__('There are no students to display.'));
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
             printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
@@ -99,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
             $resultPage = $connection2->prepare($sqlPage);
             $resultPage->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         while ($row = $resultPage->fetch()) {
@@ -132,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
                     $resultAdvisor = $connection2->prepare($sqlAdvisor);
                     $resultAdvisor->execute($dataAdvisor);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $page->addError($e->getMessage());
                 }
 
                 if ($resultAdvisor->rowCount() == 1) {

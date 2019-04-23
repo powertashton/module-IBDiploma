@@ -27,20 +27,16 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myCommitments_add.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     if (enroled($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_myCommitments.php'>My Commitments</a> > </div><div class='trailEnd'>Add Commitment</div>";
-        echo '</div>';
-
+        $page->breadcrumbs
+            ->add(__('My Commitments'), 'cas_student_myCommitments.php')
+            ->add(__('Add Commitment'));
+            
         $returns = array();
         $editLink = '';
         if (isset($_GET['editID'])) {
@@ -106,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                         $resultActivity = $connection2->prepare($sqlActivity);
                         $resultActivity->execute($dataActivity);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultActivity->rowCount() != 1) {
@@ -127,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
                             $resultCoord = $connection2->prepare($sqlCoord);
                             $resultCoord->execute($dataCoord);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
 
                         if ($resultCoord->rowCount() > 0) {

@@ -26,20 +26,15 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_reflections_add.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     if (enroled($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2) == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_student_reflections.php'>Reflections</a> > </div><div class='trailEnd'>Add Reflection</div>";
-        echo '</div>';
-
+        $page->breadcrumbs
+            ->add(__('Reflections'), 'cas_student_reflections.php')
+            ->add(__('Add Reflection'));
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -99,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_ref
                         $resultActivity = $connection2->prepare($sqlActivity);
                         $resultActivity->execute($dataActivity);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultActivity->rowCount() != 1) {

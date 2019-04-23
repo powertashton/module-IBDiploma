@@ -25,20 +25,14 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStudents_full.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this page.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this page.'));
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) { echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+    if ($role == false) { $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
         if ($gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo 'You have not specified a student.';
-            echo '</div>';
+            $page->addError(__('You have not specified a student.'));
         } else {
             try {
                 if ($role == 'Coordinator') {
@@ -51,13 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo 'The specified student does not exist, or you do not have access to them.';
-                echo '</div>';
+                $page->addError(__('The specified student does not exist, or you do not have access to them.'));
             } else {
                 //Get class variable
                 $ibDiplomaCASCommitmentID = $_GET['ibDiplomaCASCommitmentID'];
@@ -74,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($result->rowCount() != 1) {
@@ -95,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $resultReflections = $connection2->prepare($sqlReflections);
                             $resultReflections->execute($dataReflections);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
 
                         if ($resultReflections->rowCount() < 1) {
@@ -188,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $resultFeedback = $connection2->prepare($sqlFeedback);
                             $resultFeedback->execute($dataFeedback);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
 
                         if ($resultFeedback->rowCount() == 1) {

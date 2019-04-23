@@ -24,20 +24,15 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStudents.php') == false) {
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
     if ($role == false) {
         //Acess denied
-        echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+        $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>Advise CAS Students</div>";
-        echo '</div>';
+        $page->breadcrumbs->add(__('Advise CAS Students'));
+        
         echo '<p>';
         echo "Your CAS staff role is $role. The students listed below are determined by your role, and student-staff relationship assignment.";
         echo '</p>';
@@ -53,13 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo 'There are no students to display.';
-            echo '</div>';
+            $page->addError(__('There are no students to display.'));
         } else {
             echo "<div class='linkTop'>";
             echo 'Filter Roll Group: ';
@@ -101,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $resultSelect = $connection2->prepare($sqlSelect);
                         $resultSelect->execute($dataSelect);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     while ($rowSelect = $resultSelect->fetch()) {
@@ -159,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $resultAdvisor = $connection2->prepare($sqlAdvisor);
                         $resultAdvisor->execute($dataAdvisor);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultAdvisor->rowCount() == 1) {

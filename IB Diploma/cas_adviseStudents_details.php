@@ -30,20 +30,14 @@ include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStudents_details.php') == false) {
 
     //Acess denied
-    echo "<div class='error'>";
-    echo 'You do not have access to this action.';
-    echo '</div>';
+    $page->addError(__('You do not have access to this action.'));
 } else {
     $role = staffCASRole($guid, $_SESSION[$guid]['gibbonPersonID'], $connection2);
-    if ($role == false) { echo "<div class='error'>";
-        echo 'You are not enroled in the IB Diploma programme.';
-        echo '</div>';
+    if ($role == false) { $page->addError(__('You are not enroled in the IB Diploma programme.'));
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
         if ($gibbonPersonID == '') {
-            echo "<div class='error'>";
-            echo 'You have not specified a student.';
-            echo '</div>';
+            $page->addError(__('You have not specified a student.'));
         } else {
             try {
                 if ($role == 'Coordinator') {
@@ -56,21 +50,19 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
+                $page->addError($e->getMessage());
             }
 
             if ($result->rowCount() != 1) {
-                echo "<div class='error'>";
-                echo 'The specified student does not exist, or you do not have access to them.';
-                echo '</div>';
+                $page->addError(__('The specified student does not exist, or you do not have access to them.'));
             } else {
                 $values = $result->fetch();
                 $image_240 = $values['image_240'];
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>Home</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/cas_adviseStudents.php'>Advise CAS Students</a> > </div><div class='trailEnd'>Advise Student</div>";
-                echo '</div>';
-
+                $page->breadcrumbs
+                    ->add(__('Advise CAS Students'), 'cas_adviseStudents.php')
+                    ->add(__('Advise Student'));
+                    
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
@@ -89,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     $resultDetail = $connection2->prepare($sqlDetail);
                     $resultDetail->execute($dataDetail);
                 } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
+                    $page->addError($e->getMessage());
                 }
                 if ($resultDetail->rowCount() == 1) {
                     $valuesDetail = $resultDetail->fetch();
@@ -133,13 +125,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo 'There are no commitments to display.';
-                        echo '</div>';
+                        $page->addError(__('There are no commitments to display.'));
                     } else {
                         echo "<table cellspacing='0' style='width: 100%'  class='colorOddEven'>";
                         echo "<tr class='head'>";
@@ -206,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 $resultFeedback = $connection2->prepare($sqlFeedback);
                                 $resultFeedback->execute($dataFeedback);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $page->addError($e->getMessage());
                             }
 
                             if ($resultFeedback->rowCount() == 1) {
@@ -218,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     $resultFeedback = $connection2->prepare($sqlFeedback);
                                     $resultFeedback->execute($dataFeedback);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
 
                                 if ($resultFeedback->rowCount() > 0) {
@@ -240,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     echo "<div class='linkTop'>";
@@ -255,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
                         while ($valuesSelect = $resultSelect->fetch()) {
                             echo "<option value='".$valuesSelect['ibDiplomaCASCommitmentID']."'>".htmlPrep($valuesSelect['name']).'</option>';
@@ -266,9 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
-                        echo "<div class='error'>";
-                        echo 'There are no reflections to display.';
-                        echo '</div>';
+                        $page->addError(__('There are no reflections to display.'));
                     } else {
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
@@ -306,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     $resultCommitment = $connection2->prepare($sqlCommitment);
                                     $resultCommitment->execute($dataCommitment);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
                                 if ($resultCommitment->rowCount() == 1) {
                                     $valuesCommitment = $resultCommitment->fetch();
@@ -398,13 +386,11 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $resultInterview = $connection2->prepare($sqlInterview);
                         $resultInterview->execute($dataInterview);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultInterview->rowCount() > 1) {
-                        echo "<div class='error'>";
-                        echo 'Interview cannot be displayed.';
-                        echo '</div>';
+                        $page->addError(__('Interview cannot be displayed.'));
                     } else {
                         if ($resultInterview->rowCount() == 1) {
                             $valuesInterview = $resultInterview->fetch();
@@ -415,7 +401,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             $resultCommitments = $connection2->prepare($sqlCommitments);
                             $resultCommitments->execute($dataCommitments);
                         } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
+                            $page->addError($e->getMessage());
                         }
                     if ($resultCommitments->rowCount() < 1) {
                             echo "<div class='error'>";
@@ -487,18 +473,14 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $resultInterview = $connection2->prepare($sqlInterview);
                         $resultInterview->execute($dataInterview);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultInterview->rowCount() > 1) {
-                        echo "<div class='error'>";
-                        echo 'Interview cannot be displayed.';
-                        echo '</div>';
+                        $page->addError(__('Interview cannot be displayed.'));
                     } else {
                         if ($resultInterview->rowCount() == 0) {
-                            echo "<div class='error'>";
-                            echo 'You have not yet completed Interview 1, and so cannot access Interview 2.';
-                            echo '</div>';
+                            $page->addError(__('You have not yet completed Interview 1, and so cannot access Interview 2.'));
                         } else {
                             $valuesInterview = $resultInterview->fetch();
                             
@@ -518,7 +500,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 $resultList = $connection2->prepare($sqlList);
                                 $resultList->execute($dataList);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $page->addError($e->getMessage());
                             }
 
                             $list = '';
@@ -563,7 +545,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                         $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
                                         $resultPrepopulate = $connection2->query($sqlPrepopulate);
                                     } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
+                                        $page->addError($e->getMessage());
                                     }
                                     while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
                                         $prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();
@@ -613,25 +595,19 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         $resultInterview = $connection2->prepare($sqlInterview);
                         $resultInterview->execute($dataInterview);
                     } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                        $page->addError($e->getMessage());
                     }
 
                     if ($resultInterview->rowCount() > 1) {
-                        echo "<div class='error'>";
-                        echo 'Interview cannot be displayed.';
-                        echo '</div>';
+                        $page->addError(__('Interview cannot be displayed.'));
                     } else {
                         if ($resultInterview->rowCount() == 0) {
-                            echo "<div class='error'>";
-                            echo 'You have not yet completed Interview 1, and so cannot access Interview 2.';
-                            echo '</div>';
+                            $page->addError(__('You have not yet completed Interview 1, and so cannot access Interview 2.'));
                         } else {
                             $valuesInterview = $resultInterview->fetch();
 
                             if (is_null($valuesInterview['2_date'])) {
-                                echo "<div class='error'>";
-                                echo 'You have not yet completed Interview 2, and so cannot access Interview 3.';
-                                echo '</div>';
+                                $page->addError(__('You have not yet completed Interview 2, and so cannot access Interview 3.'));
                             } else {
                                 $form = Form::create('interview3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_detailsInterview3Process.php");
                             
@@ -648,7 +624,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                     $resultList = $connection2->prepare($sqlList);
                                     $resultList->execute($dataList);
                                 } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $page->addError($e->getMessage());
                                 }
 
                                 $list = '';
@@ -694,7 +670,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                             $sqlPrepopulate = "SELECT ibDiplomaCASCommitmentID as value, name as name FROM ibDiplomaCASCommitment WHERE FIND_IN_SET(ibDiplomaCASCommitmentID, '".$dataPrepopulate['outcomeList']."')";
                                             $resultPrepopulate = $connection2->query($sqlPrepopulate);
                                         } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
+                                            $page->addError($e->getMessage());
                                         }
                                         while ($valuesPrepopulate = $resultPrepopulate->fetch()) {
                                             $prepopulate = $pdo->select($sqlPrepopulate, $dataPrepopulate)->fetchKeyPair();

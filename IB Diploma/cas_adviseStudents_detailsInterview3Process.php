@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $page->addError($e->getMessage());
                                 //Fail 2
                                 $URL = $URL.'&return=error2';
                                 header("Location: {$URL}");
