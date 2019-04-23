@@ -38,18 +38,15 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
     }
 
     //Set pagination variable
-    $page = null;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
+    $pagination = $_GET['page'] ?? 1;
+    if ((!is_numeric($pagination)) or $pagination < 1) {
+        $pagination = 1;
     }
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY start.sequenceNumber DESC, surname, preferredName";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($pagination - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) { $page->addError(__('Students cannot be displayed.'));
@@ -62,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
     if ($result->rowCount() < 1) { $page->addError(__('There are no students to display.'));
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'top');
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -144,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'bottom');
         }
     }
 }

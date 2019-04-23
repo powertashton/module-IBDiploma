@@ -33,19 +33,16 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
     }
 
     //Set pagination variable
-    $page = null;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
+    $pagination = $_GET['page'] ?? 1;
+    if ((!is_numeric($pagination)) or $pagination < 1) {
+        $pagination = 1;
     }
 
     //SELECT NAMED
     try {
         $data = array();
         $sql = "SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($pagination - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) { $page->addError($e->getMessage());
@@ -58,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
     if ($result->rowCount() < 1) { $page->addError(__('There are no staff to display.'));
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
+            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'top');
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -109,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
         echo '</table>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'bottom');
         }
     }
 }
