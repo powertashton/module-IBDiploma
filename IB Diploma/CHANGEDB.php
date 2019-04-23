@@ -220,3 +220,9 @@ CHANGE `3_outcome8Notes` `3_outcome8Notes` TEXT NULL;end
 ALTER TABLE `ibDiplomaCASCommitment`
 CHANGE `description` `description` TEXT NULL,
 CHANGE `goals` `goals` VARCHAR(255) NULL;end';
+
+
+//v1.1.02
+++$count;
+$sql[$count][0] = '1.1.02';
+$sql[$count][1] = '';
