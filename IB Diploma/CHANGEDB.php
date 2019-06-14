@@ -226,3 +226,8 @@ CHANGE `goals` `goals` VARCHAR(255) NULL;end';
 ++$count;
 $sql[$count][0] = '1.1.02';
 $sql[$count][1] = '';
+
+//v1.1.03
+++$count;
+$sql[$count][0] = '1.1.03';
+$sql[$count][1] = '';

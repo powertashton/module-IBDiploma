@@ -25,7 +25,7 @@ $description = 'A module to facilitate schools to run the IB Diploma programme.'
 $entryURL = 'index.php';
 $type = 'Additional';
 $category = 'IB';
-$version = '1.1.02';
+$version = '1.1.03';
 $author = 'Ross Parker, Ashton Power';
 $url = 'http://rossparker.org';
 
@@ -68,7 +68,7 @@ $moduleTables[0] = "CREATE TABLE `ibDiplomaCASInterview` (
   `3_outcome8Notes` TEXT NULL,
   PRIMARY KEY (`ibDiplomaCASInterviewID`),
   UNIQUE KEY `gibbonPersonIDInterviewee` (`gibbonPersonIDInterviewee`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[1] = "CREATE TABLE `ibDiplomaCASCommitment` (
   `ibDiplomaCASCommitmentID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
@@ -85,14 +85,14 @@ $moduleTables[1] = "CREATE TABLE `ibDiplomaCASCommitment` (
   `goals` VARCHAR(255) NULL,
   PRIMARY KEY (`ibDiplomaCASCommitmentID`),
   UNIQUE KEY `gibbonPersonID` (`gibbonPersonID`,`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[2] = "CREATE TABLE `ibDiplomaCASStaff` (
   `ibDiplomaCASStaffID` INT(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
   `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL,
   `role` ENUM('Coordinator','Advisor') NOT NULL,
   PRIMARY KEY (`ibDiplomaCASStaffID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[3] = "CREATE TABLE `ibDiplomaStudent` (
   `ibDiplomaStudentID` INT(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
@@ -102,7 +102,7 @@ $moduleTables[3] = "CREATE TABLE `ibDiplomaStudent` (
   `gibbonPersonIDCASAdvisor` INT(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `casStatusSchool` ENUM('','At Risk','On Task','Excellence','Complete','Incomplete') NOT NULL,
   PRIMARY KEY (`ibDiplomaStudentID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[4] = "CREATE TABLE `ibDiplomaCASReflection` (
   `ibDiplomaCASReflectionID` INT(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
@@ -112,7 +112,7 @@ $moduleTables[4] = "CREATE TABLE `ibDiplomaCASReflection` (
   `title` VARCHAR( 100 ) NOT NULL,
   `reflection` TEXT NOT NULL,
   PRIMARY KEY (`ibDiplomaCASReflectionID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 $moduleTables[5] = "CREATE TABLE `ibDiplomaCASSupervisorFeedback` (
   `ibDiplomaCASSupervisorFeedbackID` INT(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,
@@ -123,7 +123,7 @@ $moduleTables[5] = "CREATE TABLE `ibDiplomaCASSupervisorFeedback` (
   `evaluation` TEXT NOT NULL,
   PRIMARY KEY (`ibDiplomaCASSupervisorFeedbackID`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ;";
 
 //Action rows
 $actionRows[0]['name'] = 'IB Diploma Structure';

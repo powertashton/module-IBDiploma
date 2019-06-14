@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.1.03
+-------
+Update manifest tables to use InnoDB storage engine
+
 v1.1.02
 -------
 Refactored breadcrumbs and error messages
