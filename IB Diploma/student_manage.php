@@ -21,6 +21,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.php') == false) {
     //Acess denied
@@ -36,112 +39,28 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
-    //Set pagination variable
-    $pagination = $_GET['page'] ?? 1;
-    if ((!is_numeric($pagination)) or $pagination < 1) {
-        $pagination = 1;
-    }
-
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY start.sequenceNumber DESC, surname, preferredName";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($pagination - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) { $page->addError(__('Students cannot be displayed.'));
-    }
-
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_manage_add.php'><img title='New' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
-
-    if ($result->rowCount() < 1) { $page->addError(__('There are no students to display.'));
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'top');
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo 'Name';
-        echo '</th>';
-        echo '<th>';
-        echo 'Roll<br/>Group';
-        echo '</th>';
-        echo '<th>';
-        echo 'Start';
-        echo '</th>';
-        echo '<th>';
-        echo 'End';
-        echo '</th>';
-        echo '<th>';
-        echo 'CAS Advisor';
-        echo '</th>';
-        echo '<th>';
-        echo 'Actions';
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            $page->addError($e->getMessage());
-        }
-
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
-            echo '</td>';
-            echo '<td>';
-            echo $row['rollGroup'];
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['start'].'</b>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['end'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['gibbonPersonIDCASAdvisor'] != '') {
-                try {
-                    $dataAdvisor = array('gibbonPersonID' => $row['gibbonPersonIDCASAdvisor']);
-                    $sqlAdvisor = "SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND status='Full'";
-                    $resultAdvisor = $connection2->prepare($sqlAdvisor);
-                    $resultAdvisor->execute($dataAdvisor);
-                } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
-                }
-
-                if ($resultAdvisor->rowCount() == 1) {
-                    $rowAdvisor = $resultAdvisor->fetch();
-                    echo formatName('', $rowAdvisor['preferredName'], $rowAdvisor['surname'], 'Staff', false, true);
-                }
-            }
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_manage_edit.php&ibDiplomaStudentID='.$row['ibDiplomaStudentID']."'><img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/student_manage_delete.php&ibDiplomaStudentID='.$row['ibDiplomaStudentID']."'><img title='Delete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'bottom');
-        }
-    }
+        $sql = "SELECT ibDiplomaStudentID, student.surname, student.preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, advisor.surname AS advisorSurname, advisor.preferredName as advisorPreferredName FROM ibDiplomaStudent JOIN gibbonPerson AS student ON (ibDiplomaStudent.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) RIGHT JOIN gibbonPerson AS advisor ON (ibDiplomaStudent.gibbonPersonIDCASAdvisor = advisor.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND student.status='Full' ORDER BY start.sequenceNumber DESC, surname, preferredName";
+        $result = $pdo->select($sql, $data)->toDataSet();
+    } catch (PDOException $e) { $page->addError(__('Students cannot be displayed.')); }
+    
+    $table = DataTable::create('casStudentManage')->withData($result);
+    $table->addHeaderAction('add')->setURL('/modules/'.$_SESSION[$guid]['module'].'/student_manage_add.php');
+    
+    $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+    $table->addColumn('rollGroup', __('Roll Group'));
+    $table->addColumn('start', __('Start')); 
+    $table->addColumn('end', __('End'));   
+    $table->addColumn('advisor', __('Advisor'))->format(Format::using('name', ['title', 'advisorPreferredName', 'advisorSurname', 'Staff', false, true]));               
+    $table->addActionColumn()
+        ->addParam('ibDiplomaStudentID')
+        ->format(function ($valuesContributions, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/student_manage_edit.php');
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/student_manage_delete.php');
+        });     
+    echo $table->render($result);
+    
 }
