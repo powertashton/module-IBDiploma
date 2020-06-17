@@ -34,11 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
     
-    try {
     $data = array();
     $sql = "SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName";
     $result = $pdo->select($sql, $data)->toDataSet();
-    } catch (PDOException $e) { $page->addError($e->getMessage());}
     
     $table = DataTable::create('casStaffManage')->withData($result);
     $table->addHeaderAction('add')->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_add.php');

@@ -39,11 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/student_manage.
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sql = "SELECT ibDiplomaStudentID, student.surname, student.preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, advisor.surname AS advisorSurname, advisor.preferredName as advisorPreferredName FROM ibDiplomaStudent JOIN gibbonPerson AS student ON (ibDiplomaStudent.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) RIGHT JOIN gibbonPerson AS advisor ON (ibDiplomaStudent.gibbonPersonIDCASAdvisor = advisor.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND student.status='Full' ORDER BY start.sequenceNumber DESC, surname, preferredName";
         $result = $pdo->select($sql, $data)->toDataSet();
-    } catch (PDOException $e) { $page->addError(__('Students cannot be displayed.')); }
     
     $table = DataTable::create('casStudentManage')->withData($result);
     $table->addHeaderAction('add')->setURL('/modules/'.$_SESSION[$guid]['module'].'/student_manage_add.php');
