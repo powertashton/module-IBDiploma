@@ -17,7 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Module\IBDiploma\Domain\CASStudentGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -36,152 +39,47 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
         echo '<p>';
         echo "Your CAS staff role is $role. The students listed below are determined by your role, and student-staff relationship assignment.";
         echo '</p>';
-
-        try {
-            if ($role == 'Coordinator') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber']);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd ORDER BY rollGroup, surname, preferredName";
-            } else {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'advisor' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor ORDER BY rollGroup, surname, preferredName";
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $page->addError($e->getMessage());
-        }
-
-        if ($result->rowCount() < 1) {
-            $page->addError(__('There are no students to display.'));
+        
+        $CASStudentGateway = $container->get(CASStudentGateway::class);
+        $userGateway = $container->get(UserGateway::class);
+        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearSequenceNumber = $gibbon->session->get('gibbonSchoolYearSequenceNumber');
+        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        if ($role == 'Coordinator') {
+            $students = $CASStudentGateway->selectCASStudents($gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber)->toDataSet();
         } else {
-            echo "<div class='linkTop'>";
-            echo 'Filter Roll Group: ';
-
-            ?>
-                <script type="text/javascript">
-                $(document).ready(function() {
-                    $('.searchInput').val(1);
-                    $('.body').find("tr:odd").addClass('odd');
-                    $('.body').find("tr:even").addClass('even');
-                        
-                    $(".searchInput").change(function(){
-                        $('.body').find("tr").hide() ;
-                        if ($('.searchInput :selected').val() == "" ) {
-                            $('.body').find("tr").show() ;
-                        }
-                        else {
-                            $('.body').find('.' + $('.searchInput :selected').val()).show();
-                        }
-                                    
-                        $('.body').find("tr").removeClass('odd even');
-                        $('.body').find('tr:visible:odd').addClass('odd');
-                        $('.body').find('tr:visible:even').addClass('even');
-                    });
-                });
-                </script>
-
-                <select name="searchInput" class="searchInput" style='float: none; width: 100px'>
-                    <option selected value=''>All</option>
-                    <?php
-                    try {
-                        if ($role == 'Coordinator') {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber']);
-                            $sqlSelect = "SELECT DISTINCT gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd ORDER BY gibbonRollGroup.nameShort";
-                        } else {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'advisor' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sqlSelect = "SELECT DISTINCT gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.gibbonRollGroupID FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor ORDER BY gibbonRollGroup.nameShort";
-                        }
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                        $page->addError($e->getMessage());
-                    }
-
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['rollGroup']).'</option>';
-                    }
-                    ?>
-                </select>
-            <?php    
-            echo '</div>';
-
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo 'Name';
-            echo '</th>';
-            echo '<th>';
-            echo 'Roll<br/>Group';
-            echo '</th>';
-            echo '<th>';
-            echo 'Start';
-            echo '</th>';
-            echo '<th>';
-            echo 'CAS Advisor';
-            echo '</th>';
-            echo '<th>';
-            echo 'Status<br/>';
-            echo '</th>';
-            echo '<th>';
-            echo 'Actions';
-            echo '</th>';
-            echo '</tr>';
-            echo "<tbody class='body'>";
-
-            $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class='".$row['gibbonRollGroupID']."' id='".$row['rollGroup']."' name='".$row['rollGroup']."'>";
-                echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
-                echo '</td>';
-                echo '<td>';
-                echo $row['rollGroup'];
-                echo '</td>';
-                echo '<td>';
-                echo '<b>'.$row['start'].'</b>';
-                echo '</td>';
-                echo '<td>';
-                if ($row['gibbonPersonIDCASAdvisor'] != '') {
-                    try {
-                        $dataAdvisor = array('gibbonPersonID' => $row['gibbonPersonIDCASAdvisor']);
-                        $sqlAdvisor = "SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND status='Full'";
-                        $resultAdvisor = $connection2->prepare($sqlAdvisor);
-                        $resultAdvisor->execute($dataAdvisor);
-                    } catch (PDOException $e) {
-                        $page->addError($e->getMessage());
-                    }
-
-                    if ($resultAdvisor->rowCount() == 1) {
-                        $rowAdvisor = $resultAdvisor->fetch();
-                        echo formatName('', $rowAdvisor['preferredName'], $rowAdvisor['surname'], 'Staff', false, true);
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                if ($row['casStatusSchool'] == 'At Risk') {
-                    echo "<img title='At Risk' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>";
-                } elseif ($row['casStatusSchool'] == 'On Task') {
-                    echo "<img title='On Task' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
-                } elseif ($row['casStatusSchool'] == 'Excellence') {
-                    echo "<img title='Excellence' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on_small.png'/>";
-                } elseif ($row['casStatusSchool'] == 'Incomplete') {
-                    echo "<img title='Incomplete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> Incomplete";
-                } elseif ($row['casStatusSchool'] == 'Complete') {
-                    echo "<img title='Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> Complete";
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_details.php&gibbonPersonID='.$row['gibbonPersonID']."'><img title='Details' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</tbody>';
-            echo '</table>';
+            $students = $CASStudentGateway->selectCASStudentsByAdvisor($gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonerPersonID)->toDataSet();
         }
+        
+        
+        $table = DataTable::create('departments');
+        $table->setTitle('Students');
+        
+        $table->addColumn('gibbonPersonID', __('Student')) 
+                ->description(__('CAS Advisor'))
+                ->format(function ($row) use ($userGateway) {
+                    $student = $userGateway->getByID($row['gibbonPersonID']);
+                    $advisor = $userGateway->getByID($row['gibbonPersonIDCASAdvisor']);
+                    
+                    return Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student') . '<br/>'. Format::small(__(Format::name($advisor['title'], $advisor['preferredName'], $advisor['surname'], 'Staff')));
+                });
+        $table->addColumn('rollGroup', __('Roll Group'))
+            ->description(__('Starting Year'))
+            ->format(function ($row) {
+                return __($row['rollGroup']) . '<br/>'. Format::small(__($row['start']));
+            });
+        $table->addColumn('casStatusSchool', __('Status'));
+        $table->addActionColumn()
+            ->addParam('gibbonPersonID')
+            ->format(function ($row, $actions) use ($gibbon) {
+                $actions->addAction('details', __('Details'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_details.php')
+                        ->setIcon('page_right');
+            });
+
+    
+        echo $table->render($students);    
+   
     }
 }
 ?>
