@@ -18,9 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Module\IBDiploma\Domain\CASStudentGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -45,14 +48,53 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
         $gibbonSchoolYearSequenceNumber = $gibbon->session->get('gibbonSchoolYearSequenceNumber');
         $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        
+        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? NULL;
+        $criteria = $CASStudentGateway
+            ->newQueryCriteria()
+            ->searchBy($CASStudentGateway->getSearchableColumns(), $_GET['search'] ?? '')
+            ->filterBy('gibbonRollGroupID', $gibbonRollGroupID)
+            ->fromPOST();
         if ($role == 'Coordinator') {
-            $students = $CASStudentGateway->selectCASStudents($gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber)->toDataSet();
-        } else {
-            $students = $CASStudentGateway->selectCASStudentsByAdvisor($gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonerPersonID)->toDataSet();
+         
+        } else {   
+            $criteria->addFilterRules([
+                'advisor' => function ($query, $gibbonPersonID) {
+                    return $query
+                        ->where('gibbonPersonIDCASAdvisor=:advisor')
+                        ->bindValue('advisor', $gibbonPersonID);
+                }
+            ]);
         }
+    
+        $students = $CASStudentGateway->queryCASStudents($criteria, $gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonPersonID);
+        
+        $form = Form::create('searchForm', $gibbon->session->get('absoluteURL') . '/index.php', 'get');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+
+        $form->addHiddenValue('q', '/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents.php');
+        $form->addHiddenValue('address', $gibbon->session->get('address'));
+
+        $form->setClass('noIntBorder fullWidth standardForm');
+        $form->setTitle(__('Search & Filter'));
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search'))
+                ->description(__('Student Name'));
+            $row->addTextField('search')
+                ->setValue($criteria->getSearchText());
+    
+        $row = $form->addRow();
+            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addSelectRollGroup('gibbonRollGroupID', $gibbon->session->get('gibbonSchoolYearID'))->selected($gibbonRollGroupID)->placeholder();
+    
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+        echo $form->getOutput();    
         
         
-        $table = DataTable::create('departments');
+        $table = DataTable::createPaginated('CASStudents', $criteria);
         $table->setTitle('Students');
         
         $table->addColumn('gibbonPersonID', __('Student')) 
