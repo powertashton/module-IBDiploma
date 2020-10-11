@@ -6,7 +6,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * Technician Gateway
+ * CAS Student Gateway
  *
  * @version v21
  * @since   v21
