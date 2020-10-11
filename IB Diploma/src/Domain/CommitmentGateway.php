@@ -6,10 +6,10 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * Technician Gateway
+ * Commitment Gateway
  *
- * @version v20
- * @since   v20
+ * @version v21
+ * @since   v21
  */
 class CommitmentGateway extends QueryableGateway
 {
