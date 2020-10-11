@@ -39,10 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
     } else {
         $page->breadcrumbs->add(__('Advise CAS Students'));
         
-        echo '<p>';
-        echo "Your CAS staff role is $role. The students listed below are determined by your role, and student-staff relationship assignment.";
-        echo '</p>';
-        
         $CASStudentGateway = $container->get(CASStudentGateway::class);
         $userGateway = $container->get(UserGateway::class);
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
@@ -96,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
         
         $table = DataTable::createPaginated('CASStudents', $criteria);
         $table->setTitle('Students');
-        
+        $table->setDescription(__m('Your CAS staff role is ' . $role .'. The students listed below are determined by your role, and student-staff relationship assignment.'));
         $table->addColumn('gibbonPersonID', __('Student')) 
                 ->description(__('CAS Advisor'))
                 ->format(function ($row) use ($userGateway) {
