@@ -35,7 +35,7 @@ try {
 date_default_timezone_set($_SESSION[$guid]['timezone']);
 
 $ibDiplomaCASStaffID = $_GET['ibDiplomaCASStaffID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&ibDiplomaCASStaffID=".$ibDiplomaCASStaffID;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage_edit.php') == false) {
 
