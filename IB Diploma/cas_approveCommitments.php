@@ -53,10 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
     
     $userGateway = $container->get(UserGateway::class);
     
-    $table = DataTable::createPaginated('CASStaff', $criteria);
-    $table->addHeaderAction('add', __('Add Staff'))
-            ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_add.php')
-            ->displayLabel();
+    $table = DataTable::createPaginated('Commitments', $criteria);
     $table->addColumn('name', __('Commitment')) 
                 ->description(__('Student'))
                 ->format(function ($row) use ($userGateway) {
@@ -66,11 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
                 });
     $table->addColumn('approval', __('Approval'));
     $table->addActionColumn()
-            ->addParam('gibbonPersonID')
             ->addParam('ibDiplomaCASCommitmentID')
             ->format(function ($row, $actions) use ($gibbon) {
                 $actions->addAction('view', __('View'))
-                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_full.php');
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_full.php')
+                        ->addParam('gibbonPersonID',$row['gibbonPersonID']);
+                $actions->addAction('approve', __('Approve'))
+                        ->directLink()
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_approveCommitmentsProcess.php')
+                        ->addParam('job', 'approve')
+                        ->setIcon('iconTick');
+                 $actions->addAction('reject', __('Reject'))
+                        ->directLink()
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_approveCommitmentsProcess.php')
+                        ->addParam('job', 'reject')
+                        ->setIcon('iconCross');
             });
 
     echo $table->render($commitment);
