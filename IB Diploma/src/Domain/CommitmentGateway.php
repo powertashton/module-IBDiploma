@@ -1,5 +1,9 @@
 <?php
+<<<<<<< HEAD
 namespace Gibbon\Module\IBDiploma\Domain;
+=======
+namespace Gibbon\Module\HelpDesk\Domain;
+>>>>>>> upstream/master
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -18,6 +22,7 @@ class CommitmentGateway extends QueryableGateway
     private static $tableName = 'ibDiplomaCASCommitment';
     private static $primaryKey = 'ibDiplomaCASCommitmentID';
     private static $searchableColumns = [];
+<<<<<<< HEAD
     //SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent 
     //JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) 
     //JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
@@ -47,5 +52,8 @@ class CommitmentGateway extends QueryableGateway
 
        return $this->runQuery($query, $criteria);
     }
+=======
+    
+>>>>>>> upstream/master
     
 }
