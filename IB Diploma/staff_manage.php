@@ -44,6 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
     $userGateway = $container->get(UserGateway::class);
     
     $table = DataTable::createPaginated('CASStaff', $criteria);
+    $table->addHeaderAction('add', __('Add Staff'))
+            ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_add.php')
+            ->displayLabel();
     $table->addColumn('gibbonPersonID', __('Name')) 
                 ->description(__('Role'))
                 ->format(function ($row) use ($userGateway) {

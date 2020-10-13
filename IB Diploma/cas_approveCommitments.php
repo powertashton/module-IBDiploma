@@ -17,7 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Module\IBDiploma\Domain\CommitmentGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -36,77 +42,59 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
-
-        try {
-            if ($role == 'Coordinator') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber']);
-                $sql = "SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND approval='Pending'";
-            } else {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'sequenceStart' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'sequenceEnd' => $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'], 'advisor' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = "SELECT ibDiplomaCASCommitment.*, gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolment.gibbonRollGroupID, ibDiplomaStudentID, surname, preferredName, start.name AS start, end.name AS end, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonPersonIDCASAdvisor, casStatusSchool FROM ibDiplomaStudent JOIN gibbonPerson ON (ibDiplomaStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (ibDiplomaStudent.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonSchoolYear AS start ON (start.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDStart) LEFT JOIN gibbonSchoolYear AS end ON (end.gibbonSchoolYearID=ibDiplomaStudent.gibbonSchoolYearIDEnd) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN ibDiplomaCASCommitment ON (ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND start.sequenceNumber<=:sequenceStart AND end.sequenceNumber>=:sequenceEnd AND gibbonPersonIDCASAdvisor=:advisor AND approval='Pending'";
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $page->addError($e->getMessage());
-        }
-
-        if ($result->rowCount() < 1) {
-            echo "<div class='success'>";
-            echo 'There are no commitments pending action. Have a rest, take it easy!';
-            echo '</div>';
-        } else {
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Student';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Name';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Status';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Actions';
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            $intended = array();
-            $complete = array();
-            while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
-                echo '</td>';
-                echo '<td>';
-                echo $row['name'];
-                echo '</td>';
-                echo '<td>';
-                if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-                    echo $row['approval'];
-                } else {
-                    echo $row['status'];
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_full.php&gibbonPersonID='.$row['gibbonPersonID'].'&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=approve&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Approve' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=reject&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Reject' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
-        }
     }
+    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearSequenceNumber = $gibbon->session->get('gibbonSchoolYearSequenceNumber');
+    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+    
+    $CommitmentGateway = $container->get(CommitmentGateway::class);
+    $criteria = $CommitmentGateway->newQueryCriteria()->fromPOST();
+    $commitment = $CommitmentGateway->queryCommitments($criteria, $gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonPersonID);
+    
+    $userGateway = $container->get(UserGateway::class);
+    
+    $table = DataTable::createPaginated('CASStaff', $criteria);
+    $table->addHeaderAction('add', __('Add Staff'))
+            ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_add.php')
+            ->displayLabel();
+    $table->addColumn('name', __('Commitment')) 
+                ->description(__('Student'))
+                ->format(function ($row) use ($userGateway) {
+                    $student = $userGateway->getByID($row['gibbonPersonID']);
+                    
+                    return $row['name'] . '<br/>'. Format::small(__(Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student')));
+                });
+    $table->addColumn('approval', __('Approval'));
+    $table->addActionColumn()
+            ->addParam('gibbonPersonID')
+            ->addParam('ibDiplomaCASCommitmentID')
+            ->format(function ($row, $actions) use ($gibbon) {
+                $actions->addAction('view', __('View'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_full.php');
+            });
+
+    echo $table->render($commitment);
+    //todo: this
+          // echo "<tr class=$rowNum>";
+//                 echo '<td>';
+//                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
+//                 echo '</td>';
+//                 echo '<td>';
+//                 echo $row['name'];
+//                 echo '</td>';
+//                 echo '<td>';
+//                 if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
+//                     echo $row['approval'];
+//                 } else {
+//                     echo $row['status'];
+//                 }
+//                 echo '</td>';
+//                 echo '<td>';
+//                 echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_full.php&gibbonPersonID='.$row['gibbonPersonID'].'&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
+//                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=approve&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Approve' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a> ";
+//                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=reject&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Reject' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a> ";
+//                 echo '</td>';
+//                 echo '</tr>';
+//             }
+//             echo '</table>';
 }
