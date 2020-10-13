@@ -67,7 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
             ->format(function ($row, $actions) use ($gibbon) {
                 $actions->addAction('view', __('View'))
                         ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_full.php')
+                        ->modalWindow()
                         ->addParam('gibbonPersonID',$row['gibbonPersonID']);
+                        
                 $actions->addAction('approve', __('Approve'))
                         ->directLink()
                         ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_approveCommitmentsProcess.php')
@@ -81,27 +83,4 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
             });
 
     echo $table->render($commitment);
-    //todo: this
-          // echo "<tr class=$rowNum>";
-//                 echo '<td>';
-//                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true, true);
-//                 echo '</td>';
-//                 echo '<td>';
-//                 echo $row['name'];
-//                 echo '</td>';
-//                 echo '<td>';
-//                 if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-//                     echo $row['approval'];
-//                 } else {
-//                     echo $row['status'];
-//                 }
-//                 echo '</td>';
-//                 echo '<td>';
-//                 echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_adviseStudents_full.php&gibbonPersonID='.$row['gibbonPersonID'].'&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
-//                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=approve&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Approve' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a> ";
-//                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cas_approveCommitmentsProcess.php?address='.$_GET['q'].'&job=reject&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Reject' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a> ";
-//                 echo '</td>';
-//                 echo '</tr>';
-//             }
-//             echo '</table>';
 }
