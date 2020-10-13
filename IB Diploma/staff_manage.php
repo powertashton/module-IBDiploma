@@ -21,6 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.php') == false) {
     //Acess denied
@@ -31,82 +33,24 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+    
+    $data = array();
+    $sql = "SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName";
+    $result = $pdo->select($sql, $data)->toDataSet();
+    
+    $table = DataTable::create('casStaffManage')->withData($result);
+    $table->addHeaderAction('add')->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_add.php');
+    
+    $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', false]));
+    $table->addColumn('role', __('Role'));
+    $table->addActionColumn()
+        ->addParam('ibDiplomaCASStaffID')
+        ->format(function ($row, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php');
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php');
+        }); 
+    echo $table->render($result);
 
-    //Set pagination variable
-    $pagination = $_GET['page'] ?? 1;
-    if ((!is_numeric($pagination)) or $pagination < 1) {
-        $pagination = 1;
-    }
-
-    //SELECT NAMED
-    try {
-        $data = array();
-        $sql = "SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($pagination - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) { $page->addError($e->getMessage());
-    }
-
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_add.php'><img title='New' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
-
-    if ($result->rowCount() < 1) { $page->addError(__('There are no staff to display.'));
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'top');
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo 'Name';
-        echo '</th>';
-        echo '<th>';
-        echo 'Role';
-        echo '</th>';
-        echo '<th>';
-        echo 'Actions';
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $valuesNum = 'odd';
-
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            $page->addError($e->getMessage());
-        }
-
-        while ($values = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $valuesNum = 'even';
-            } else {
-                $valuesNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$valuesNum>";
-            echo '<td>';
-            echo formatName('', $values['preferredName'], $values['surname'], 'Staff', true, true);
-            echo '</td>';
-            echo '<td>';
-            echo $values['role'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&ibDiplomaCASStaffID='.$values['ibDiplomaCASStaffID']."'><img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&ibDiplomaCASStaffID='.$values['ibDiplomaCASStaffID']."'><img title='Delete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $pagination, $_SESSION[$guid]['pagination'], 'bottom');
-        }
-    }
 }
