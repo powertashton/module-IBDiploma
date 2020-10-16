@@ -17,12 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Module\IBDiploma\Domain\CASStaffGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.php') == false) {
     //Acess denied
@@ -33,24 +37,33 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/staff_manage.ph
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+    $CASStaffGateway = $container->get(CASStaffGateway::class);
+    $criteria = $CASStaffGateway->newQueryCriteria()->fromPOST();
+    $staff = $CASStaffGateway->queryCASStaff($criteria);
     
-    $data = array();
-    $sql = "SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName";
-    $result = $pdo->select($sql, $data)->toDataSet();
+    $userGateway = $container->get(UserGateway::class);
     
-    $table = DataTable::create('casStaffManage')->withData($result);
-    $table->addHeaderAction('add')->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_add.php');
-    
-    $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', false]));
-    $table->addColumn('role', __('Role'));
-    $table->addActionColumn()
-        ->addParam('ibDiplomaCASStaffID')
-        ->format(function ($row, $actions) use ($guid) {
-            $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php');
-            $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php');
-        }); 
-    echo $table->render($result);
+    $table = DataTable::createPaginated('CASStaff', $criteria);
+    $table->addHeaderAction('add', __('Add Staff'))
+            ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_add.php')
+            ->displayLabel();
+    $table->addColumn('gibbonPersonID', __('Name')) 
+                ->description(__('Role'))
+                ->format(function ($row) use ($userGateway) {
+                    $staff = $userGateway->getByID($row['gibbonPersonID']);
+                    
+                    return Format::name($staff['title'], $staff['preferredName'], $staff['surname'], 'Staff') . '<br/>'. Format::small(__($row['role']));
+                });
 
+    $table->addActionColumn()
+            ->addParam('ibDiplomaCASStaffID')
+            ->format(function ($row, $actions) use ($gibbon) {
+                $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_edit.php');
+                 $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/staff_manage_delete.php');
+            });
+
+    echo $table->render($staff);
+    
 }
