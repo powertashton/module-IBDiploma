@@ -45,7 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
     }
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonSchoolYearSequenceNumber = $gibbon->session->get('gibbonSchoolYearSequenceNumber');
-    $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+    $gibbonPersonIDCASAdvisor = NULL;
+     if ($role != 'Coordinator') {
+        $gibbonPersonIDCASAdvisor = $gibbon->session->get('gibbonPersonID');
+     }
     
     $approval = 'Pending';
     
@@ -56,7 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
         ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->filterBy('gibbonSchoolYearSequenceNumber', $gibbonSchoolYearSequenceNumber)
         ->filterBy('approval', $approval)
+        ->filterBy('gibbonPersonIDCASAdvisor', $gibbonPersonIDCASAdvisor)
         ->fromPOST();
+        
     //TODO: FILTER BY ROLE/GIBBONPERSONID
     $commitment = $CommitmentGateway->queryCommitments($criteria);
     

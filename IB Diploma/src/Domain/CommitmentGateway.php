@@ -51,6 +51,10 @@ class CommitmentGateway extends QueryableGateway
                 return $query
                     ->where('ibDiplomaCASCommitment.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID);
             },
+            'gibbonPersonIDCASAdvisor' => function ($query, $approval) {
+                return $query
+                    ->where('ibDiplomaCASCommitment.gibbonPersonIDCASAdvisor=:gibbonPersonIDCASAdvisor')->bindvalue('gibbonPersonIDCASAdvisor', $gibbonPersonIDCASAdvisor);
+            },
             'approval' => function ($query, $approval) {
                 return $query
                     ->where('approval=:approval')->bindvalue('approval', $approval);
