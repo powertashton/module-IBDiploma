@@ -61,8 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
         ->filterBy('approval', $approval)
         ->filterBy('gibbonPersonIDCASAdvisor', $gibbonPersonIDCASAdvisor)
         ->fromPOST();
-        
-    //TODO: FILTER BY ROLE/GIBBONPERSONID
+    
     $commitment = $CommitmentGateway->queryCommitments($criteria);
     
     $userGateway = $container->get(UserGateway::class);

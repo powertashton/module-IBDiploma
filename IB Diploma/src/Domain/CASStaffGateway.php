@@ -19,7 +19,6 @@ class CASStaffGateway extends QueryableGateway
     private static $primaryKey = 'ibDiplomaCASStaffID';
     private static $searchableColumns = ['role', 'surname', 'preferredName'];
 
-    //SELECT ibDiplomaCASStaffID, ibDiplomaCASStaff.role, surname, preferredName FROM ibDiplomaCASStaff JOIN gibbonPerson ON (ibDiplomaCASStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY role, surname, preferredName
     public function queryCASStaff($criteria) {      
         $query = $this
             ->newQuery()
