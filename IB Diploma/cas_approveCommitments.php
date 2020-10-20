@@ -47,11 +47,21 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_approveComm
     $gibbonSchoolYearSequenceNumber = $gibbon->session->get('gibbonSchoolYearSequenceNumber');
     $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
     
+    $approval = 'Pending';
+    
     $CommitmentGateway = $container->get(CommitmentGateway::class);
-    $criteria = $CommitmentGateway->newQueryCriteria()->fromPOST();
-    $commitment = $CommitmentGateway->queryCommitments($criteria, $gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonPersonID);
+    
+    $criteria = $CommitmentGateway
+        ->newQueryCriteria()
+        ->filterBy('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->filterBy('gibbonSchoolYearSequenceNumber', $gibbonSchoolYearSequenceNumber)
+        ->filterBy('approval', $approval)
+        ->fromPOST();
+    //TODO: FILTER BY ROLE/GIBBONPERSONID
+    $commitment = $CommitmentGateway->queryCommitments($criteria);
     
     $userGateway = $container->get(UserGateway::class);
+   
     
     $table = DataTable::createPaginated('Commitments', $criteria);
     $table->addColumn('name', __('Commitment')) 
