@@ -19,9 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-
-@session_start();
-
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 
 
 //Module includes
@@ -58,7 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
             } else {
                 $values = $result->fetch();
                 $image_240 = $values['image_240'];
-
+                $casStatusSchool = $values['casStatusSchool'];
+                
                 $page->breadcrumbs
                     ->add(__('Advise CAS Students'), 'cas_adviseStudents.php')
                     ->add(__('Advise Student'));
@@ -66,46 +66,12 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
-
-                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                echo '<tr>';
-                echo "<td style='width: 34%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-                echo formatName('', $values['preferredName'], $values['surname'], 'Student', true, true);
-                echo '</td>';
-                echo "<td style='width: 34%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>Roll Group</span><br/>";
-                try {
-                    $dataDetail = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                    $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                    $resultDetail = $connection2->prepare($sqlDetail);
-                    $resultDetail->execute($dataDetail);
-                } catch (PDOException $e) {
-                    $page->addError($e->getMessage());
-                }
-                if ($resultDetail->rowCount() == 1) {
-                    $valuesDetail = $resultDetail->fetch();
-                    echo '<i>'.$valuesDetail['name'].'</i>';
-                }
-                echo '</td>';
-                echo "<td style='width: 34%; vertical-align: top'>";
-                $casStatusSchool = $values['casStatusSchool'];
-                echo "<span style='font-size: 115%; font-weight: bold'>CAS Status</span><br/>";
-                if ($values['casStatusSchool'] == 'At Risk') {
-                    echo "<img title='At Risk' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>";
-                } elseif ($values['casStatusSchool'] == 'On Task') {
-                    echo "<img title='On Task' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
-                } elseif ($values['casStatusSchool'] == 'Excellence') {
-                    echo "<img title='Excellence' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on_small.png'/>";
-                } elseif ($values['casStatusSchool'] == 'Incomplete') {
-                    echo "<img title='Incomplete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> Incomplete";
-                } elseif ($values['casStatusSchool'] == 'Complete') {
-                    echo "<img title='Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> Complete";
-                }
-                echo '</td>';
-                echo '</tr>';
-                echo '</table>';
-
+                $table = DataTable::createDetails('student');
+                $table->addColumn('name', __('Name'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+                $table->addColumn('rollGroup', __('Roll Group'));
+                $table->addColumn('casStatusSchool', __('CAS Status'));
+                echo $table->render([$values]);
+                
                 $subpage = null;
                 if (isset($_GET['subpage'])) {
                     $subpage = $_GET['subpage'];
