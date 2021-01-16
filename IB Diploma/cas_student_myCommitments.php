@@ -17,7 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Module\IBDiploma\Domain\CommitmentGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -37,94 +41,76 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_student_myC
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
-
-        try {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = 'SELECT * FROM ibDiplomaCASCommitment WHERE gibbonPersonID=:gibbonPersonID ORDER BY approval, name';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $page->addError($e->getMessage());
-        }
-
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_student_myCommitments_add.php'><img title='New' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
-
-        if ($result->rowCount() < 1) {
-            $page->addError(__('There are no commitments to display.'));
-        } else {
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Name';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Status';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Timing';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Supervisor';
-            echo '</th>';
-            echo "<th style='vertical-align: bottom'>";
-            echo 'Actions';
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            $intended = array();
-            $complete = array();
-            while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $row['name'];
-                echo '</td>';
-                echo '<td>';
+        
+        $CommitmentGateway = $container->get(CommitmentGateway::class);
+        $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
+        $criteria = $CommitmentGateway
+            ->newQueryCriteria()
+            ->filterBy('gibbonPersonID', $gibbonPersonID)
+            ->sortBy('approval')
+            ->fromPOST();
+        //TODO: FILTER BY ROLE/GIBBONPERSONID
+        $commitment = $CommitmentGateway->queryCommitments($criteria);
+    
+        $userGateway = $container->get(UserGateway::class);
+   
+    
+        $table = DataTable::createPaginated('Commitments', $criteria);
+        $table->addHeaderAction('add', __('New'))
+            ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_add.php')
+            ->displayLabel();
+        
+        $table->addColumn('name', __('Commitment Name'));
+        $table->addColumn('status', __('Status'))
+            ->format(function ($row) {
                 if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
-                    echo $row['approval'];
+                    return $row['approval'];
                 } else {
-                    echo $row['status'];
+                    return $row['status'];
                 }
-                echo '</td>';
-                echo '<td>';
+            });
+        $table->addColumn('timing', __('Timing'))
+            ->notSortable()
+            ->format(function ($row) {
                 if (substr($row['dateStart'], 0, 4) == substr($row['dateEnd'], 0, 4)) {
                     if (substr($row['dateStart'], 5, 2) == substr($row['dateEnd'], 5, 2)) {
-                        echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                        return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
                     } else {
-                        echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                        return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
                     }
                 } else {
-                    echo date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
+                    return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
                 }
-                echo '</td>';
-                echo '<td>';
+            });
+            
+        $table->addColumn('supervisor', __('Supervisor'))
+            ->notSortable()
+            ->format(function ($row) {
                 if ($row['supervisorEmail'] != '') {
-                    echo "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
+                    return "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
                 } else {
-                    echo $row['supervisorName'];
+                    return $row['supervisorName'];
                 }
-                echo '</td>';
-                echo '<td>';
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_view.php&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
-                if ($row['approval'] == 'Approved') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_edit.php&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                }
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cas_student_myCommitments_delete.php&ibDiplomaCASCommitmentID='.$row['ibDiplomaCASCommitmentID']."'><img title='Delete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
-        }
+            });
+            
+            
+            
+        $table->addActionColumn()
+                ->addParam('ibDiplomaCASCommitmentID')
+                ->format(function ($row, $actions) use ($gibbon) {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_view.php')
+                        ->modalWindow();
+                    if ($row['approval'] == 'Approved') {
+                    $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_edit.php');
+                    }
+                    $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_delete.php');
+                        
+                });
+
+        echo $table->render($commitment);
+        
     }
 }

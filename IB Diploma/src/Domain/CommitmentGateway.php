@@ -20,7 +20,7 @@ class CommitmentGateway extends QueryableGateway
     private static $primaryKey = 'ibDiplomaCASCommitmentID';
     private static $searchableColumns = [];
 
-    public function queryCommitments($criteria, $gibbonSchoolYearID, $gibbonSchoolYearSequenceNumber, $gibbonPersonID) {      
+    public function queryCommitments($criteria) {      
         $query = $this
             ->newQuery()
             ->from('ibDiplomaStudent')
@@ -32,11 +32,34 @@ class CommitmentGateway extends QueryableGateway
             ->leftJoin('gibbonYearGroup','gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->innerJoin('ibDiplomaCASCommitment', 'ibDiplomaCASCommitment.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ')->bindvalue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->where('gibbonPerson.status="Full"')
-            ->where('start.sequenceNumber<=:sequenceStart')->bindvalue('sequenceStart', $gibbonSchoolYearSequenceNumber)
-            ->where('end.sequenceNumber>=:sequenceEnd')->bindvalue('sequenceEnd', $gibbonSchoolYearSequenceNumber)
-            ->where('approval="Pending"');
+            ->where('gibbonPerson.status="Full"');
+            
+            $criteria->addFilterRules([
+            'gibbonStudentEnrolment' => function ($query, $gibbonSchoolYearID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ')->bindvalue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            },
+            'sequenceStart' => function ($query, $gibbonSchoolYearSequenceNumber) {
+                return $query
+                    ->where('start.sequenceNumber<=:sequenceStart')->bindvalue('sequenceStart', $gibbonSchoolYearSequenceNumber);
+            },
+            'sequenceEnd' => function ($query, $gibbonSchoolYearSequenceNumber) {
+                return $query
+                    ->where('end.sequenceNumber>=:sequenceEnd')->bindvalue('sequenceEnd', $gibbonSchoolYearSequenceNumber);
+            },
+            'gibbonPersonID' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('ibDiplomaCASCommitment.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID);
+            },
+            'gibbonPersonIDCASAdvisor' => function ($query, $approval) {
+                return $query
+                    ->where('ibDiplomaCASCommitment.gibbonPersonIDCASAdvisor=:gibbonPersonIDCASAdvisor')->bindvalue('gibbonPersonIDCASAdvisor', $gibbonPersonIDCASAdvisor);
+            },
+            'approval' => function ($query, $approval) {
+                return $query
+                    ->where('approval=:approval')->bindvalue('approval', $approval);
+            }
+        ]);
 
        return $this->runQuery($query, $criteria);
     }
