@@ -21,7 +21,9 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-
+use Gibbon\Module\IBDiploma\Domain\CommitmentGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\DataSet;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -97,97 +99,95 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     if ($result->rowCount() < 1) {
                         $page->addError(__('There are no commitments to display.'));
                     } else {
-                        echo "<table cellspacing='0' style='width: 100%'  class='colorOddEven'>";
-                        echo "<tr class='head'>";
-                        echo "<th style='vertical-align: bottom'>";
-                        echo 'Commitment';
-                        echo '</th>';
-                        echo "<th style='vertical-align: bottom'>";
-                        echo 'Status';
-                        echo '</th>';
-                        echo "<th style='vertical-align: bottom'>";
-                        echo 'Timing';
-                        echo '</th>';
-                        echo "<th style='vertical-align: bottom'>";
-                        echo 'Supervisor';
-                        echo '</th>';
-                        echo "<th style='vertical-align: bottom'>";
-                        echo "<span title='Supervisor Feedback'>Feedback</span>";
-                        echo '</th>';
-                        echo "<th style='vertical-align: bottom'>";
-                        echo 'Actions';
-                        echo '</th>';
-                        echo '</tr>';
-
-                        $count = 0;
-                        $valuesNum = 'odd';
-                        $intended = array();
-                        $complete = array();
-                        while ($values = $result->fetch()) {
-                            
-                                //COLOR ROW BY STATUS!
-                                echo "<tr>";
-                            echo '<td>';
-                            echo $values['name'];
-                            echo '</td>';
-                            echo '<td>';
-                            if ($values['approval'] == 'Pending' or $values['approval'] == 'Not Approved') {
-                                echo $values['approval'];
-                            } else {
-                                echo $values['status'];
-                            }
-                            echo '</td>';
-                            echo '<td>';
-                            if (substr($values['dateStart'], 0, 4) == substr($values['dateEnd'], 0, 4)) {
-                                if (substr($values['dateStart'], 5, 2) == substr($values['dateEnd'], 5, 2)) {
-                                    echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
+                        $CommitmentGateway = $container->get(CommitmentGateway::class);
+                        $criteria = $CommitmentGateway
+                            ->newQueryCriteria()
+                            ->filterBy('gibbonPersonID', $gibbonPersonID)
+                            ->sortBy('approval')
+                            ->fromPOST();
+                        //TODO: FILTER BY ROLE/GIBBONPERSONID
+                        $commitment = $CommitmentGateway->queryCommitments($criteria);
+    
+                        $userGateway = $container->get(UserGateway::class);
+   
+    
+                        $table = DataTable::createPaginated('Commitments', $criteria);
+                        $table->addHeaderAction('add', __('New'))
+                            ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_add.php')
+                            ->displayLabel();
+        
+                        $table->addColumn('name', __('Commitment Name'));
+                        $table->addColumn('status', __('Status'))
+                            ->format(function ($row) {
+                                if ($row['approval'] == 'Pending' or $row['approval'] == 'Not Approved') {
+                                    return $row['approval'];
                                 } else {
-                                    echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateStart'], 0, 4);
+                                    return $row['status'];
                                 }
-                            } else {
-                                echo date('F', mktime(0, 0, 0, substr($values['dateStart'], 5, 2))).' '.substr($values['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($values['dateEnd'], 5, 2))).' '.substr($values['dateEnd'], 0, 4);
-                            }
-                            echo '</td>';
-                            echo '<td>';
-                            if ($values['supervisorEmail'] != '') {
-                                echo "<a href='mailto:".$values['supervisorEmail']."'>".$values['supervisorName'].'</a>';
-                            } else {
-                                echo $values['supervisorName'];
-                            }
-                            echo '</td>';
-                            echo '<td>';
-                            try {
-                                $dataFeedback = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
+                            });
+                        $table->addColumn('timing', __('Timing'))
+                            ->notSortable()
+                            ->format(function ($row) {
+                                if (substr($row['dateStart'], 0, 4) == substr($row['dateEnd'], 0, 4)) {
+                                    if (substr($row['dateStart'], 5, 2) == substr($row['dateEnd'], 5, 2)) {
+                                        return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                                    } else {
+                                        return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                                    }
+                                } else {
+                                    return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
+                                }
+                            });
+            
+                        $table->addColumn('supervisor', __('Supervisor'))
+                            ->notSortable()
+                            ->format(function ($row) {
+                                if ($row['supervisorEmail'] != '') {
+                                    return "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
+                                } else {
+                                    return $row['supervisorName'];
+                                }
+                            });
+                            
+                        $table->addColumn('supervisor', __('Supervisor'))
+                            ->notSortable()
+                            ->format(function ($row) {
+                                if ($row['supervisorEmail'] != '') {
+                                    return "<a href='mailto:".$row['supervisorEmail']."'>".$row['supervisorName'].'</a>';
+                                } else {
+                                    return $row['supervisorName'];
+                                }
+                            });
+                        
+                        $table->addColumn('feedback', __('Feedback'))
+                            ->notSortable()
+                            ->format(function ($row) use ($connection2) {
+                                $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
                                 $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
                                 $resultFeedback = $connection2->prepare($sqlFeedback);
-                                $resultFeedback->execute($dataFeedback);
-                            } catch (PDOException $e) {
-                                $page->addError($e->getMessage());
-                            }
-
-                            if ($resultFeedback->rowCount() == 1) {
-                                echo "<img title='Supervisor Feedback Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
-                            } else {
-                                try {
-                                    $dataFeedback = array('ibDiplomaCASCommitmentID' => $values['ibDiplomaCASCommitmentID']);
+                                 if ($resultFeedback->rowCount() == 1) {
+                                    return "<img title='Supervisor Feedback Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
+                                 } else {
+                                    $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
                                     $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='N'";
                                     $resultFeedback = $connection2->prepare($sqlFeedback);
                                     $resultFeedback->execute($dataFeedback);
-                                } catch (PDOException $e) {
-                                    $page->addError($e->getMessage());
-                                }
+                                    if ($resultFeedback->rowCount() > 0) {
+                                        return "<img title='Supervisor Feedback Requested' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/>";
+                                    } 
+                                }   
+                            });
+                    
+                        $table->addActionColumn()
+                                ->addParam('ibDiplomaCASCommitmentID')
+                                ->addParam('gibbonPersonID')
+                                ->format(function ($row, $actions) use ($gibbon) {
+                                    $actions->addAction('view', __('View'))
+                                        ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_adviseStudents_full.php')
+                                        ->modalWindow();
+                                });
 
-                                if ($resultFeedback->rowCount() > 0) {
-                                    echo "<img title='Supervisor Feedback Requested' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/>";
-                                }
-                            }
-                            echo '</td>';
-                            echo '<td>';
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/cas_adviseStudents_full.php&gibbonPersonID=$gibbonPersonID&ibDiplomaCASCommitmentID=".$values['ibDiplomaCASCommitmentID']."&width=1000&height=550'><img title='View' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> ";
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
+                        echo $table->render($commitment);
                     }
                 } elseif ($subpage == 'Reflection') {
                     try {
