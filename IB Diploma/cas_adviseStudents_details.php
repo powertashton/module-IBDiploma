@@ -192,7 +192,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     }
                 } elseif ($subpage == 'Reflection') {
                     //TODO: FILTER
-                    
                     $ReflectionGateway = $container->get(ReflectionGateway::class);
                     $criteria = $ReflectionGateway
                         ->newQueryCriteria()
@@ -205,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             ->format(function ($row) use ($connection2) {
                                 if (is_null($row['ibDiplomaCASCommitmentID'])) {
                                     return '<b><i>General CAS</i></b>';
-                                } else {
+                                } else { //TODO: MOVE INTO GATEWAY
                                         $dataCommitment = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
                                         $sqlCommitment = 'SELECT * FROM ibDiplomaCASCommitment WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID';
                                         $resultCommitment = $connection2->prepare($sqlCommitment);
