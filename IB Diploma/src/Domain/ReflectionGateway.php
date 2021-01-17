@@ -26,7 +26,14 @@ class ReflectionGateway extends QueryableGateway
             ->from('ibDiplomaCASReflection')
             ->cols(['ibDiplomaCASCommitmentID', 'ibDiplomaCASReflectionID', 'title', 'reflection', 'timestamp', 'gibbonPersonID'])
             ->where('ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID);
-
+        
+        $criteria->addFilterRules([
+            'ibDiplomaCASCommitmentID' => function ($query, $ibDiplomaCASCommitmentID) {
+                return $query
+                    ->where('ibDiplomaCASReflection.ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID')->bindvalue('ibDiplomaCASCommitmentID', $ibDiplomaCASCommitmentID);
+            }
+         ]);
+        
        return $this->runQuery($query, $criteria);
     }
 }
