@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Tables\DataTable;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -76,104 +76,32 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                     } else {
                         $values = $result->fetch();
 
-                        echo '<h1>';
-                        echo $values['name'].'<br>';
-                        echo '</h1>';
-
-                        echo "<div style='width:510px; float: left; font-size: 115%; margin-top: -5px'>";
-                        try {
-                            $dataReflections = array('gibbonPersonID' => $gibbonPersonID, 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
-                            $sqlReflections = 'SELECT * FROM ibDiplomaCASReflection WHERE gibbonPersonID=:gibbonPersonID AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID ORDER BY timestamp';
-                            $resultReflections = $connection2->prepare($sqlReflections);
-                            $resultReflections->execute($dataReflections);
-                        } catch (PDOException $e) {
-                            $page->addError($e->getMessage());
-                        }
-
-                        if ($resultReflections->rowCount() < 1) {
-                            echo "<div class='warning'>";
-                            echo 'There are no reflections to display in this commitment';
-                            echo '</div>';
-                        } else {
-                            while ($valuesReflections = $resultReflections->fetch()) {
-                                echo '<h3>';
-                                echo $valuesReflections['title'].'<br/>';
-                                echo "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>".dateConvertBack(substr($valuesReflections['timestamp'], 0, 10)).' at '.substr($valuesReflections['timestamp'], 11, 5).'</span>';
-                                echo '</h3>';
-                                echo '<p>';
-                                echo $valuesReflections['reflection'];
-                                echo '</p>';
-                            }
-                        }
-                        echo '</div>';
-
-                        //Details
-                        echo "<div style='width:430px; float: right; font-size: 115%; padding-top: 14px'>";
-                        echo "<table class='blank' cellspacing='0' style='width: 420px; float: left;'>";
-                        echo '<tr>';
-                        echo "<td colspan=3'>";
-                        echo "<h2 style='margin-top: 0px'>";
-                        echo 'General Information';
-                        echo '</h2>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Status</span><br/>";
-                        if ($values['approval'] == 'Pending' or $values['approval'] == 'Not Approved') {
-                            echo $values['approval'];
-                        } else {
-                            echo $values['status'];
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Start Date</span><br/>";
-                        echo dateConvertBack($guid, $values['dateStart']);
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>End Date</span><br/>";
-                        echo dateConvertBack($guid, $values['dateEnd']);
-                        echo '</td>';
-                        echo '</tr>';
+                        $table = DataTable::createDetails('details');
+                        $table->setTitle($values['name']);
+                        
+                        $table->addColumn('approval', __('Approval'));
+                        $table->addColumn('status', __('Status'));
+                        $table->addColumn('dateStart', __('Start Date'))
+                            ->format(function ($row) use ($guid) {
+                            return dateConvertBack($guid, $row['dateStart']);
+                            });
+                        $table->addColumn('dateEnd', __('End Date'))
+                            ->format(function ($row) use ($guid) {
+                            return dateConvertBack($guid, $row['dateEnd']);
+                            });
+                        $table->addColumn('supervisorName', __('Supervisor'));
+                        $table->addColumn('supervisorPhone', __('Phone'));    
+                        $table->addColumn('supervisorEmail', __('Email'))->addClass('col-span-2'); 
                         if ($values['description'] != '') {
-                            echo '<tr>';
-                            echo "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>";
-                            echo $values['description'];
-                            echo '</td>';
-                            echo '</tr>';
+                            $table->addColumn('description', __('Description'))->addClass('col-span-4');
                         }
                         if ($values['goals'] != '') {
-                            echo '<tr>';
-                            echo "<td style='padding-top: 15px; width: 33%; vertical-align: top; text-align: justify' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>Goals</span><br/>";
-                            echo $values['goals'];
-                            echo '</td>';
-                            echo '</tr>';
+                            $table->addColumn('goals', __('Goals'))->addClass('col-span-4');
                         }
-                        echo '<tr>';
-                        echo '<td colspan=3>';
-                        echo '<h2>';
-                        echo 'Supervisor';
-                        echo '</h2>';
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-                        echo $values['supervisorName'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Phone</span><br/>";
-                        echo $values['supervisorPhone'];
-                        echo '</td>';
-                        echo "<td style='15px; width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>Email</span><br/>";
-                        echo $values['supervisorEmail'];
-                        echo '</td>';
-                        echo '</tr>';
-
-                        //Print feedback if there is any
+                        $table->addMetaData('gridClass', 'grid-cols-4'); 
+                        echo $table->render([$values]);
+                        
+                        //TODO: TURN THIS INTO NICE FEEDBACK TABLE
                         try {
                             $dataFeedback = array('ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
                             $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
@@ -207,6 +135,34 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         }
                         echo '</table>';
                         echo '</div>';
+                        //TODO: TURN THIS INTO NICE REFLECTION TABLE
+                        echo "<div style='width:510px; float: left; font-size: 115%; margin-top: -5px'>";
+                        try {
+                            $dataReflections = array('gibbonPersonID' => $gibbonPersonID, 'ibDiplomaCASCommitmentID' => $ibDiplomaCASCommitmentID);
+                            $sqlReflections = 'SELECT * FROM ibDiplomaCASReflection WHERE gibbonPersonID=:gibbonPersonID AND ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID ORDER BY timestamp';
+                            $resultReflections = $connection2->prepare($sqlReflections);
+                            $resultReflections->execute($dataReflections);
+                        } catch (PDOException $e) {
+                            $page->addError($e->getMessage());
+                        }
+
+                        if ($resultReflections->rowCount() < 1) {
+                            echo "<div class='warning'>";
+                            echo 'There are no reflections to display in this commitment';
+                            echo '</div>';
+                        } else {
+                            while ($valuesReflections = $resultReflections->fetch()) {
+                                echo '<h3>';
+                                echo $valuesReflections['title'].'<br/>';
+                                echo "<span style='font-size: 55%; font-weight: normal; font-style: italic; margin-top: 5px'>".$valuesReflections['timestamp'].'</span>';
+                                echo '</h3>';
+                                echo '<p>';
+                                echo $valuesReflections['reflection'];
+                                echo '</p>';
+                            }
+                        }
+                        echo '</div>';
+                        
                     }
                 }
             }

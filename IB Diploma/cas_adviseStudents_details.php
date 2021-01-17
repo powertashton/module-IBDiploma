@@ -159,19 +159,19 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         
                         $table->addColumn('feedback', __('Feedback'))
                             ->notSortable()
-                            ->format(function ($row) use ($connection2) {
+                            ->format(function ($row) use ($connection2, $gibbon) {
                                 $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
                                 $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='Y'";
                                 $resultFeedback = $connection2->prepare($sqlFeedback);
                                  if ($resultFeedback->rowCount() == 1) {
-                                    return "<img title='Supervisor Feedback Complete' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
+                                    return "<img title='Supervisor Feedback Complete' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick.png'/>";
                                  } else {
                                     $dataFeedback = array('ibDiplomaCASCommitmentID' => $row['ibDiplomaCASCommitmentID']);
                                     $sqlFeedback = "SELECT * FROM ibDiplomaCASSupervisorFeedback WHERE ibDiplomaCASCommitmentID=:ibDiplomaCASCommitmentID AND complete='N'";
                                     $resultFeedback = $connection2->prepare($sqlFeedback);
                                     $resultFeedback->execute($dataFeedback);
                                     if ($resultFeedback->rowCount() > 0) {
-                                        return "<img title='Supervisor Feedback Requested' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/>";
+                                        return "<img title='Supervisor Feedback Requested' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick_light.png'/>";
                                     } 
                                 }   
                             });
