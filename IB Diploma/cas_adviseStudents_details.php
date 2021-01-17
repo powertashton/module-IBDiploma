@@ -113,9 +113,6 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
    
     
                         $table = DataTable::createPaginated('Commitments', $criteria);
-                        $table->addHeaderAction('add', __('New'))
-                            ->setURL('/modules/' . $gibbon->session->get('module') . '/cas_student_myCommitments_add.php')
-                            ->displayLabel();
         
                         $table->addColumn('name', __('Commitment Name'));
                         $table->addColumn('status', __('Status'))

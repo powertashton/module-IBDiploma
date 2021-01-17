@@ -24,7 +24,7 @@ class ReflectionGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('ibDiplomaCASReflection')
-            ->cols(['ibDiplomaCASCommitmentID', 'title', 'reflection', 'timestamp', 'gibbonPersonID'])
+            ->cols(['ibDiplomaCASCommitmentID', 'ibDiplomaCASReflectionID', 'title', 'reflection', 'timestamp', 'gibbonPersonID'])
             ->where('ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID);
 
        return $this->runQuery($query, $criteria);
