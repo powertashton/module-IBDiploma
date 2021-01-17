@@ -11,7 +11,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v21
  * @since   v21
  */
-class CASReflectionGateway extends QueryableGateway
+class ReflectionGateway extends QueryableGateway
 {
     use TableAware;
 
@@ -20,12 +20,12 @@ class CASReflectionGateway extends QueryableGateway
     private static $searchableColumns = [];
 
     
-    public function queryCASReflection($criteria, $$gibbonPersonID) {      
+    public function queryCASReflection($criteria, $gibbonPersonID) {      
         $query = $this
             ->newQuery()
             ->from('ibDiplomaCASReflection')
             ->cols(['ibDiplomaCASCommitmentID', 'title', 'reflection', 'timestamp', 'gibbonPersonID'])
-            ->where('ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID)
+            ->where('ibDiplomaCASReflection.gibbonPersonID=:gibbonPersonID')->bindvalue('gibbonPersonID', $gibbonPersonID);
 
        return $this->runQuery($query, $criteria);
     }

@@ -22,6 +22,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\IBDiploma\Domain\CommitmentGateway;
+use Gibbon\Module\IBDiploma\Domain\ReflectionGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\DataSet;
 
@@ -190,11 +191,13 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                         echo $table->render($commitment);
                     }
                 } elseif ($subpage == 'Reflection') {
-                    //TODO: OO INTO GATEWAY AND THEN ADD A FILTER
-                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'SELECT * FROM ibDiplomaCASReflection WHERE gibbonPersonID=:gibbonPersonID ORDER BY timestamp';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    //TODO: FILTER
+                    
+                    $ReflectionGateway = $container->get(ReflectionGateway::class);
+                    $criteria = $ReflectionGateway
+                        ->newQueryCriteria()
+                        ->fromPOST();
+                    $reflection = $ReflectionGateway->queryCASReflection($criteria, $gibbonPersonID);
                 
                     $table = DataTable::create('reflections');
                     $table->addExpandableColumn('reflection');
@@ -220,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_adviseStude
                             });    
                     $table->addColumn('title', __('Title'));  
                     
-                    echo $table->render($result->toDataSet());
+                    echo $table->render($reflection);
                 
                 
                 } elseif ($subpage == 'CAS Status') {
