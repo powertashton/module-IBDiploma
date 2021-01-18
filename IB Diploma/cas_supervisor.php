@@ -18,8 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -46,7 +46,9 @@ if ($resultKey->rowCount() < 1) {
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
+    if (!isset($updateReturn)) {
+        $updateReturn = NULL;
+    }
     if ($updateReturn != 'success0') {
         $rowKey = $resultKey->fetch();
 
@@ -63,32 +65,24 @@ if ($resultKey->rowCount() < 1) {
         if ($resultComplete->rowCount() > 0) {
             $page->addError(__('Supervisor feedback has already been completed for this commitment.'));
         } else {
-            //Print out student and commitment details
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Student</span><br/>";
-            echo formatName('', $rowKey['preferredName'], $rowKey['surname'], 'Student', false, true);
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Commitment</span><br/>";
-            echo $rowKey['name'];
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Timing</span><br/>";
-            if (substr($rowKey['dateStart'], 0, 4) == substr($rowKey['dateEnd'], 0, 4)) {
-                if (substr($rowKey['dateStart'], 5, 2) == substr($rowKey['dateEnd'], 5, 2)) {
-                    echo date('F', mktime(0, 0, 0, substr($rowKey['dateStart'], 5, 2))).' '.substr($rowKey['dateStart'], 0, 4);
-                } else {
-                    echo date('F', mktime(0, 0, 0, substr($rowKey['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($rowKey['dateEnd'], 5, 2))).' '.substr($rowKey['dateStart'], 0, 4);
-                }
-            } else {
-                echo date('F', mktime(0, 0, 0, substr($rowKey['dateStart'], 5, 2))).' '.substr($rowKey['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($rowKey['dateEnd'], 5, 2))).' '.substr($rowKey['dateEnd'], 0, 4);
-            }
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
-
+        
+            $table = DataTable::createDetails('student');
+            $table->addColumn('student', __('Student'))->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', 'true']));
+            $table->addColumn('name', __('Commitment'));
+            $table->addColumn('timing', __('Timing'))
+                        ->notSortable()
+                        ->format(function ($row) {
+                            if (substr($row['dateStart'], 0, 4) == substr($row['dateEnd'], 0, 4)) {
+                                if (substr($row['dateStart'], 5, 2) == substr($row['dateEnd'], 5, 2)) {
+                                    return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                                } else {
+                                    return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateStart'], 0, 4);
+                                }
+                            } else {
+                                return date('F', mktime(0, 0, 0, substr($row['dateStart'], 5, 2))).' '.substr($row['dateStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['dateEnd'], 5, 2))).' '.substr($row['dateEnd'], 0, 4);
+                            }
+                        });
+            echo $table->render([$rowKey]);
             
             $form = Form::create('supervisorEvaluation',$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cas_supervisorProcess.php", "post");
             
@@ -119,3 +113,5 @@ if ($resultKey->rowCount() < 1) {
     }
 }
 ?>
+
+

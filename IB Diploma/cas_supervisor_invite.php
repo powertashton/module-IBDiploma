@@ -134,8 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
             
         
         } elseif ($step == 3) {
-            $type = $_POST['type'];
-            if ($type != 'Single' and $type != 'Multiple') {
+            if (isset($_POST["type"])){
+                $type = $_POST['type'];
+            } else {
                 $type = 'Single';
             }
 
@@ -399,6 +400,7 @@ if (isActionAccessible($guid, $connection2, '/modules/IB Diploma/cas_supervisor_
                                                     echo "<div class='success'>";
                                                     echo $valuesCommitment['name'].": An invite has been created and emailed to $to.";
                                                     echo '</div>';
+                                                    echo $body;
                                                 } else {
                                                     echo "<div class='warning'>";
                                                     echo $valuesCommitment['name'].': An invite has been created, but could not be email. You may email the following link supervisor ('.$values['supervisorName'].') at '.$values['supervisorEmail'].': '.$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/IB Diploma/cas_supervisor.php&key=$key";
